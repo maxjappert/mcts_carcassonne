@@ -12,9 +12,8 @@ public class Game {
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
-     * @throws Exception
      */
-    public Game() throws Exception {
+    public Game() {
         deck = new ArrayList<>();
         board = new ArrayList<>();
         assembleDeck();
@@ -22,14 +21,21 @@ public class Game {
 
 
         // just for testing from here on
-        board.add(new ArrayList<>());
-        board.get(0).add(new Tile(0, false));
-        board.get(0).add(new Tile(1, false));
+//        board.add(new ArrayList<>());
+//        board.get(0).add(new Tile(0, false));
+//        board.get(0).add(new Tile(1, false));
+//
+//        System.out.println(Arrays.deepToString(board.get(0).get(0).getPrintFormatOfTile()));
+//        System.out.println(Arrays.deepToString(board.get(0).get(1).getPrintFormatOfTile()));
+//
+//        displayBoard();
+    }
 
-        System.out.println(Arrays.deepToString(board.get(0).get(0).getPrintFormatOfTile()));
-        System.out.println(Arrays.deepToString(board.get(0).get(1).getPrintFormatOfTile()));
+    public void play() throws Exception {
+        while (true) {
+            displayBoard();
 
-        displayBoard();
+        }
     }
 
     /**
@@ -77,7 +83,6 @@ public class Game {
     /**
      * Takes the tiles on the board and prints an ASCII-representation of the board. This is achieved by assembling
      * a 2D-char-array using the individual ASCII-representations of the relevant tile.
-     * @throws Exception
      */
     public void displayBoard() throws Exception {
         int[] boardDimensions = getBoardDimensions();

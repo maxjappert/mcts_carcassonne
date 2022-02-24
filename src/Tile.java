@@ -1,7 +1,7 @@
 import java.util.Arrays;
 
 public class Tile {
-    private boolean pennant;
+    private final boolean pennant;
 
     /**
      *  Starting from the bottom edge, counterclockwise.
@@ -136,8 +136,9 @@ public class Tile {
      * '|' -> road
      * '@' -> monastery
      * '#' -> city
+     * '§' -> pennant
      * @return A 2D-char-array which when printed represents the given visually in an ASCII-format.
-     * @throws Exception Is thrown if for some reason a wrong type code is parsed.
+     * @throws Exception Is thrown if for some reason an invalid type number is used.
      */
     public char[][] getPrintFormatOfTile() throws Exception {
         // TODO: add pennants to the representation.
@@ -253,17 +254,12 @@ public class Tile {
         if (middle == 0) {
             c = '.';
         } else if (middle == 1) {
-            c = '#';
+            if (pennant) {
+                c = '§';
+            } else {
+                c = '#';
+            }
         } else if (middle == 2) {
-//            if ((output[4][2] == '|' && output[2][4] == '-') || (output[1][2] == '|' && output[2][1] == '-')) {
-//                c = '/';
-//            } else if ((output[1][2] == '|' && output[2][4] == '-') || (output[3][2] == '|' && output[2][1] == '-')) {
-//                c = '\\';
-//            } else if (output[2][1] == '-' && output[2][3] == '-') {
-//                c = '-';
-//            } else if (output[1][2] == '|' && output[3][2] == '|') {
-//                c = '|';
-//            }
             c = '.';
         } else if (middle == 3) {
             c = 'x';
@@ -284,6 +280,18 @@ public class Tile {
         output[2][2] = c;
 
         return output;
+    }
+
+    public void printTile() throws Exception {
+        char[][] printFormat = getPrintFormatOfTile();
+        String tileString = "";
+
+        for (char[] row : printFormat) {
+            tileString = tileString.concat(new String(row));
+            tileString = tileString.concat("\n");
+        }
+
+        System.out.println(tileString);
     }
 
     /**
