@@ -13,7 +13,7 @@ public class Game {
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
      */
-    public Game() {
+    public Game() throws Exception {
         deck = new ArrayList<>();
         board = new ArrayList<>();
         assembleDeck();
@@ -21,14 +21,11 @@ public class Game {
 
 
         // just for testing from here on
-//        board.add(new ArrayList<>());
-//        board.get(0).add(new Tile(0, false));
-//        board.get(0).add(new Tile(1, false));
-//
-//        System.out.println(Arrays.deepToString(board.get(0).get(0).getPrintFormatOfTile()));
-//        System.out.println(Arrays.deepToString(board.get(0).get(1).getPrintFormatOfTile()));
-//
-//        displayBoard();
+        board.add(new ArrayList<>());
+        board.get(0).add(new Tile(0, false));
+        board.get(0).add(new Tile(1, false));
+
+        displayBoard();
     }
 
     public void play() throws Exception {
@@ -87,7 +84,7 @@ public class Game {
     public void displayBoard() throws Exception {
         int[] boardDimensions = getBoardDimensions();
 
-        char[][] boardFormat = new char[boardDimensions[0] * 5][boardDimensions[1] * 10];
+        char[][] boardFormat = new char[boardDimensions[0] * 5 + 1][boardDimensions[1] * 10 + 1];
 
         // loop over the rows
         for (int rowIndex = 0; rowIndex < boardDimensions[0]; rowIndex++) {
@@ -112,6 +109,29 @@ public class Game {
                     }
                 }
             }
+        }
+
+        // Here the labels which allow for naming tiles and therefore moves.
+        for (int i = 0; i <= boardDimensions[1] * 10; i++) {
+            boardFormat[boardDimensions[0] * 5][i] = ' ';
+        }
+
+        for (int i = 0; i <= boardDimensions[0] * 5; i++) {
+            boardFormat[i][boardDimensions[1] * 10] = ' ';
+        }
+
+        char columnName = 65;
+        for (int i = 0; i < boardDimensions[1]; i++) {
+            boardFormat[boardDimensions[0] * 5][i * 10 + 4] = columnName;
+            columnName += 1;
+        }
+
+        // 49 in decimal corresponds to a 1 in ASCII.
+        char rowName = 49;
+
+        for (int i = 0; i < boardDimensions[0]; i++) {
+            boardFormat[i * 5 + 2][boardDimensions[1] * 10] = rowName;
+            rowName += 1;
         }
 
         String boardString = "";
