@@ -129,7 +129,19 @@ public class Tile {
         }
     }
 
-    public void printTile() throws Exception {
+    /**
+     * Generates a printable format of the tile. The following characters denote the following things:
+     * '.' -> field
+     * '-' -> road
+     * '|' -> road
+     * '@' -> monastery
+     * '#' -> city
+     * @return A 2D-char-array which when printed represents the given visually in an ASCII-format.
+     * @throws Exception Is thrown if for some reason a wrong type code is parsed.
+     */
+    public char[][] getPrintFormatOfTile() throws Exception {
+        // TODO: add pennants to the representation.
+
         char[][] output = new char[5][5];
 
         for (int i = 0; i < 5; i++) {
@@ -271,22 +283,7 @@ public class Tile {
 
         output[2][2] = c;
 
-        //String outputString = new String(output[0]) + "\n" + new String(output[1]) + "\n" + new String(output[2])
-        //        + "\n" + new String(output[3]) + "\n" + new String(output[4]);
-
-        StringBuilder sb = new StringBuilder();
-
-        for(int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                sb.append(output[i][j]);
-                if (j != 4) {
-                    sb.append(' ');
-                }
-            }
-            sb.append('\n');
-        }
-
-        System.out.println(sb);
+        return output;
     }
 
     /**

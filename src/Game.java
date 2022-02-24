@@ -1,5 +1,6 @@
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,24 +10,31 @@ public class Game {
     Player player1;
     Player player2;
 
+    /**
+     * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
+     * @throws Exception
+     */
     public Game() throws Exception {
         deck = new ArrayList<>();
         board = new ArrayList<>();
         assembleDeck();
         assert(deck.size() == 72);
 
-        // shuffle the deck
-        Collections.shuffle(deck);
 
+        // just for testing from here on
         board.add(new ArrayList<>());
-        board.get(0).add(deck.remove(0));
-        board.get(0).add(deck.remove(0));
-        board.get(0).add(deck.remove(0));
-        board.get(0).add(deck.remove(0));
+        board.get(0).add(new Tile(0, false));
+        board.get(0).add(new Tile(1, false));
+
+        System.out.println(Arrays.deepToString(board.get(0).get(0).getPrintFormatOfTile()));
+        System.out.println(Arrays.deepToString(board.get(0).get(1).getPrintFormatOfTile()));
 
         displayBoard();
     }
 
+    /**
+     * Assembles and shuffles the deck according to the game's instructions.
+     */
     private void assembleDeck() {
         addTilesToDeck(0, 4, false);
         addTilesToDeck(1, 3, false);
@@ -52,31 +60,77 @@ public class Game {
         addTilesToDeck(17, 3, false);
         addTilesToDeck(17, 1, true);
         addTilesToDeck(18, 1, true);
+
+        // shuffle the deck
+        Collections.shuffle(deck);
     }
 
+    /**
+     * Simply adds a given amount of a given type's tiles to the deck.
+     */
     private void addTilesToDeck(int type, int amount, boolean pennant) {
         for (int i = 0; i < amount; i++) {
             this.deck.add(new Tile(type, pennant));
         }
     }
 
+    /**
+     * Takes the tiles on the board and prints an ASCII-representation of the board. This is achieved by assembling
+     * a 2D-char-array using the individual ASCII-representations of the relevant tile.
+     * @throws Exception
+     */
     public void displayBoard() throws Exception {
-        String emptyTile =
-                "          \n" +
-                "          \n" +
-                "          \n" +
-                "          \n" +
-                "          \n";
+        int[] boardDimensions = getBoardDimensions();
 
-        for (List<Tile> row : board) {
-            for (Tile t : row) {
-                if (t == null) {
-                    System.out.println(emptyTile);
-                } else {
-                    t.printTile();
+        char[][] boardFormat = new char[boardDimensions[0] * 5][boardDimensions[1] * 10];
+
+        // loop over the rows
+        for (int rowIndex = 0; rowIndex < boardDimensions[0]; rowIndex++) {
+            List<Tile> row = board.get(rowIndex);
+            //loop over the rows within each row
+            for (int charRowIndex = 0; charRowIndex < 5; charRowIndex++) {
+                // loop over the tiles in each row
+                for (int columnIndex = 0; columnIndex < boardDimensions[1]; columnIndex++) {
+                    Tile t = row.get(columnIndex);
+                    if (t == null) {
+                        // loop over the characters in each row of characters
+                        for (int charColumnIndex = 0; charColumnIndex < 10; charColumnIndex++) {
+                            boardFormat[rowIndex * 5 + charRowIndex][columnIndex * 10 + charColumnIndex] = ' ';
+                        }
+                    } else {
+                        char[][] tileFormat = t.getPrintFormatOfTile();
+                        // loop over the characters in each row of characters
+                        for (int charColumnIndex = 0; charColumnIndex < 5; charColumnIndex++) {
+                            boardFormat[rowIndex * 5 + charRowIndex][columnIndex * 10 + charColumnIndex * 2] = tileFormat[charRowIndex][charColumnIndex];
+                            boardFormat[rowIndex * 5 + charRowIndex][columnIndex * 10 + charColumnIndex * 2 + 1] = ' ';
+                        }
+                    }
                 }
             }
-            System.out.println();
         }
+
+        String boardString = "";
+
+        for (char[] line : boardFormat) {
+            boardString = boardString.concat(new String(line));
+            boardString = boardString.concat("\n");
+        }
+
+        System.out.println(boardString);
+    }
+
+    /**
+     * @return Array of size 2 denoting the dimensions of the board: [height, width].
+     */
+    private int[] getBoardDimensions() {
+        int maxWidth = 0;
+
+        for (List<Tile> row : board) {
+            if (row.size() > maxWidth) {
+                maxWidth = row.size();
+            }
+        }
+
+        return new int[] {this.board.size(), maxWidth};
     }
 }
