@@ -38,6 +38,63 @@ public class Game {
             player1.draw(deck);
 
             int[] move = player1.decideOnNextMove(board);
+
+            updateBoard(move, player1);
+        }
+    }
+
+    /**
+     * Places the tile which the player drew from the deck onto the board.
+     * @param move The coordinates of where the tile should be placed.
+     * @param p The player who executed the move.
+     */
+    private void updateBoard(int[] move, Player p) {
+        // This is the case where the tile generates a new top row.
+        if (move[0] == 0) {
+            board.add(0, new ArrayList<>());
+            for (int i = 0; i < move[1] - 1; i++) {
+                board.get(0).add(null);
+            }
+            board.get(0).add(p.getDrawnTile());
+            return;
+        }
+
+        // This is the case where the tile generates a new first column.
+        if (move[1] == 0) {
+            for (int i = 0; i < board.size(); i++) {
+                List<Tile> row = board.get(i);
+                if (i == move[0] - 1) {
+                    row.add(0, p.getDrawnTile());
+                } else {
+                    row.add(0, null);
+                }
+            }
+        }
+
+        // This is the case where the tile generates a new bottom row.
+        if (move[0] == board.size() + 1) {
+            List<Tile> newRow = new ArrayList<>();
+
+            for (int i = 0; i < getBoardDimensions(board)[1]; i++) {
+                if (move[1] - 1 == i) {
+                    newRow.add(p.getDrawnTile());
+                } else {
+                    newRow.add(null);
+                }
+            }
+
+            board.add(newRow);
+        }
+
+        if (move[1] == getBoardDimensions(board)[1] + 1) {
+            for (int i = 0; i < getBoardDimensions(board)[0]; i++) {
+
+                if (move[0] - 1 == i) {
+                    board.get(i).add(p.getDrawnTile());
+                } else {
+                    board.get(i).add(null);
+                }
+            }
         }
     }
 
@@ -159,12 +216,10 @@ public class Game {
      * @return Array of size 2 denoting the dimensions of the board: [height, width].
      */
     public static int[] getBoardDimensions(List<List<Tile>> board) {
-        int maxWidth = 0;
+        int maxWidth = board.get(0).size();
 
         for (List<Tile> row : board) {
-            if (row.size() > maxWidth) {
-                maxWidth = row.size();
-            }
+            assert(row.size() == maxWidth);
         }
 
         return new int[] {board.size(), maxWidth};
@@ -208,7 +263,7 @@ public class Game {
      * @return The size of the row.
      */
     public static int getRowSize(int rowIndex, List<List<Tile>> board) {
-        if (board.size() + 2 > rowIndex) {
+        if (board.size() < rowIndex - 1) {
             return 0;
         }
 
