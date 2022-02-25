@@ -37,12 +37,12 @@ public class Game {
 
             player1.draw(deck);
 
-            player1.decideOnNextMove(board);
+            int[] move = player1.decideOnNextMove(board);
         }
     }
 
     /**
-     * Assembles and shuffles the deck according to the game's instructions.
+     * Assembles the deck according to the game's instructions and then shuffles it.
      */
     private void assembleDeck() {
         addTilesToDeck(0, 4, false);
@@ -75,7 +75,10 @@ public class Game {
     }
 
     /**
-     * Simply adds a given amount of a given type's tiles to the deck.
+     * Simply adds a given number of a given type's tiles to the deck.
+     * @param type The type of tile to be added.
+     * @param amount The number of tiles of the given type to be added.
+     * @param pennant True if the tile includes a pennant.
      */
     private void addTilesToDeck(int type, int amount, boolean pennant) {
         for (int i = 0; i < amount; i++) {
@@ -167,6 +170,26 @@ public class Game {
         return new int[] {board.size(), maxWidth};
     }
 
+    /**
+     * @param board The board for which the tile should be found.
+     * @param coordinates The coordinates of the tile.
+     * @return The tile object at the given coordinates on the given board. Returns null if there's no tile at the
+     * given coordinates.
+     */
+    public static Tile getTile(List<List<Tile>> board, int[] coordinates) {
+        if (coordinates[0] >= getRowSize(coordinates[0], board) || coordinates[1] >= getColumnSize(coordinates[1], board)
+                || coordinates[0] < 0 || coordinates[1] < 0) {
+            return null;
+        }
+
+        return board.get(coordinates[0]).get(coordinates[1]);
+    }
+
+    /**
+     * @param columnIndex The index of the column in question.
+     * @param board The board in question.
+     * @return The size of the column.
+     */
     public static int getColumnSize(int columnIndex, List<List<Tile>> board) {
         int rowIndex = 0;
 
@@ -179,7 +202,18 @@ public class Game {
         return rowIndex;
     }
 
+    /**
+     * @param rowIndex The index of the row in question.
+     * @param board The board in question.
+     * @return The size of the row.
+     */
     public static int getRowSize(int rowIndex, List<List<Tile>> board) {
+        if (board.size() + 2 > rowIndex) {
+            return 0;
+        }
+
+        System.out.println(rowIndex);
+
         return board.get(rowIndex).size();
     }
 }

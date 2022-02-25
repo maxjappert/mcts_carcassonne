@@ -11,7 +11,7 @@ public class HumanPlayer extends Player {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Press r to rotate or enter the coordinates of where you'd like to place the tile (e.g. a1).");
+            System.out.print("Press r to rotate or enter the coordinates of where you'd like to place the tile (e.g. 'a1'):");
 
             String input = sc.next().toLowerCase();
 
@@ -21,8 +21,7 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
-            int co1;
-            int co2;
+            int[] move;
 
             // Tries to convert the input string into coordinates. If the NumberFormatException is thrown, the loop starts
             // from the beginning and the user gets another chance to input coordinates. 97 is subtracted from the first
@@ -30,13 +29,24 @@ public class HumanPlayer extends Player {
             // board starts indexing at 1, yet we need indexing starting at 0 to access the tiles in the list representation
             // of the board. TODO: check the legality of these coordinates.
             try {
-                co1 = input.charAt(0) - 97;
-                co2 = Integer.parseInt(input.substring(1)) - 1;
+                int co1 = input.charAt(0) - 97;
+                int co2 = Integer.parseInt(input.substring(1)) - 1;
+
+                move = new int[]{co1, co2};
+
             } catch (NumberFormatException nfe) {
-                System.out.print("You haven't provided valid coordinates as input. For example the top right corner" +
-                        "is denoted by the coordinates 'A1': ");
+                System.out.println("You haven't provided valid coordinates as input. For example the top right corner" +
+                        "is denoted by the coordinates 'a1'.");
                 continue;
             }
+
+            // If the move isn't legal the loop jumps to the top.
+            if (!checkLegalMove(board, move)) {
+                System.out.println("The move you have entered is not allowed. Please try again.");
+                continue;
+            }
+
+            return move;
         }
     }
 }

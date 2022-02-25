@@ -9,7 +9,17 @@ abstract class Player {
         drawnTile = deck.remove(0);
     }
 
-    private boolean checkLegalMove(List<List<Tile>> board, int[] move) {
+    public Tile getDrawnTile() throws Exception {
+        return drawnTile;
+    }
+
+    /**
+     * Checks if a move is legal.
+     * @param board The board on which the move should be executed.
+     * @param move The coordinates of where the tile should be placed.
+     * @return True if the move is legal.
+     */
+    protected boolean checkLegalMove(List<List<Tile>> board, int[] move) {
         assert (move.length == 2);
 
         // Even if the translation from input string to integer coordinates was successful, we still need to check
@@ -20,34 +30,56 @@ abstract class Player {
             return false;
         }
 
-        // This array represents the four edges and if they are attached to another tile, i.e., if they need to be
-        // evaluated in regard to their legality.
-        boolean[] notAttached = new boolean[4];
+        // This array represents the four edges and their value corresponds to if they are attached to another tile,
+        // i.e., if they need to be evaluated in regard to their legality.
+        boolean[] attached = new boolean[4];
 
-        if (Game.getColumnSize(move[1], board) + 1 == move[0]) {
-            notAttached[0] = true;
+        if (Game.getTile(board, new int[]{move[0]+1, move[1]}) != null) {
+            attached[0] = true;
         }
 
-        if (Game.getRowSize(move[0], board) + 1 == move[1]) {
-            notAttached[1] = true;
+        if (Game.getTile(board, new int[]{move[0], move[1] + 1}) != null) {
+            attached[1] = true;
         }
 
-        if (move[0] == 0) {
-            notAttached[2] = true;
+        if (Game.getTile(board, new int[]{move[0] - 1, move[1]}) != null) {
+            attached[2] = true;
         }
 
-        if (move[1] == 0) {
-            notAttached[3] = true;
+        if (Game.getTile(board, new int[]{move[0], move[1] - 1}) != null) {
+            attached[3] = true;
         }
 
         // For all sides which are attached to another tile, we need to check if the touching sides of the tiles are
         // of the same type. If that is not the case for at least one of the tiles, then we return false, as the move
-        // is not legal. TODO: Finish implementing this for all sides. Then we can use this method for checking the legality of the move.
-        if (!notAttached[0] && drawnTile.getSides()[0] != board.get(move[0] + 1).get(move[1]).getSides()[2]) {
-            return false;
-        } else if (!notAttached[1])
+        // is not legal.
 
-        return false;
+        if (attached[0]) {
+            if (drawnTile.getSides()[0] != Game.getTile(board, new int[]{move[0] + 1, move[1]}).getSides()[2]) {
+                return false;
+            }
+        }
+
+        if (attached[1]) {
+            if (drawnTile.getSides()[1] != Game.getTile(board, new int[]{move[0], move[1] + 1}).getSides()[3]) {
+                return false;
+            }
+        }
+
+        if (attached[2]) {
+            if (drawnTile.getSides()[2] != Game.getTile(board, new int[]{move[0] - 1, move[1]}).getSides()[0]) {
+                return false;
+            }
+        }
+
+        if (attached[3]) {
+            if (drawnTile.getSides()[3] != Game.getTile(board, new int[]{move[0], move[1] - 1}).getSides()[1]) {
+                return false;
+            }
+        }
+
+        // If this method hasn't returned false yet, then the sufficient criteria for the move being legal are met.
+        return true;
     }
 
     abstract int[] decideOnNextMove(List<List<Tile>> board) throws Exception;

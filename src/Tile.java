@@ -284,12 +284,20 @@ public class Tile {
 
     public void printTile() throws Exception {
         char[][] printFormat = getPrintFormatOfTile();
-        String tileString = "";
+        StringBuilder tileString = new StringBuilder();
 
-        for (char[] row : printFormat) {
-            tileString = tileString.concat(new String(row));
-            tileString = tileString.concat("\n");
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                tileString.append(printFormat[i][j]);
+                tileString.append(' ');
+            }
+            tileString.append('\n');
         }
+
+//        for (char[] row : printFormat) {
+//            tileString = tileString.concat(new String(row));
+//            tileString = tileString.concat("\n");
+//        }
 
         System.out.println(tileString);
     }

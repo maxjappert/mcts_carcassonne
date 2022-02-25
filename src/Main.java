@@ -1,7 +1,9 @@
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        new Game();
+        Game game = new Game();
+
+        game.play();
     }
 }
 
