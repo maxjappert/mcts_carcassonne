@@ -310,4 +310,11 @@ public class Tile {
         sides[3] = temp2;
         sides[0] = temp1;
     }
+
+    /**
+     * @return The types of sides the tile has, starting from the bottom edge running counterclockwise.
+     */
+    public int[] getSides() {
+        return sides;
+    }
 }

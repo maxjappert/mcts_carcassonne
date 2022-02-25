@@ -19,11 +19,14 @@ public class Game {
         assembleDeck();
         assert(deck.size() == 72);
 
+        // Initialise the player as either humans or robots.
+        player1 = new HumanPlayer();
+        player2 = new HumanPlayer();
 
-        // just for testing from here on
         board.add(new ArrayList<>());
+
+        // The starting tile as defined in the game's manual.
         board.get(0).add(new Tile(0, false));
-        board.get(0).add(new Tile(1, false));
 
         displayBoard();
     }
@@ -32,6 +35,9 @@ public class Game {
         while (true) {
             displayBoard();
 
+            player1.draw(deck);
+
+            player1.decideOnNextMove(board);
         }
     }
 
@@ -82,9 +88,9 @@ public class Game {
      * a 2D-char-array using the individual ASCII-representations of the relevant tile.
      */
     public void displayBoard() throws Exception {
-        int[] boardDimensions = getBoardDimensions();
+        int[] boardDimensions = Game.getBoardDimensions(board);
 
-        char[][] boardFormat = new char[boardDimensions[0] * 5 + 1][boardDimensions[1] * 10 + 1];
+        char[][] boardFormat = new char[boardDimensions[0] * 5 + 1 + 10][boardDimensions[1] * 10 + 1 + 20];
 
         // loop over the rows
         for (int rowIndex = 0; rowIndex < boardDimensions[0]; rowIndex++) {
@@ -97,43 +103,45 @@ public class Game {
                     if (t == null) {
                         // loop over the characters in each row of characters
                         for (int charColumnIndex = 0; charColumnIndex < 10; charColumnIndex++) {
-                            boardFormat[rowIndex * 5 + charRowIndex][columnIndex * 10 + charColumnIndex] = ' ';
+                            boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex + 10] = ' ';
                         }
                     } else {
                         char[][] tileFormat = t.getPrintFormatOfTile();
                         // loop over the characters in each row of characters
                         for (int charColumnIndex = 0; charColumnIndex < 5; charColumnIndex++) {
-                            boardFormat[rowIndex * 5 + charRowIndex][columnIndex * 10 + charColumnIndex * 2] = tileFormat[charRowIndex][charColumnIndex];
-                            boardFormat[rowIndex * 5 + charRowIndex][columnIndex * 10 + charColumnIndex * 2 + 1] = ' ';
+                            boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 10] = tileFormat[charRowIndex][charColumnIndex];
+                            boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 1 + 10] = ' ';
                         }
                     }
                 }
             }
         }
 
-        // Here the labels which allow for naming tiles and therefore moves.
-        for (int i = 0; i <= boardDimensions[1] * 10; i++) {
-            boardFormat[boardDimensions[0] * 5][i] = ' ';
+        // This is a horribly inefficient O(n^2), yet luckily the board size doesn't really grow all that much and the method
+        // is only called once per round.
+        for (int i = 0; i < boardFormat.length; i++) {
+            for (int j = 0; j < boardFormat[0].length; j++) {
+                if (boardFormat[i][j] == 0) {
+                    boardFormat[i][j] = ' ';
+                }
+            }
         }
 
-        for (int i = 0; i <= boardDimensions[0] * 5; i++) {
-            boardFormat[i][boardDimensions[1] * 10] = ' ';
-        }
-
-        char columnName = 65;
-        for (int i = 0; i < boardDimensions[1]; i++) {
-            boardFormat[boardDimensions[0] * 5][i * 10 + 4] = columnName;
+        // Here the labels which allow for naming tiles and therefore moves. 65 in decimal corresponds to 'A' in ASCII.
+        char columnName = 49;
+        for (int i = 0; i < boardDimensions[1] + 2; i++) {
+            boardFormat[boardDimensions[0] * 5 + 10][i * 10 + 4] = columnName;
             columnName += 1;
         }
 
         // 49 in decimal corresponds to a 1 in ASCII.
-        char rowName = 49;
-
-        for (int i = 0; i < boardDimensions[0]; i++) {
-            boardFormat[i * 5 + 2][boardDimensions[1] * 10] = rowName;
+        char rowName = 65;
+        for (int i = 0; i < boardDimensions[0] + 2; i++) {
+            boardFormat[i * 5 + 2][boardDimensions[1] * 10 + 20] = rowName;
             rowName += 1;
         }
 
+        // Here the 2D-char-array is converted into a string which can be printed.
         String boardString = "";
 
         for (char[] line : boardFormat) {
@@ -147,7 +155,7 @@ public class Game {
     /**
      * @return Array of size 2 denoting the dimensions of the board: [height, width].
      */
-    private int[] getBoardDimensions() {
+    public static int[] getBoardDimensions(List<List<Tile>> board) {
         int maxWidth = 0;
 
         for (List<Tile> row : board) {
@@ -156,6 +164,22 @@ public class Game {
             }
         }
 
-        return new int[] {this.board.size(), maxWidth};
+        return new int[] {board.size(), maxWidth};
+    }
+
+    public static int getColumnSize(int columnIndex, List<List<Tile>> board) {
+        int rowIndex = 0;
+
+        for (List<Tile> row : board) {
+            if (row.size() > columnIndex) {
+                rowIndex += 1;
+            }
+        }
+
+        return rowIndex;
+    }
+
+    public static int getRowSize(int rowIndex, List<List<Tile>> board) {
+        return board.get(rowIndex).size();
     }
 }
