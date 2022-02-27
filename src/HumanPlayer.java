@@ -4,6 +4,8 @@ import java.util.Scanner;
 public class HumanPlayer extends Player {
 
     int[] decideOnNextMove(List<List<Tile>> board) throws Exception {
+        System.out.println("** begin decideOnNextMove(...)");
+
         System.out.println("This is the tile you've drawn:");
 
         drawnTile.printTile();
@@ -48,6 +50,7 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
+            System.out.println("** end of decideOnNextMove(...)");
             return move;
         }
     }

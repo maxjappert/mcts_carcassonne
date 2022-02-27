@@ -39,13 +39,6 @@ public class Game {
 
             int[] move = player1.decideOnNextMove(board);
 
-//            if (player1.isLegalMove(move, player1.getDrawnTile(), board)) {
-//                updateBoard(move, player1);
-//                player1.removeTile();
-//            } else {
-//                System.out.println("Illegal move entered. Why didn't the responsible module check this?");
-//            }
-
             updateBoard(move, player1);
             player1.removeTile();
         }
@@ -189,8 +182,20 @@ public class Game {
                         char[][] tileFormat = t.getPrintFormatOfTile();
                         // loop over the characters in each row of characters
                         for (int charColumnIndex = 0; charColumnIndex < 5; charColumnIndex++) {
-                            boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 10] = tileFormat[charRowIndex][charColumnIndex];
-                            boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 1 + 10] = ' ';
+
+                            // These if-conditions are just to make the horizontal roads more dense.
+
+                            if (tileFormat[charRowIndex][charColumnIndex] == '-' && charColumnIndex != 4) {
+                                boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 10] = '-';
+                                boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 1 + 10] = '-';
+                            } else {
+                                boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 10] = tileFormat[charRowIndex][charColumnIndex];
+                                boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 1 + 10] = ' ';
+                            }
+
+                            if (charColumnIndex == 3 && boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 10] == '-') {
+                                boardFormat[rowIndex * 5 + charRowIndex + 5][columnIndex * 10 + charColumnIndex * 2 + 10 - 1] = '-';
+                            }
                         }
                     }
                 }
@@ -244,59 +249,6 @@ public class Game {
 
         return new int[] {board.size(), maxWidth};
     }
-
-//    public boolean getLegalityOfMove(int[] move, Tile tile) {
-//        boolean[] connected = new boolean[]{true, true, true, true};
-//
-//        if (move[0] == 0) {
-//            connected = new boolean[]{true, false, false, false};
-//        } else if (move[1] == 0) {
-//            connected = new boolean[]{false, true, false, false};
-//        } else if (move[0] == getBoardDimensions(board)[0] + 1) {
-//            connected = new boolean[]{false, false, true, false};
-//        } else if (move[1] == getBoardDimensions(board)[1] + 1) {
-//            connected = new boolean[]{false, false, false, true};
-//        } else {
-//            if (getTile(new int[]{move[0] + 1, move[1]}) == null) {
-//                connected[0] = false;
-//            } else {
-//                if (getTile(new int[]{move[0] + 1, move[1]}).getSides()[2] != tile.getSides()[0]) {
-//                    return false;
-//                }
-//            }
-//
-//            if (getTile(new int[]{move[0], move[1] + 1}) == null) {
-//                connected[1] = false;
-//            } else {
-//                if (getTile(new int[]{move[0], move[1] + 1}).getSides()[3] != tile.getSides()[1]) {
-//                    return false;
-//                }
-//            }
-//
-//            if (getTile(new int[]{move[0] - 1, move[1]}) == null) {
-//                connected[2] = false;
-//            } else {
-//                if (getTile(new int[]{move[0] - 1, move[1]}).getSides()[0] != tile.getSides()[2]) {
-//                    return false;
-//                }
-//            }
-//
-//            if (getTile(new int[]{move[0], move[1] - 1}) == null) {
-//                connected[3] = false;
-//            } else {
-//                if (getTile(new int[]{move[0], move[1] - 1}).getSides()[1] != tile.getSides()[3]) {
-//                    return false;
-//                }
-//            }
-//        }
-//
-//        // The move needs to be connected at least one side.
-//        if (!connected[0] && !connected[1] && !connected[2] && !connected[3]) {
-//            return false;
-//        }
-//
-//        return true;
-//    }
 
     public static Tile getTile(int[] coordinates, List<List<Tile>> board) {
 

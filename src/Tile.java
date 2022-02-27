@@ -288,16 +288,16 @@ public class Tile {
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                tileString.append(printFormat[i][j]);
-                tileString.append(' ');
+
+                if (printFormat[i][j] == '-' && j != 4) {
+                    tileString.append("--");
+                } else {
+                    tileString.append(printFormat[i][j]);
+                    tileString.append(' ');
+                }
             }
             tileString.append('\n');
         }
-
-//        for (char[] row : printFormat) {
-//            tileString = tileString.concat(new String(row));
-//            tileString = tileString.concat("\n");
-//        }
 
         System.out.println(tileString);
     }

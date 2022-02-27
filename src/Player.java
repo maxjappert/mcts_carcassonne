@@ -1,5 +1,6 @@
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 abstract class Player {
@@ -82,12 +83,19 @@ abstract class Player {
 //        return true;
 //    }
 
-    // TODO: For now all moves are legals
     protected boolean checkLegalMove(List<List<Tile>> board, int[] move) {
         return true;
     }
 
     public boolean isLegalMove(int[] move, Tile tile, List<List<Tile>> board) {
+
+        // If the new tile is placed such that a new row and a new column of the board are created, then it necessarily
+        // follows that the tile doesn't connect to any tile on the board and therefore the move must be illegal.
+        if (move[0] >= Game.getBoardDimensions(board)[0] + 1 && move[1] >= Game.getBoardDimensions(board)[1] + 1) {
+            return false;
+        }
+
+
         boolean[] connected = new boolean[]{true, true, true, true};
 
         if (move[0] == 0) {
@@ -116,24 +124,27 @@ abstract class Player {
             }
         }
 
-
-        if (connected[0] && Game.getTile(new int[]{move[0], move[1] - 1}, board).getSides()[2] != tile.getSides()[0]) {
-            return false;
-        }
-
-        if (connected[1] && Game.getTile(new int[]{move[0] - 1, move[1]}, board).getSides()[3] != tile.getSides()[1]) {
-            return false;
-        }
-
-        if (connected[2] && Game.getTile(new int[]{move[0] - 2, move[1] - 1}, board).getSides()[0] != tile.getSides()[2]) {
+        try {
+            if (connected[0] && Game.getTile(new int[]{move[0], move[1] - 1}, board).getSides()[2] != tile.getSides()[0]) {
                 return false;
+            }
+
+            if (connected[1] && Game.getTile(new int[]{move[0] - 1, move[1]}, board).getSides()[3] != tile.getSides()[1]) {
+                return false;
+            }
+
+            if (connected[2] && Game.getTile(new int[]{move[0] - 2, move[1] - 1}, board).getSides()[0] != tile.getSides()[2]) {
+                return false;
+            }
+
+            if (connected[3] && Game.getTile(new int[]{move[0] - 1, move[1] - 2}, board).getSides()[1] != tile.getSides()[3]) {
+                return false;
+            }
+        } catch (NullPointerException e) {
+            System.out.println("For move " + Arrays.toString(move) + " and a board of size " + Arrays.toString(Game.getBoardDimensions(board)) + " there was a null pointer exception.");
         }
 
-        if (connected[3] && Game.getTile(new int[]{move[0] - 1, move[1] - 2}, board).getSides()[1] != tile.getSides()[3]) {
-            return false;
-        }
-
-        // The move needs to be connected at least one side.
+        // The move needs to be connected on least one side.
         return connected[0] || connected[1] || connected[2] || connected[3];
     }
 
