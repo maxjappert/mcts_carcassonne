@@ -40,8 +40,10 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
+            boolean legalMove = isLegalMove(move, drawnTile, board);
+
             // If the move isn't legal the loop jumps to the top.
-            if (!checkLegalMove(board, move)) {
+            if (!legalMove) {
                 System.out.println("The move you have entered is not allowed. Please try again.");
                 continue;
             }

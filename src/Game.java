@@ -13,7 +13,7 @@ public class Game {
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
      */
-    public Game() throws Exception {
+    public Game() {
         deck = new ArrayList<>();
         board = new ArrayList<>();
         assembleDeck();
@@ -28,7 +28,7 @@ public class Game {
         // The starting tile as defined in the game's manual.
         board.get(0).add(new Tile(0, false));
 
-        displayBoard();
+        //displayBoard();
     }
 
     public void play() throws Exception {
@@ -39,7 +39,15 @@ public class Game {
 
             int[] move = player1.decideOnNextMove(board);
 
+//            if (player1.isLegalMove(move, player1.getDrawnTile(), board)) {
+//                updateBoard(move, player1);
+//                player1.removeTile();
+//            } else {
+//                System.out.println("Illegal move entered. Why didn't the responsible module check this?");
+//            }
+
             updateBoard(move, player1);
+            player1.removeTile();
         }
     }
 
@@ -237,50 +245,68 @@ public class Game {
         return new int[] {board.size(), maxWidth};
     }
 
-    /**
-     * @param board The board for which the tile should be found.
-     * @param coordinates The coordinates of the tile.
-     * @return The tile object at the given coordinates on the given board. Returns null if there's no tile at the
-     * given coordinates.
-     */
-    public static Tile getTile(List<List<Tile>> board, int[] coordinates) {
-        if (coordinates[0] >= getRowSize(coordinates[0], board) || coordinates[1] >= getColumnSize(coordinates[1], board)
-                || coordinates[0] < 0 || coordinates[1] < 0) {
-            return null;
+//    public boolean getLegalityOfMove(int[] move, Tile tile) {
+//        boolean[] connected = new boolean[]{true, true, true, true};
+//
+//        if (move[0] == 0) {
+//            connected = new boolean[]{true, false, false, false};
+//        } else if (move[1] == 0) {
+//            connected = new boolean[]{false, true, false, false};
+//        } else if (move[0] == getBoardDimensions(board)[0] + 1) {
+//            connected = new boolean[]{false, false, true, false};
+//        } else if (move[1] == getBoardDimensions(board)[1] + 1) {
+//            connected = new boolean[]{false, false, false, true};
+//        } else {
+//            if (getTile(new int[]{move[0] + 1, move[1]}) == null) {
+//                connected[0] = false;
+//            } else {
+//                if (getTile(new int[]{move[0] + 1, move[1]}).getSides()[2] != tile.getSides()[0]) {
+//                    return false;
+//                }
+//            }
+//
+//            if (getTile(new int[]{move[0], move[1] + 1}) == null) {
+//                connected[1] = false;
+//            } else {
+//                if (getTile(new int[]{move[0], move[1] + 1}).getSides()[3] != tile.getSides()[1]) {
+//                    return false;
+//                }
+//            }
+//
+//            if (getTile(new int[]{move[0] - 1, move[1]}) == null) {
+//                connected[2] = false;
+//            } else {
+//                if (getTile(new int[]{move[0] - 1, move[1]}).getSides()[0] != tile.getSides()[2]) {
+//                    return false;
+//                }
+//            }
+//
+//            if (getTile(new int[]{move[0], move[1] - 1}) == null) {
+//                connected[3] = false;
+//            } else {
+//                if (getTile(new int[]{move[0], move[1] - 1}).getSides()[1] != tile.getSides()[3]) {
+//                    return false;
+//                }
+//            }
+//        }
+//
+//        // The move needs to be connected at least one side.
+//        if (!connected[0] && !connected[1] && !connected[2] && !connected[3]) {
+//            return false;
+//        }
+//
+//        return true;
+//    }
+
+    public static Tile getTile(int[] coordinates, List<List<Tile>> board) {
+
+        Tile tile = null;
+
+        if (coordinates[0] >= 0 && coordinates[0] < getBoardDimensions(board)[0]
+        && coordinates[1] >= 0 && coordinates[1] < getBoardDimensions(board)[1]) {
+            tile = board.get(coordinates[0]).get(coordinates[1]);
         }
 
-        return board.get(coordinates[0]).get(coordinates[1]);
-    }
-
-    /**
-     * @param columnIndex The index of the column in question.
-     * @param board The board in question.
-     * @return The size of the column.
-     */
-    public static int getColumnSize(int columnIndex, List<List<Tile>> board) {
-        int rowIndex = 0;
-
-        for (List<Tile> row : board) {
-            if (row.size() > columnIndex) {
-                rowIndex += 1;
-            }
-        }
-
-        return rowIndex;
-    }
-
-    /**
-     * @param rowIndex The index of the row in question.
-     * @param board The board in question.
-     * @return The size of the row.
-     */
-    public static int getRowSize(int rowIndex, List<List<Tile>> board) {
-        if (board.size() < rowIndex - 1) {
-            return 0;
-        }
-
-        System.out.println(rowIndex);
-
-        return board.get(rowIndex).size();
+        return tile;
     }
 }
