@@ -56,6 +56,7 @@ public class Game {
                 board.get(0).add(null);
             }
             board.get(0).add(p.getDrawnTile());
+
             return;
         }
 
@@ -69,6 +70,8 @@ public class Game {
                     row.add(0, null);
                 }
             }
+
+            return;
         }
 
         // This is the case where the tile generates a new bottom row.
@@ -84,8 +87,10 @@ public class Game {
             }
 
             board.add(newRow);
+            return;
         }
 
+        // This is the case where the tile generates a new last column
         if (move[1] == getBoardDimensions(board)[1] + 1) {
             for (int i = 0; i < getBoardDimensions(board)[0]; i++) {
 
@@ -95,7 +100,14 @@ public class Game {
                     board.get(i).add(null);
                 }
             }
+
+            return;
         }
+
+        // In the case that the board dimensions remain the same, we simply place the tile at the coordinates given
+        // by the move. These need to be subtracted by 1, since the user has to consider the additional potential row
+        // and column.
+        board.get(move[0] - 1).set(move[1] - 1, p.getDrawnTile()) ;
     }
 
     /**
