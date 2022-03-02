@@ -3,6 +3,10 @@ import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 
+    public HumanPlayer(int playerID) {
+        super(playerID);
+    }
+
     int[] decideOnNextMove(List<List<Tile>> board) throws Exception {
         System.out.println("** begin decideOnNextMove(...)");
 
@@ -49,6 +53,10 @@ public class HumanPlayer extends Player {
                 System.out.println("The move you have entered is not allowed. Please try again.");
                 continue;
             }
+
+
+            // TODO: implement meeple placement.
+            System.out.println("Would you like to place a meeple o");
 
             System.out.println("** end of decideOnNextMove(...)");
             return move;

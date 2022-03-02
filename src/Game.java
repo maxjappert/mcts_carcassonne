@@ -20,8 +20,8 @@ public class Game {
         assert(deck.size() == 72);
 
         // Initialise the player as either humans or robots.
-        player1 = new HumanPlayer();
-        player2 = new HumanPlayer();
+        player1 = new HumanPlayer(1);
+        player2 = new HumanPlayer(2);
 
         board.add(new ArrayList<>());
 
@@ -158,7 +158,7 @@ public class Game {
 
     /**
      * Takes the tiles on the board and prints an ASCII-representation of the board. This is achieved by assembling
-     * a 2D-char-array using the individual ASCII-representations of the relevant tile.
+     * a 2D-char-array using the individual ASCII-representations of the relevant tiles.
      */
     public void displayBoard() throws Exception {
         int[] boardDimensions = Game.getBoardDimensions(board);

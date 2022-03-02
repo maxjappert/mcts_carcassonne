@@ -13,6 +13,13 @@ public class Tile {
     private int[] sides;
 
     /**
+     * Describes a possible meeple on the tile. Index 0 denotes the side on which the meeple was placed and index 1
+     * denotes the ID of the player whom the meeple belongs to. If there's no meeple on the tile, then both values
+     * are -1.
+     */
+    private int[] meeple;
+
+    /**
      * 0: grass
      * 1: city
      * 2: road
@@ -45,6 +52,8 @@ public class Tile {
      */
     public Tile(int type, boolean pennant) {
         this.pennant = pennant;
+
+        meeple = new int[]{-1, -1};
 
         switch (type) {
             case 0 -> {
@@ -137,12 +146,12 @@ public class Tile {
      * '@' -> monastery
      * '#' -> city
      * '§' -> pennant
+     * '1' -> meeple of player 1
+     * '2' -> meeple of player 2
      * @return A 2D-char-array which when printed represents the given visually in an ASCII-format.
      * @throws Exception Is thrown if for some reason an invalid type number is used.
      */
     public char[][] getPrintFormatOfTile() throws Exception {
-        // TODO: add pennants to the representation.
-
         char[][] output = new char[5][5];
 
         for (int i = 0; i < 5; i++) {
@@ -279,6 +288,19 @@ public class Tile {
 
         output[2][2] = c;
 
+        // Add the meeples if necessary.
+        if (meeple[0] != -1) {
+            if (meeple[0] == 0) {
+                output[4][2] = Character.forDigit(meeple[1], 10);
+            } else if (meeple[0] == 1) {
+                output[2][4] = Character.forDigit(meeple[1], 10);
+            } else if (meeple[0] == 2) {
+                output[0][2] = Character.forDigit(meeple[1], 10);
+            } else if (meeple[0] == 3) {
+                output[2][0] = Character.forDigit(meeple[1], 10);
+            }
+        }
+
         return output;
     }
 
@@ -324,5 +346,12 @@ public class Tile {
      */
     public int[] getSides() {
         return sides;
+    }
+
+    public void placeMeeple(int side, int playerID) {
+        assert (side >= 0 && side < 4);
+        assert (playerID == 1 || playerID == 2);
+
+        meeple = new int[]{side, playerID};
     }
 }
