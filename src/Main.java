@@ -1,9 +1,29 @@
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        Game game = new Game();
+        play();
+    }
 
-        game.play();
+    public static void play() throws Exception {
+        GameStateSpace stateSpace = new GameStateSpace();
+        GameState state = new GameState();
+
+        Player player1 = new HumanPlayer(1);
+        Player player2 = new HumanPlayer(2);
+
+        while (true) {
+            state.displayBoard();
+
+            Tile drawnTile = state.drawTile();
+
+            List<ActionRotationStateTriple> successors = stateSpace.succ(state, drawnTile);
+
+            int[] move = player1.decideOnNextMove(state, stateSpace, drawnTile);
+
+            state.updateBoard(move, drawnTile);
+        }
     }
 }
 

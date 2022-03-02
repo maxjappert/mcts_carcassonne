@@ -1,10 +1,8 @@
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Game {
+public class GameState {
     List<Tile> deck;
     List<List<Tile>> board;
     Player player1;
@@ -13,50 +11,57 @@ public class Game {
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
      */
-    public Game() {
+    public GameState() {
         deck = new ArrayList<>();
         board = new ArrayList<>();
         assembleDeck();
         assert(deck.size() == 72);
 
-        // Initialise the player as either humans or robots.
-        player1 = new HumanPlayer(1);
-        player2 = new HumanPlayer(2);
-
         board.add(new ArrayList<>());
 
         // The starting tile as defined in the game's manual.
         board.get(0).add(new Tile(0, false));
-
-        //displayBoard();
     }
 
-    public void play() throws Exception {
-        while (true) {
-            displayBoard();
+    /**
+     * Copy constructor.
+     * @param state The GameState object for which a deep copy should be created.
+     */
+    public GameState(GameState state) {
+        this.deck = state.deck;
+        this.board = new ArrayList<>();
+        this.player1 = state.player1;
+        this.player2 = state.player2;
 
-            player1.draw(deck);
-
-            int[] move = player1.decideOnNextMove(board);
-
-            updateBoard(move, player1);
-            player1.removeTile();
+        for (int i = 0; i < state.board.size(); i++) {
+            this.board.add(new ArrayList<>());
+            for (int j = 0; j < state.board.get(0).size(); j++) {
+                this.board.get(i).add(state.board.get(i).get(j));
+            }
         }
+    }
+
+    public Tile drawTile() {
+        return deck.remove(0);
+    }
+
+    public List<List<Tile>> getBoard() {
+        return board;
     }
 
     /**
      * Places the tile which the player drew from the deck onto the board.
      * @param move The coordinates of where the tile should be placed.
-     * @param p The player who executed the move.
+     * @param tile The tile which should be placed.
      */
-    private void updateBoard(int[] move, Player p) {
+    public void updateBoard(int[] move, Tile tile) {
         // This is the case where the tile generates a new top row.
         if (move[0] == 0) {
             board.add(0, new ArrayList<>());
             for (int i = 0; i < move[1] - 1; i++) {
                 board.get(0).add(null);
             }
-            board.get(0).add(p.getDrawnTile());
+            board.get(0).add(tile);
 
             return;
         }
@@ -66,7 +71,7 @@ public class Game {
             for (int i = 0; i < board.size(); i++) {
                 List<Tile> row = board.get(i);
                 if (i == move[0] - 1) {
-                    row.add(0, p.getDrawnTile());
+                    row.add(0, tile);
                 } else {
                     row.add(0, null);
                 }
@@ -79,9 +84,9 @@ public class Game {
         if (move[0] == board.size() + 1) {
             List<Tile> newRow = new ArrayList<>();
 
-            for (int i = 0; i < getBoardDimensions(board)[1]; i++) {
+            for (int i = 0; i < getBoardDimensions()[1]; i++) {
                 if (move[1] - 1 == i) {
-                    newRow.add(p.getDrawnTile());
+                    newRow.add(tile);
                 } else {
                     newRow.add(null);
                 }
@@ -92,11 +97,11 @@ public class Game {
         }
 
         // This is the case where the tile generates a new last column
-        if (move[1] == getBoardDimensions(board)[1] + 1) {
-            for (int i = 0; i < getBoardDimensions(board)[0]; i++) {
+        if (move[1] == getBoardDimensions()[1] + 1) {
+            for (int i = 0; i < getBoardDimensions()[0]; i++) {
 
                 if (move[0] - 1 == i) {
-                    board.get(i).add(p.getDrawnTile());
+                    board.get(i).add(tile);
                 } else {
                     board.get(i).add(null);
                 }
@@ -108,7 +113,7 @@ public class Game {
         // In the case that the board dimensions remain the same, we simply place the tile at the coordinates given
         // by the move. These need to be subtracted by 1, since the user has to consider the additional potential row
         // and column.
-        board.get(move[0] - 1).set(move[1] - 1, p.getDrawnTile()) ;
+        board.get(move[0] - 1).set(move[1] - 1, tile) ;
     }
 
     /**
@@ -161,7 +166,7 @@ public class Game {
      * a 2D-char-array using the individual ASCII-representations of the relevant tiles.
      */
     public void displayBoard() throws Exception {
-        int[] boardDimensions = Game.getBoardDimensions(board);
+        int[] boardDimensions = getBoardDimensions();
 
         char[][] boardFormat = new char[boardDimensions[0] * 5 + 1 + 10][boardDimensions[1] * 10 + 1 + 20];
 
@@ -240,7 +245,7 @@ public class Game {
     /**
      * @return Array of size 2 denoting the dimensions of the board: [height, width].
      */
-    public static int[] getBoardDimensions(List<List<Tile>> board) {
+    public int[] getBoardDimensions() {
         int maxWidth = board.get(0).size();
 
         for (List<Tile> row : board) {
@@ -250,12 +255,12 @@ public class Game {
         return new int[] {board.size(), maxWidth};
     }
 
-    public static Tile getTile(int[] coordinates, List<List<Tile>> board) {
+    public Tile getTile(int[] coordinates) {
 
         Tile tile = null;
 
-        if (coordinates[0] >= 0 && coordinates[0] < getBoardDimensions(board)[0]
-        && coordinates[1] >= 0 && coordinates[1] < getBoardDimensions(board)[1]) {
+        if (coordinates[0] >= 0 && coordinates[0] < getBoardDimensions()[0]
+        && coordinates[1] >= 0 && coordinates[1] < getBoardDimensions()[1]) {
             tile = board.get(coordinates[0]).get(coordinates[1]);
         }
 

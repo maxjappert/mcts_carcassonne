@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,12 +8,14 @@ public class HumanPlayer extends Player {
         super(playerID);
     }
 
-    int[] decideOnNextMove(List<List<Tile>> board) throws Exception {
+    int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
         System.out.println("** begin decideOnNextMove(...)");
 
-        System.out.println("This is the tile you've drawn:");
+        List<List<Tile>> board = state.getBoard();
 
-        drawnTile.printTile();
+        tile.printTile();
+
+        System.out.println("This is the tile you've drawn:");
 
         Scanner sc = new Scanner(System.in);
 
@@ -22,8 +25,8 @@ public class HumanPlayer extends Player {
             String input = sc.next().toLowerCase();
 
             if (input.equalsIgnoreCase("r")) {
-                drawnTile.rotate();
-                drawnTile.printTile();
+                tile.rotate();
+                tile.printTile();
                 continue;
             }
 
@@ -46,7 +49,17 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
-            boolean legalMove = isLegalMove(move, drawnTile, board);
+            boolean legalMove = false;
+
+            List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
+
+            for (ActionRotationStateTriple successor : legalSuccessors) {
+                if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
+                    legalMove = true;
+                    break;
+                }
+            }
+
 
             // If the move isn't legal the loop jumps to the top.
             if (!legalMove) {
@@ -55,10 +68,23 @@ public class HumanPlayer extends Player {
             }
 
 
-            // TODO: implement meeple placement.
-            System.out.println("Would you like to place a meeple o");
+            System.out.println("Would you like to place a meeple? [y/n]");
+
+            if (sc.next().toLowerCase().equals("y")) {
+                System.out.println("On which edge, counting from the bottom edge counterclockwise, would you like to place the meeple? [1-4]");
+                input = sc.next().toLowerCase();
+
+                int edge = Integer.parseInt(input) - 1;
+
+                assert (edge >= 0 && edge < 4);
+
+                // TODO: implement system for checking the legality of a meeple placement.
+
+                tile.placeMeeple(edge, playerID);
+            }
 
             System.out.println("** end of decideOnNextMove(...)");
+
             return move;
         }
     }
