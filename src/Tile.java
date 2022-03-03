@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Map;
 
 public class Tile {
     private final boolean pennant;
@@ -11,6 +12,11 @@ public class Tile {
      *  2: road
      */
     private int[] sides;
+
+    /**
+     * To which connected areas to the points belong to?
+     */
+    private int[] areas;
 
     /**
      * Describes a possible meeple on the tile. Index 0 denotes the side on which the meeple was placed and index 1
@@ -52,6 +58,8 @@ public class Tile {
      */
     public Tile(int type, boolean pennant) {
         this.pennant = pennant;
+
+        areas = new int[]{-1, -1, -1, -1};
 
         meeple = new int[]{-1, -1};
 
@@ -371,5 +379,13 @@ public class Tile {
 
     public int[] getMeeple() {
         return meeple;
+    }
+
+    public void setAreas(int[] areas) {
+        this.areas = areas;
+    }
+
+    public int[] getAreas() {
+        return areas;
     }
 }

@@ -147,7 +147,15 @@ public class GameStateSpace {
             type = tile.getMiddle();
         }
 
-        return checkForMeeples(tile, move, type, state, new ArrayList<>());
+        List<Tile> visited = new ArrayList<>();
+        visited.add(tile);
+
+        int[] moveCopy = Arrays.copyOf(move, move.length);
+
+        //moveCopy[0] -= 1;
+        //moveCopy[1] -= 1;
+
+        return checkForMeeples(tile, moveCopy, type, state, visited);
     }
 
     private boolean checkForMeeples(Tile tile, int[] move, int type, GameState state, List<Tile> explored) {
@@ -172,7 +180,7 @@ public class GameStateSpace {
                 if (connectedTile.getMeeple()[0] == getOppositeSide(side)) {
                     return false;
                     // ...or if it's placed on a side which is connected.
-                } else if (connectedTile.getMeeple()[0] != -1 && connectedTile.getSides()[connectedTile.getMeeple()[0]] == type) {
+                } else if (connectedTile.getSides()[connectedTile.getMeeple()[0]] == type) {
                     // I.e., either the meeple is connected through the middle or through adjacent sides.
                     // TODO: Tiles of type 6 aren't recognised correctly.
                     if (connectedTile.getMiddle() == type) {
@@ -183,15 +191,28 @@ public class GameStateSpace {
                     }
                 }
             }
+
+            int[] newMove = Arrays.copyOf(move, move.length);
+
+            if (side == 0) {
+                newMove[0] += 1;
+            } else if (side == 1) {
+                newMove[1] += 1;
+            } else if (side == 2) {
+                newMove[0] -= 1;
+            } else if (side == 3) {
+                newMove[1] -= 1;
+            }
+
             // We should only reach here if the next tile doesn't have a meeple on a connected area. In that case, we
             // recursively check all connected tiles in a similar way.
-            checkForMeeples(connectedTiles.get(side), move, type, state, explored);
+            checkForMeeples(connectedTile, newMove, type, state, explored);
         }
 
         return true;
     }
 
-    private int getOppositeSide(int side) {
+    public static int getOppositeSide(int side) {
         if (side == 4) {
             return 4;
         } else if (side == 1) {
