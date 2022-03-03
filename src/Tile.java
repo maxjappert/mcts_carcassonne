@@ -59,7 +59,7 @@ public class Tile {
     public Tile(int type, boolean pennant) {
         this.pennant = pennant;
 
-        areas = new int[]{-1, -1, -1, -1};
+        areas = new int[]{-1, -1, -1, -1, -1};
 
         meeple = new int[]{-1, -1};
 

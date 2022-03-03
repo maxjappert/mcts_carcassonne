@@ -6,9 +6,7 @@ public class GameState {
     Player player1;
     Player player2;
 
-    List<Integer> areas;
     List<Integer> areaTypes;
-
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
@@ -21,11 +19,21 @@ public class GameState {
 
         board.add(new ArrayList<>());
 
-        // The starting tile as defined in the game's manual.
-        board.get(0).add(new Tile(0, false));
+        Tile startingTile = new Tile(0, false);
 
-        areas = new ArrayList<>();
+        startingTile.getAreas()[0] = 0;
+        startingTile.getAreas()[1] = 1;
+        startingTile.getAreas()[2] = 2;
+        startingTile.getAreas()[3] = 1;
+        startingTile.getAreas()[4] = 1;
+
+        // The starting tile as defined in the game's manual.
+        board.get(0).add(startingTile);
+
         areaTypes = new ArrayList<>();
+        areaTypes.add(0);
+        areaTypes.add(2);
+        areaTypes.add(1);
     }
 
     /**
@@ -38,10 +46,8 @@ public class GameState {
         this.player1 = state.player1;
         this.player2 = state.player2;
         this.areaTypes = new ArrayList<>();
-        this.areas = new ArrayList<>();
 
         this.areaTypes.addAll(state.areaTypes);
-        this.areas.addAll(state.areas);
 
         for (int i = 0; i < state.board.size(); i++) {
             this.board.add(new ArrayList<>());
@@ -68,13 +74,41 @@ public class GameState {
 
         Map<Integer, Tile> neighbours = getNeighboursByType(tile, move, -1);
 
-        int[] areas = new int[]{-1, -1, -1, -1};
+        int[] areas = new int[]{-1, -1, -1, -1, -1};
 
+        // Assign the adjacent areas to each side of the tile.
         for (int side : neighbours.keySet()) {
             areas[side] = neighbours.get(side).getAreas()[GameStateSpace.getOppositeSide(side)];
         }
 
+        int middleArea = -1;
+
+        // Okay so this implementation is total bullshit and what remains of my rational thinking ability tells me
+        // to take a break and go to bed before trying to redo this. But the idea is not that bad: I save all the connected areas
+        // in a list in the game state. Each tile has an array which denotes to which area all sides and the middle belong
+        // to. When trying to place a meeple on a side, I query all tiles which are involved in a given area if they have
+        // a meeple which is placed on a side of the same type as the area. If yes, then I can be 90% sure that placing
+        // the meeple is illegal. The only problems are tiles which have multiple sides of the same type without
+        // being connected with each other. tl;dr: TODO: Implement a system which can actually assign each side to the area it belongs to.
+
+        // Transfer the area to connected sides on the same tile.
         // TODO: What if tile connects two areas?
+        for (int side = 0; side < 4; side++) {
+            if (tile.getSides()[side] == tile.getMiddle()) {
+                if (tile.getAreas()[side] != -1) {
+                    middleArea = tile.getAreas()[side];
+                    break;
+                }
+            }
+        }
+
+        tile.getAreas()[4] = middleArea;
+
+        for (int side = 0; side < 4; side++) {
+            if (tile.getSides()[side] == tile.getMiddle()) {
+                tile.getAreas()[side] = middleArea;
+            }
+        }
 
         for (int side = 0; side < 4; side++) {
             if (areas[side] == -1) {
@@ -317,7 +351,8 @@ public class GameState {
      * @param type
      * @return
      */
-    public Map<Integer, Tile> getNeighboursByType(Tile tile, int[] move, int type) {
+    public Map<Integer, Tile>
+    getNeighboursByType(Tile tile, int[] move, int type) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
         // Create a deep copy of the move array
@@ -327,25 +362,25 @@ public class GameState {
         tileCoords[1] -= 1;
 
         if (getTile(new int[]{tileCoords[0] - 1, tileCoords[1]}) != null) {
-            if (type != -1 && board.get(tileCoords[0] - 1).get(tileCoords[1]).getSides()[0] == type) {
+            if (type == -1 || board.get(tileCoords[0] - 1).get(tileCoords[1]).getSides()[0] == type) {
                 neighbourMap.put(2, board.get(tileCoords[0] - 1).get(tileCoords[1]));
             }
         }
 
         if (getTile(new int[]{tileCoords[0], tileCoords[1] - 1}) != null) {
-            if (type != -1 && board.get(tileCoords[0]).get(tileCoords[1] - 1).getSides()[1] == type) {
+            if (type == -1 || board.get(tileCoords[0]).get(tileCoords[1] - 1).getSides()[1] == type) {
                 neighbourMap.put(3, board.get(tileCoords[0]).get(tileCoords[1] - 1));
             }
         }
 
         if (getTile(new int[]{tileCoords[0], tileCoords[1] + 1}) != null) {
-            if (type != -1 && board.get(tileCoords[0]).get(tileCoords[1] + 1).getSides()[3] == type) {
+            if (type == -1 || board.get(tileCoords[0]).get(tileCoords[1] + 1).getSides()[3] == type) {
                 neighbourMap.put(1, board.get(tileCoords[0]).get(tileCoords[1] + 1));
             }
         }
 
         if (getTile(new int[]{tileCoords[0] + 1, tileCoords[1]}) != null) {
-            if (type != -1 && board.get(tileCoords[0] + 1).get(tileCoords[1]).getSides()[2] == type) {
+            if (type == -1 || board.get(tileCoords[0] + 1).get(tileCoords[1]).getSides()[2] == type) {
                 neighbourMap.put(0, board.get(tileCoords[0] + 1).get(tileCoords[1]));
 
             }

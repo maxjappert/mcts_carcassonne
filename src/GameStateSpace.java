@@ -128,8 +128,9 @@ public class GameStateSpace {
     }
 
     private boolean checkIfLegalMeeplePlacement(Tile tile, int[] move, int side, GameState state) {
-
         assert (side >= 0 && side < 5);
+
+        int areaID;
 
         if (side == 4 && tile.getMiddle() == 3) {
             // One cannot place a meeple on an intersection.
@@ -137,80 +138,148 @@ public class GameStateSpace {
         } else if (side == 4 && tile.getMiddle() == 4) {
             // Placing a meeple of a monastery is always allowed.
             return true;
-        }
-
-        int type;
-
-        if (side < 4) {
-            type = tile.getSides()[side];
+        } if (side == 4) {
+            areaID = tile.getMiddle();
         } else {
-            type = tile.getMiddle();
+            areaID = tile.getSides()[side];
         }
 
-        List<Tile> visited = new ArrayList<>();
-        visited.add(tile);
+        for (Tile otherTile : getTilesOfArea(areaID, state)) {
+            int meepleLocation = otherTile.getMeeple()[0];
 
-        int[] moveCopy = Arrays.copyOf(move, move.length);
-
-        //moveCopy[0] -= 1;
-        //moveCopy[1] -= 1;
-
-        return checkForMeeples(tile, moveCopy, type, state, visited);
-    }
-
-    private boolean checkForMeeples(Tile tile, int[] move, int type, GameState state, List<Tile> explored) {
-        Map<Integer, Tile> connectedTiles = state.getNeighboursByType(tile, move, type);
-
-        // Iterate over all the connected tiles.
-        for (int side : connectedTiles.keySet()) {
-
-            Tile connectedTile = connectedTiles.get(side);
-
-            // If we've already explored the tile, we skip it. If we haven't, we add it to the list of explored tiles.
-            if(explored.contains(connectedTile)) {
-                continue;
-            } else {
-                explored.add(connectedTile);
+            if (meepleLocation != -1) {
+                return false;
             }
-
-            // If the connected tile has a meeple...
-            if (connectedTile.getMeeple()[0] != -1) {
-                int meepleType = connectedTile.getMeeple()[0];
-                // ...check if either the meeple is placed right opposite...
-                if (connectedTile.getMeeple()[0] == getOppositeSide(side)) {
-                    return false;
-                    // ...or if it's placed on a side which is connected.
-                } else if (connectedTile.getSides()[connectedTile.getMeeple()[0]] == type) {
-                    // I.e., either the meeple is connected through the middle or through adjacent sides.
-                    // TODO: Tiles of type 6 aren't recognised correctly.
-                    if (connectedTile.getMiddle() == type) {
-                        return false;
-                    } else if (connectedTile.getMeeple()[0] == getAdjacentSides(getOppositeSide(side))[0]
-                            || connectedTile.getMeeple()[0] == getAdjacentSides(getOppositeSide(side))[1]) {
-                        return false;
-                    }
-                }
-            }
-
-            int[] newMove = Arrays.copyOf(move, move.length);
-
-            if (side == 0) {
-                newMove[0] += 1;
-            } else if (side == 1) {
-                newMove[1] += 1;
-            } else if (side == 2) {
-                newMove[0] -= 1;
-            } else if (side == 3) {
-                newMove[1] -= 1;
-            }
-
-            // We should only reach here if the next tile doesn't have a meeple on a connected area. In that case, we
-            // recursively check all connected tiles in a similar way.
-            checkForMeeples(connectedTile, newMove, type, state, explored);
         }
 
         return true;
     }
+
+//        } else if (side == 4) {
+//            areaID = tile.getMiddle();
+//        } else {
+//            areaID = tile.getAreas()[side];
+//        }
+
+//        List<Tile> tilesInSameArea = getTilesOfArea(areaID, state);
+//
+//        // TODO: this really doesn't always work.
+//
+//        for (Tile otherTile : tilesInSameArea) {
+//            if (otherTile.getMeeple()[0] != -1) {
+//                int meepleSide = otherTile.getMeeple()[0];
+//
+//                if (otherTile.getAreas()[meepleSide] == areaID) {
+//                    return false;
+//                }
+//            }
+//        }
+//
+//        return true;
+
+    private List<Tile> getTilesOfArea(int areaID, GameState state) {
+        List<Tile> tiles = new ArrayList<>();
+
+        for (List<Tile> row : state.getBoard()) {
+            for (Tile tile : row) {
+                if (tile != null) {
+                    for (int area : tile.getAreas()) {
+                        if (area == areaID) {
+                            tiles.add(tile);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+//    private boolean checkIfLegalMeeplePlacement(Tile tile, int[] move, int side, GameState state) {
+//
+//        assert (side >= 0 && side < 5);
+//
+//        if (side == 4 && tile.getMiddle() == 3) {
+//            // One cannot place a meeple on an intersection.
+//            return false;
+//        } else if (side == 4 && tile.getMiddle() == 4) {
+//            // Placing a meeple of a monastery is always allowed.
+//            return true;
+//        }
+//
+//        int type;
+//
+//        if (side < 4) {
+//            type = tile.getSides()[side];
+//        } else {
+//            type = tile.getMiddle();
+//        }
+//
+//        List<Tile> visited = new ArrayList<>();
+//        visited.add(tile);
+//
+//        int[] moveCopy = Arrays.copyOf(move, move.length);
+//
+//        //moveCopy[0] -= 1;
+//        //moveCopy[1] -= 1;
+//
+//        return checkForMeeples(tile, moveCopy, type, state, visited);
+//    }
+//
+//    private boolean checkForMeeples(Tile tile, int[] move, int type, GameState state, List<Tile> explored) {
+//        Map<Integer, Tile> connectedTiles = state.getNeighboursByType(tile, move, type);
+//
+//        // Iterate over all the connected tiles.
+//        for (int side : connectedTiles.keySet()) {
+//
+//            Tile connectedTile = connectedTiles.get(side);
+//
+//            // If we've already explored the tile, we skip it. If we haven't, we add it to the list of explored tiles.
+//            if(explored.contains(connectedTile)) {
+//                continue;
+//            } else {
+//                explored.add(connectedTile);
+//            }
+//
+//            // If the connected tile has a meeple...
+//            if (connectedTile.getMeeple()[0] != -1) {
+//                int meepleType = connectedTile.getMeeple()[0];
+//                // ...check if either the meeple is placed right opposite...
+//                if (connectedTile.getMeeple()[0] == getOppositeSide(side)) {
+//                    return false;
+//                    // ...or if it's placed on a side which is connected.
+//                } else if (connectedTile.getSides()[connectedTile.getMeeple()[0]] == type) {
+//                    // I.e., either the meeple is connected through the middle or through adjacent sides.
+//                    // TODO: Tiles of type 6 aren't recognised correctly.
+//                    if (connectedTile.getMiddle() == type) {
+//                        return false;
+//                    } else if (connectedTile.getMeeple()[0] == getAdjacentSides(getOppositeSide(side))[0]
+//                            || connectedTile.getMeeple()[0] == getAdjacentSides(getOppositeSide(side))[1]) {
+//                        return false;
+//                    }
+//                }
+//            }
+//
+//            int[] newMove = Arrays.copyOf(move, move.length);
+//
+//            if (side == 0) {
+//                newMove[0] += 1;
+//            } else if (side == 1) {
+//                newMove[1] += 1;
+//            } else if (side == 2) {
+//                newMove[0] -= 1;
+//            } else if (side == 3) {
+//                newMove[1] -= 1;
+//            }
+//
+//            // We should only reach here if the next tile doesn't have a meeple on a connected area. In that case, we
+//            // recursively check all connected tiles in a similar way.
+//            checkForMeeples(connectedTile, newMove, type, state, explored);
+//        }
+//
+//        return true;
+//    }
 
     public static int getOppositeSide(int side) {
         if (side == 4) {
