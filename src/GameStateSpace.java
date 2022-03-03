@@ -1,6 +1,6 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import static java.lang.Math.abs;
 
 public class GameStateSpace {
     public GameState init() {
@@ -38,6 +38,25 @@ public class GameStateSpace {
     }
 
     /**
+     *
+     * @param state The state in question.
+     * @param tile The tile in question.
+     * @return Subset of {0, 1, 2, 3, 4}, denoting the sides on which meeples can be placed.
+     */
+    public List<Integer> legalMeeples(GameState state, int[] move, Tile tile) {
+        List<Integer> placements = new ArrayList<>();
+
+        for (int side = 0; side < 5; side++) {
+            if (checkIfLegalMeeplePlacement(tile, move, side, state)) {
+                placements.add(side);
+                System.out.println(side);
+            }
+        }
+
+        return placements;
+    }
+
+    /**
      * Checks if a move is legal.
      * @param move The place to put the tile.
      * @param tile The tile which should be placed.
@@ -53,7 +72,6 @@ public class GameStateSpace {
         if (move[0] >= state.getBoardDimensions()[0] + 1 && move[1] >= state.getBoardDimensions()[1] + 1) {
             return false;
         }
-
 
         boolean[] connected = new boolean[]{true, true, true, true};
 
@@ -107,5 +125,105 @@ public class GameStateSpace {
 
         // The move needs to be connected on least one side.
         return connected[0] || connected[1] || connected[2] || connected[3];
+    }
+
+    private boolean checkIfLegalMeeplePlacement(Tile tile, int[] move, int side, GameState state) {
+
+        assert (side >= 0 && side < 5);
+
+        if (side == 4 && tile.getMiddle() == 3) {
+            // One cannot place a meeple on an intersection.
+            return false;
+        } else if (side == 4 && tile.getMiddle() == 4) {
+            // Placing a meeple of a monastery is always allowed.
+            return true;
+        }
+
+        int type;
+
+        if (side < 4) {
+            type = tile.getSides()[side];
+        } else {
+            type = tile.getMiddle();
+        }
+
+        return checkForMeeples(tile, move, type, state, new ArrayList<>());
+    }
+
+    private boolean checkForMeeples(Tile tile, int[] move, int type, GameState state, List<Tile> explored) {
+        Map<Integer, Tile> connectedTiles = state.getNeighboursByType(tile, move, type);
+
+        // Iterate over all the connected tiles.
+        for (int side : connectedTiles.keySet()) {
+
+            Tile connectedTile = connectedTiles.get(side);
+
+            // If we've already explored the tile, we skip it. If we haven't, we add it to the list of explored tiles.
+            if(explored.contains(connectedTile)) {
+                continue;
+            } else {
+                explored.add(connectedTile);
+            }
+
+            // If the connected tile has a meeple...
+            if (connectedTile.getMeeple()[0] != -1) {
+                int meepleType = connectedTile.getMeeple()[0];
+                // ...check if either the meeple is placed right opposite...
+                if (connectedTile.getMeeple()[0] == getOppositeSide(side)) {
+                    return false;
+                    // ...or if it's placed on a side which is connected.
+                } else if (connectedTile.getMeeple()[0] != -1 && connectedTile.getSides()[connectedTile.getMeeple()[0]] == type) {
+                    // I.e., either the meeple is connected through the middle or through adjacent sides.
+                    // TODO: Tiles of type 6 aren't recognised correctly.
+                    if (connectedTile.getMiddle() == type) {
+                        return false;
+                    } else if (connectedTile.getMeeple()[0] == getAdjacentSides(getOppositeSide(side))[0]
+                            || connectedTile.getMeeple()[0] == getAdjacentSides(getOppositeSide(side))[1]) {
+                        return false;
+                    }
+                }
+            }
+            // We should only reach here if the next tile doesn't have a meeple on a connected area. In that case, we
+            // recursively check all connected tiles in a similar way.
+            checkForMeeples(connectedTiles.get(side), move, type, state, explored);
+        }
+
+        return true;
+    }
+
+    private int getOppositeSide(int side) {
+        if (side == 4) {
+            return 4;
+        } else if (side == 1) {
+            return 3;
+        } else {
+            return abs(side - 2);
+        }
+    }
+
+    private int[] getAdjacentSides(int side) {
+        int[] adjacentSides = new int[2];
+
+        if (side == 4) {
+            adjacentSides[0] = side;
+            adjacentSides[1] = side;
+            return adjacentSides;
+        } else if (side == 3) {
+            adjacentSides[0] = 0;
+            adjacentSides[1] = 2;
+        } else if (side == 2) {
+            adjacentSides[0] = 3;
+            adjacentSides[1] = 1;
+        } else if (side == 1) {
+            adjacentSides[0] = 2;
+            adjacentSides[1] = 0;
+        } else if (side == 0) {
+            adjacentSides[0] = 1;
+            adjacentSides[1] = 3;
+        } else {
+            System.out.println("Error in getAdjacentSides(...)");
+        }
+
+        return adjacentSides;
     }
 }

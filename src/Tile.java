@@ -286,7 +286,11 @@ public class Tile {
             }
         }
 
-        output[2][2] = c;
+        if (meeple[0] == 4) {
+            output[2][2] = Character.forDigit(meeple[1], 10);
+        } else {
+            output[2][2] = c;
+        }
 
         // Add the meeples if necessary.
         if (meeple[0] != -1) {
@@ -339,6 +343,12 @@ public class Tile {
         temp1 = sides[3];
         sides[3] = temp2;
         sides[0] = temp1;
+
+        if (meeple [0] >= 0 && meeple[0] < 3) {
+            meeple[0] += 1;
+        } else if (meeple[0] == 3) {
+            meeple[0] = 0;
+        }
     }
 
     /**
@@ -348,10 +358,18 @@ public class Tile {
         return sides;
     }
 
+    public int getMiddle() {
+        return middle;
+    }
+
     public void placeMeeple(int side, int playerID) {
-        assert (side >= 0 && side < 4);
+        assert (side >= 0 && side < 5);
         assert (playerID == 1 || playerID == 2);
 
         meeple = new int[]{side, playerID};
+    }
+
+    public int[] getMeeple() {
+        return meeple;
     }
 }

@@ -36,7 +36,7 @@ public class HumanPlayer extends Player {
             // from the beginning and the user gets another chance to input coordinates. 97 is subtracted from the first
             // conversion because the ASCII value of 'a' is 97. 1 is subtracted from the second conversion because the
             // board starts indexing at 1, yet we need indexing starting at 0 to access the tiles in the list representation
-            // of the board. TODO: check the legality of these coordinates.
+            // of the board.
             try {
                 int co1 = input.charAt(0) - 97;
                 int co2 = Integer.parseInt(input.substring(1)) - 1;
@@ -67,25 +67,31 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
+            while (true) {
+                System.out.print("Would you like to place a meeple? [y/n] ");
 
-            System.out.println("Would you like to place a meeple? [y/n]");
+                if (sc.next().equalsIgnoreCase("y")) {
+                    System.out.print("On which edge, counting from the bottom edge counterclockwise, would you like to place the meeple? [0-4] ");
+                    input = sc.next().toLowerCase();
 
-            if (sc.next().toLowerCase().equals("y")) {
-                System.out.println("On which edge, counting from the bottom edge counterclockwise, would you like to place the meeple? [1-4]");
-                input = sc.next().toLowerCase();
+                    int edge = Integer.parseInt(input);
 
-                int edge = Integer.parseInt(input) - 1;
+                    assert (edge >= 0 && edge < 5);
 
-                assert (edge >= 0 && edge < 4);
+                    boolean legalMeeple = stateSpace.legalMeeples(state, move, tile).contains(edge);
 
-                // TODO: implement system for checking the legality of a meeple placement.
+                    if (legalMeeple) {
+                        tile.placeMeeple(edge, playerID);
+                    } else {
+                        System.out.println("You can't place a meeple there. Please try again.");
+                        continue;
+                    }
+                }
 
-                tile.placeMeeple(edge, playerID);
+                System.out.println("** end of decideOnNextMove(...)");
+
+                return move;
             }
-
-            System.out.println("** end of decideOnNextMove(...)");
-
-            return move;
         }
     }
 }

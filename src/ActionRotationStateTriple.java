@@ -1,7 +1,7 @@
 class ActionRotationStateTriple {
-    private int[] action;
-    private int rotation;
-    private GameState state;
+    private final int[] action;
+    private final int rotation;
+    private final GameState state;
 
     ActionRotationStateTriple(int[] action, int rotation, GameState state) {
         this.action = action;

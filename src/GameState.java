@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GameState {
     List<Tile> deck;
@@ -265,5 +263,46 @@ public class GameState {
         }
 
         return tile;
+    }
+
+    public int[] getCoordinates(Tile tile) {
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.get(0).size(); j++) {
+                if (board.get(i).get(j).equals(tile)) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+
+        System.out.println("Tile not found in getCoordinates(...)");
+        return null;
+    }
+
+    public Map<Integer, Tile> getNeighboursByType(Tile tile, int[] move, int type) {
+        Map<Integer, Tile> neighbourMap = new HashMap<>();
+
+        // Create a deep copy of the move array
+        int[] tileCoords = Arrays.copyOf(move, move.length);
+
+        tileCoords[0] -= 1;
+        tileCoords[1] -= 1;
+
+        if (getTile(new int[]{tileCoords[0]-1, tileCoords[1]}) != null && board.get(tileCoords[0]-1).get(tileCoords[1]).getSides()[0] == type) {
+            neighbourMap.put(2, board.get(tileCoords[0]-1).get(tileCoords[1]));
+        }
+
+        if (getTile(new int[]{tileCoords[0], tileCoords[1]-1}) != null && board.get(tileCoords[0]).get(tileCoords[1]-1).getSides()[1] == type) {
+            neighbourMap.put(3, board.get(tileCoords[0]).get(tileCoords[1]-1));
+        }
+
+        if (getTile(new int[]{tileCoords[0], tileCoords[1]+1}) != null && board.get(tileCoords[0]).get(tileCoords[1]+1).getSides()[3] == type) {
+            neighbourMap.put(1, board.get(tileCoords[0]).get(tileCoords[1]+1));
+        }
+
+        if (getTile(new int[]{tileCoords[0]+1, tileCoords[1]}) != null && board.get(tileCoords[0]+1).get(tileCoords[1]).getSides()[2] == type) {
+            neighbourMap.put(0, board.get(tileCoords[0]+1).get(tileCoords[1]));
+        }
+
+        return neighbourMap;
     }
 }
