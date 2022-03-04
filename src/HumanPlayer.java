@@ -49,16 +49,18 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
-            boolean legalMove = false;
+            boolean legalMove = true;
 
-            List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
+            // TODO: reactivate
 
-            for (ActionRotationStateTriple successor : legalSuccessors) {
-                if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
-                    legalMove = true;
-                    break;
-                }
-            }
+//            List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
+//
+//            for (ActionRotationStateTriple successor : legalSuccessors) {
+//                if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
+//                    legalMove = true;
+//                    break;
+//                }
+//            }
 
 
             // If the move isn't legal the loop jumps to the top.
@@ -78,7 +80,8 @@ public class HumanPlayer extends Player {
 
                     assert (edge >= 0 && edge < 5);
 
-                    boolean legalMeeple = stateSpace.legalMeeples(state, move, tile).contains(edge);
+                    //boolean legalMeeple = stateSpace.legalMeeples(state, move, tile).contains(edge);
+                    boolean legalMeeple = true;
 
                     if (legalMeeple) {
                         tile.placeMeeple(edge, playerID);

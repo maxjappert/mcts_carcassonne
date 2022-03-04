@@ -22,10 +22,14 @@ public class GameState {
         Tile startingTile = new Tile(0, false);
 
         startingTile.getAreas()[0] = 0;
-        startingTile.getAreas()[1] = 1;
-        startingTile.getAreas()[2] = 2;
-        startingTile.getAreas()[3] = 1;
-        startingTile.getAreas()[4] = 1;
+        startingTile.getAreas()[1] = 0;
+        startingTile.getAreas()[2] = 1;
+        startingTile.getAreas()[3] = 3;
+        startingTile.getAreas()[4] = 2;
+        startingTile.getAreas()[5] = 3;
+        startingTile.getAreas()[6] = 1;
+        startingTile.getAreas()[7] = 0;
+        startingTile.getAreas()[8] = 1;
 
         // The starting tile as defined in the game's manual.
         board.get(0).add(startingTile);
@@ -74,14 +78,51 @@ public class GameState {
 
         Map<Integer, Tile> neighbours = getNeighboursByType(tile, move, -1);
 
-        int[] areas = new int[]{-1, -1, -1, -1, -1};
+        //int[] areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1};
 
         // Assign the adjacent areas to each side of the tile.
         for (int side : neighbours.keySet()) {
-            areas[side] = neighbours.get(side).getAreas()[GameStateSpace.getOppositeSide(side)];
+            int[] adjacentSides = getAdjacentSides(side*2);
+
+            int oppositeSide = GameStateSpace.getOppositeSide(side)*2;
+            int oppositeArea = neighbours.get(side).getArea(oppositeSide);
+
+            tile.setArea(side*2, oppositeArea);
+            tile.setArea(adjacentSides[0], neighbours.get(side).getArea(adjacentSides[0]));
+            tile.setArea(adjacentSides[1], neighbours.get(side).getArea(adjacentSides[1]));
         }
 
         int middleArea = -1;
+
+        // Get the sides whose type matches the type of the middle.
+        List<Integer> matchingSides = new ArrayList<>();
+        List<Integer> matchingCorners = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            if (tile.getSides()[i] == tile.getMiddle()) {
+                matchingSides.add(i);
+            }
+
+            if (tile.getCorners()[i] == tile.getMiddle()) {
+                matchingCorners.add(i);
+            }
+        }
+
+        for (int side : matchingSides) {
+            if (tile.getArea(side*2) != -1) {
+                middleArea = tile.getArea(side*2);
+                // Set the middle area of the tile.
+                tile.setArea(8, middleArea);
+                break;
+            }
+        }
+
+        for (int side : matchingSides) {
+            tile.setArea(side*2, middleArea);
+        }
+
+        for (int corner : matchingCorners) {
+            tile.setArea(corner*2 + 1, middleArea);
+        }
 
         // Okay so this implementation is total bullshit and what remains of my rational thinking ability tells me
         // to take a break and go to bed before trying to redo this. But the idea is not that bad: I save all the connected areas
@@ -93,31 +134,31 @@ public class GameState {
 
         // Transfer the area to connected sides on the same tile.
         // TODO: What if tile connects two areas?
-        for (int side = 0; side < 4; side++) {
-            if (tile.getSides()[side] == tile.getMiddle()) {
-                if (tile.getAreas()[side] != -1) {
-                    middleArea = tile.getAreas()[side];
-                    break;
-                }
-            }
-        }
-
-        tile.getAreas()[4] = middleArea;
-
-        for (int side = 0; side < 4; side++) {
-            if (tile.getSides()[side] == tile.getMiddle()) {
-                tile.getAreas()[side] = middleArea;
-            }
-        }
-
-        for (int side = 0; side < 4; side++) {
-            if (areas[side] == -1) {
-                areas[side] = areaTypes.size();
-                areaTypes.add(tile.getSides()[side]);
-            }
-        }
-
-        tile.setAreas(areas);
+//        for (int side = 0; side < 4; side++) {
+//            if (tile.getSides()[side] == tile.getMiddle()) {
+//                if (tile.getAreas()[side] != -1) {
+//                    middleArea = tile.getAreas()[side];
+//                    break;
+//                }
+//            }
+//        }
+//
+//        tile.getAreas()[4] = middleArea;
+//
+//        for (int side = 0; side < 4; side++) {
+//            if (tile.getSides()[side] == tile.getMiddle()) {
+//                tile.getAreas()[side] = middleArea;
+//            }
+//        }
+//
+//        for (int side = 0; side < 4; side++) {
+//            if (areas[side] == -1) {
+//                areas[side] = areaTypes.size();
+//                areaTypes.add(tile.getSides()[side]);
+//            }
+//        }
+//
+//        tile.setAreas(areas);
 
         // This is the case where the tile generates a new top row.
         if (move[0] == 0) {
@@ -306,6 +347,27 @@ public class GameState {
         System.out.println(boardString);
     }
 
+    private int[] getAdjacentSides(int side) {
+        int[] adjacentSides = new int[2];
+
+        if (side == 0) {
+            adjacentSides[0] = 1;
+            adjacentSides[1] = 7;
+        } else if (side == 7) {
+            adjacentSides[0] = 0;
+            adjacentSides[1] = 6;
+        } else if (side == 8) {
+            System.out.println("Weird call in getAdjacentSides(...)");
+            adjacentSides[0] = 8;
+            adjacentSides[1] = 8;
+        } else {
+            adjacentSides[0] = side + 1;
+            adjacentSides[1] = side - 1;
+        }
+
+        return adjacentSides;
+    }
+
     /**
      * @return Array of size 2 denoting the dimensions of the board: [height, width].
      */
@@ -351,8 +413,7 @@ public class GameState {
      * @param type
      * @return
      */
-    public Map<Integer, Tile>
-    getNeighboursByType(Tile tile, int[] move, int type) {
+    public Map<Integer, Tile> getNeighboursByType(Tile tile, int[] move, int type) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
         // Create a deep copy of the move array

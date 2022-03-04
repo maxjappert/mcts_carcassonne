@@ -18,8 +18,6 @@ public class Main {
 
             Tile drawnTile = state.drawTile();
 
-            List<ActionRotationStateTriple> successors = stateSpace.succ(state, drawnTile);
-
             int[] move = player1.decideOnNextMove(state, stateSpace, drawnTile);
 
             state.updateBoard(move, drawnTile);

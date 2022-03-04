@@ -46,7 +46,7 @@ public class GameStateSpace {
     public List<Integer> legalMeeples(GameState state, int[] move, Tile tile) {
         List<Integer> placements = new ArrayList<>();
 
-        for (int side = 0; side < 5; side++) {
+        for (int side = 0; side < 9; side++) {
             if (checkIfLegalMeeplePlacement(tile, move, side, state)) {
                 placements.add(side);
                 System.out.println(side);
@@ -128,7 +128,7 @@ public class GameStateSpace {
     }
 
     private boolean checkIfLegalMeeplePlacement(Tile tile, int[] move, int side, GameState state) {
-        assert (side >= 0 && side < 5);
+        assert (side >= 0 && side < 9);
 
         int areaID;
 
@@ -289,31 +289,5 @@ public class GameStateSpace {
         } else {
             return abs(side - 2);
         }
-    }
-
-    private int[] getAdjacentSides(int side) {
-        int[] adjacentSides = new int[2];
-
-        if (side == 4) {
-            adjacentSides[0] = side;
-            adjacentSides[1] = side;
-            return adjacentSides;
-        } else if (side == 3) {
-            adjacentSides[0] = 0;
-            adjacentSides[1] = 2;
-        } else if (side == 2) {
-            adjacentSides[0] = 3;
-            adjacentSides[1] = 1;
-        } else if (side == 1) {
-            adjacentSides[0] = 2;
-            adjacentSides[1] = 0;
-        } else if (side == 0) {
-            adjacentSides[0] = 1;
-            adjacentSides[1] = 3;
-        } else {
-            System.out.println("Error in getAdjacentSides(...)");
-        }
-
-        return adjacentSides;
     }
 }
