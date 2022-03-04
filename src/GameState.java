@@ -38,6 +38,7 @@ public class GameState {
         areaTypes.add(0);
         areaTypes.add(2);
         areaTypes.add(1);
+        areaTypes.add(0);
     }
 
     /**
@@ -78,8 +79,6 @@ public class GameState {
 
         Map<Integer, Tile> neighbours = getNeighboursByType(tile, move, -1);
 
-        //int[] areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1};
-
         // Assign the adjacent areas to each side of the tile.
         for (int side : neighbours.keySet()) {
             int[] adjacentSides = getAdjacentSides(side*2);
@@ -88,8 +87,12 @@ public class GameState {
             int oppositeArea = neighbours.get(side).getArea(oppositeSide);
 
             tile.setArea(side*2, oppositeArea);
-            tile.setArea(adjacentSides[0], neighbours.get(side).getArea(adjacentSides[0]));
-            tile.setArea(adjacentSides[1], neighbours.get(side).getArea(adjacentSides[1]));
+
+            // The indexes are swapped as a bodge but it seems to work.
+            if (tile.containsRoad()) {
+                tile.setArea(adjacentSides[0], neighbours.get(side).getArea(getOppositeCorner(adjacentSides[1] / 2) * 2 + 1));
+                tile.setArea(adjacentSides[1], neighbours.get(side).getArea(getOppositeCorner(adjacentSides[0] / 2) * 2 + 1));
+            }
         }
 
         int middleArea = -1;
@@ -98,7 +101,7 @@ public class GameState {
         List<Integer> matchingSides = new ArrayList<>();
         List<Integer> matchingCorners = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            if (tile.getSides()[i] == tile.getMiddle()) {
+            if (tile.getSide(i) == tile.getMiddle()) {
                 matchingSides.add(i);
             }
 
@@ -112,16 +115,68 @@ public class GameState {
                 middleArea = tile.getArea(side*2);
                 // Set the middle area of the tile.
                 tile.setArea(8, middleArea);
+
+                for (int matchingSide : matchingSides) {
+                    tile.setArea(matchingSide*2, middleArea);
+                }
+
+                for (int corner : matchingCorners) {
+                    tile.setArea(corner*2 + 1, middleArea);
+                }
+
                 break;
             }
         }
 
-        for (int side : matchingSides) {
-            tile.setArea(side*2, middleArea);
-        }
+        // Here we need to consider adjacent sides belonging to the same area, even if the middle isn't of that type.
 
-        for (int corner : matchingCorners) {
-            tile.setArea(corner*2 + 1, middleArea);
+        for (int j = 0; j < 2; j++) {
+            for (int i = 1; i < 5; i++) {
+                int sideType1;
+                int sideType2;
+
+                int sideIndex1 = i - 1;
+                int sideIndex2 = i;
+
+                if (i == 4) {
+                    sideIndex1 = 3;
+                    sideIndex2 = 0;
+                }
+
+                sideType1 = tile.getSide(sideIndex1);
+                sideType2 = tile.getSide(sideIndex2);
+
+                // TODO: Case where this connects two existing areas
+                if (sideType1 == sideType2) {
+
+                    if (tile.getArea(sideIndex1) == -1 && tile.getArea(sideIndex2) == -1) {
+                        int newArea = assignNewArea(sideType1);
+                        tile.setArea(sideIndex1*2, newArea);
+                        tile.setArea(sideIndex2*2, newArea);
+                        if (sideType1 != 2) {
+                            tile.setArea(sideIndex1 * 2 + 1, newArea);
+                        }
+
+                        continue;
+                    }
+
+                    // If two roads are next to each other and the middle is a crossroad, then the two roads
+                    // aren't part of the same area.
+                    if (sideType1 == 2 && tile.getMiddle() == 3) {
+                        continue;
+                    }
+
+                    if (tile.getArea(sideIndex1 * 2) != -1) {
+                        tile.setArea(sideIndex2 * 2, tile.getArea(sideIndex1 * 2));
+                    } else if (tile.getArea(sideIndex2 * 2) != -1) {
+                        tile.setArea(sideType1 * 2, tile.getArea(sideIndex2 * 2));
+                    }
+
+                    if (tile.getSide(sideIndex1) == tile.getCorner(sideIndex1+1)) {
+                        tile.setArea(sideIndex1 * 2 + 1, tile.getArea(sideIndex1));
+                    }
+                }
+            }
         }
 
         // Okay so this implementation is total bullshit and what remains of my rational thinking ability tells me
@@ -130,7 +185,7 @@ public class GameState {
         // to. When trying to place a meeple on a side, I query all tiles which are involved in a given area if they have
         // a meeple which is placed on a side of the same type as the area. If yes, then I can be 90% sure that placing
         // the meeple is illegal. The only problems are tiles which have multiple sides of the same type without
-        // being connected with each other. tl;dr: TODO: Implement a system which can actually assign each side to the area it belongs to.
+        // being connected with each other. TL;DR: TODO: Implement a system which can actually assign each side to the area it belongs to.
 
         // Transfer the area to connected sides on the same tile.
         // TODO: What if tile connects two areas?
@@ -448,5 +503,27 @@ public class GameState {
         }
 
             return neighbourMap;
+    }
+
+    private int getOppositeCorner(int corner) {
+        assert (corner >= 0 && corner < 4);
+
+        if (corner == 0) {
+            return 1;
+        } else if (corner == 1) {
+            return 0;
+        } else if (corner == 2) {
+            return 3;
+        } else if (corner == 3) {
+            return 2;
+        } else {
+            return -1;
+        }
+    }
+
+    private int assignNewArea(int type) {
+        int areaCode = areaTypes.size();
+        areaTypes.add(type);
+        return areaCode;
     }
 }

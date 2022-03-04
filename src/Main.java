@@ -16,7 +16,8 @@ public class Main {
         while (true) {
             state.displayBoard();
 
-            Tile drawnTile = state.drawTile();
+            //Tile drawnTile = state.drawTile();
+            Tile drawnTile = new Tile(4, false);
 
             int[] move = player1.decideOnNextMove(state, stateSpace, drawnTile);
 

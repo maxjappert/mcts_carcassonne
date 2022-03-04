@@ -429,4 +429,14 @@ public class Tile {
     public void setArea(int side, int area) {
         areas[side] = area;
     }
+
+    public boolean containsRoad() {
+        for (int sideType : sides) {
+            if (sideType == 2) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
