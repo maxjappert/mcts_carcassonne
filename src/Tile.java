@@ -422,6 +422,14 @@ public class Tile {
         return corners[index];
     }
 
+    public int getPoint(int point) {
+        if (point % 2 == 0) {
+            return sides[point / 2];
+        } else {
+            return corners[point / 2];
+        }
+    }
+
     public int getArea(int index) {
         return areas[index];
     }
