@@ -197,7 +197,70 @@ public class GameState {
             }
         }
 
-        // TODO: Adjacent points of the same type should always be in the same area.
+        List<List<Integer>> adjacentPoints = new ArrayList<>();
+        adjacentPoints.add(new ArrayList<>());
+        //adjacentPoints.get(0).add(tile.getPoint(0));
+        int runner = 0;
+
+        // If an area on a tile consists of different areas, we need to change this to one area.
+        for (int point = 0; point < 6; point++) {
+            if (tile.getPoint(point) == tile.getPoint(point+1)) {
+
+                if (!adjacentPoints.get(runner).contains(point)) {
+                    adjacentPoints.get(runner).add(point);
+                }
+
+                if (!adjacentPoints.get(runner).contains(point+1)) {
+                    adjacentPoints.get(runner).add(point+1);
+                }
+
+            } else {
+                runner++;
+                adjacentPoints.add(new ArrayList<>());
+            }
+        }
+
+        // Check the last two points which can't be covered by the for-loop.
+        if (tile.getPoint(7) == tile.getPoint(0) && tile.getPoint(6) == tile.getPoint(7)) {
+            adjacentPoints.get(adjacentPoints.size() - 1).add(0);
+        }
+
+        adjacentPoints.removeIf(list -> list.size() <= 1);
+
+        // If the first and the last list of adjacent points are of the same type then we can merge those two lists.
+        if (tile.getPoint(adjacentPoints.get(adjacentPoints.size() - 1).get(0)) == tile.getPoint(adjacentPoints.get(0).get(0))
+                && !adjacentPoints.get(0).get(0).equals(adjacentPoints.get(adjacentPoints.size() - 1).get(0))) {
+            adjacentPoints.get(0).addAll(adjacentPoints.get(adjacentPoints.size() - 1));
+            adjacentPoints.remove(adjacentPoints.size() - 1);
+        }
+
+        List<Integer> areas = new ArrayList<>();
+
+        // Find the area code which should be assigned to each area.
+        for (List<Integer> list : adjacentPoints) {
+            assert (list.size() > 1);
+            int area = Integer.MAX_VALUE;
+            for (int point : list) {
+                if (tile.getArea(point) < area && tile.getArea(point) != -1) {
+                    area = tile.getArea(point);
+                }
+            }
+
+            if (area == Integer.MAX_VALUE) {
+                area = -1;
+            }
+
+            areas.add(area);
+
+        }
+
+        assert (adjacentPoints.size() == areas.size());
+
+        for (int i = 0; i < adjacentPoints.size(); i++) {
+            for (int point : adjacentPoints.get(i)) {
+                tile.setArea(point, areas.get(i));
+            }
+        }
 
         // Okay so this implementation is total bullshit and what remains of my rational thinking ability tells me
         // to take a break and go to bed before trying to redo this. But the idea is not that bad: I save all the connected areas
