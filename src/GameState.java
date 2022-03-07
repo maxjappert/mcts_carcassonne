@@ -21,15 +21,18 @@ public class GameState {
 
         Tile startingTile = new Tile(0, false);
 
-        startingTile.getAreas()[0] = 0;
-        startingTile.getAreas()[1] = 0;
-        startingTile.getAreas()[2] = 1;
-        startingTile.getAreas()[3] = 3;
-        startingTile.getAreas()[4] = 2;
-        startingTile.getAreas()[5] = 3;
-        startingTile.getAreas()[6] = 1;
-        startingTile.getAreas()[7] = 0;
-        startingTile.getAreas()[8] = 1;
+        startingTile.setArea(0, 0);
+        startingTile.setArea(1, 0);
+        startingTile.setArea(2, 0);
+        startingTile.setArea(3, 0);
+        startingTile.setArea(4, 1);
+        startingTile.setArea(5, 2);
+        startingTile.setArea(6, 3);
+        startingTile.setArea(7, 3);
+        startingTile.setArea(8, 3);
+        startingTile.setArea(9, 2);
+        startingTile.setArea(10, 1);
+        startingTile.setArea(11, 0);
 
         // The starting tile as defined in the game's manual.
         board.get(0).add(startingTile);
@@ -77,190 +80,304 @@ public class GameState {
      */
     public void updateBoard(int[] move, Tile tile) {
 
-        Map<Integer, Tile> neighbours = getNeighboursByType(tile, move, -1);
+        Map<Integer, Tile> neighbours = getNeighboursByType(move, -1);
 
-        // Assign the adjacent areas to each side of the tile.
         for (int side : neighbours.keySet()) {
-            int[] adjacentSides = getAdjacentSides(side*2);
+            int point1 = side * 3;
+            int point2 = side * 3 + 1;
+            int point3 = side * 3 + 2;
 
-            int oppositeSide = GameStateSpace.getOppositeSide(side)*2;
-            int oppositeArea = neighbours.get(side).getArea(oppositeSide);
+            Tile neighbour = neighbours.get(side);
 
-            tile.setArea(side*2, oppositeArea);
-
-            // The indexes are swapped as a bodge but it seems to work.
-            if (tile.containsRoad()) {
-                tile.setArea(adjacentSides[0], neighbours.get(side).getArea(getOppositeCorner(adjacentSides[1] / 2) * 2 + 1));
-                tile.setArea(adjacentSides[1], neighbours.get(side).getArea(getOppositeCorner(adjacentSides[0] / 2) * 2 + 1));
-            }
+            tile.setArea(point1, getOppositeArea(point1, neighbour));
+            tile.setArea(point2, getOppositeArea(point2, neighbour));
+            tile.setArea(point3, getOppositeArea(point3, neighbour));
         }
 
-        // Here we need to consider adjacent sides belonging to the same area, even if the middle isn't of that type.
+        List<TreeSet<Integer>> adjacentPointsOfSameType = new ArrayList<>();
+        adjacentPointsOfSameType.add(new TreeSet<>());
+        adjacentPointsOfSameType.get(0).add(0);
 
-        for (int j = 0; j < 2; j++) {
-            for (int i = 1; i < 5; i++) {
-                int sideType1;
-                int sideType2;
+        List<Integer> indices = new ArrayList<>();
 
-                int sideIndex1 = i - 1;
-                int sideIndex2 = i;
-
-                if (i == 4) {
-                    sideIndex1 = 3;
-                    sideIndex2 = 0;
-                }
-
-                sideType1 = tile.getSide(sideIndex1);
-                sideType2 = tile.getSide(sideIndex2);
-
-                // TODO: Case where this connects two existing areas
-                if (sideType1 == sideType2) {
-
-                    if (tile.getArea(sideIndex1 * 2) == -1 && tile.getArea(sideIndex2 * 2) == -1) {
-                        int newArea = assignNewArea(sideType1);
-                        tile.setArea(sideIndex1*2, newArea);
-                        tile.setArea(sideIndex2*2, newArea);
-                        if (sideType1 != 2) {
-                            tile.setArea(sideIndex1 * 2 + 1, newArea);
-                        }
-
-                        continue;
-                    }
-
-                    // If two roads are next to each other and the middle is a crossroad, then the two roads
-                    // aren't part of the same area.
-                    if ((sideType1 == 2 && tile.getMiddle() == 3) || (sideType1 == 1 && tile.getMiddle() == 0)) {
-                        continue;
-                    }
-
-                    if (tile.getArea(sideIndex1 * 2) != -1) {
-                        tile.setArea(sideIndex2 * 2, tile.getArea(sideIndex1 * 2));
-                    } else if (tile.getArea(sideIndex2 * 2) != -1) {
-                        tile.setArea(sideIndex1 * 2, tile.getArea(sideIndex2 * 2));
-                    }
-
-                    if (tile.getSide(sideIndex1) == tile.getCorner(sideIndex1)) {
-                        tile.setArea(sideIndex1 * 2 + 1, tile.getArea(sideIndex1 * 2));
-                    }
-                }
-            }
-        }
-
-        int middleArea = -1;
-
-        // Get the sides whose type matches the type of the middle.
-        List<Integer> matchingSides = new ArrayList<>();
-        List<Integer> matchingCorners = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            if (tile.getSide(i) == tile.getMiddle()) {
-                matchingSides.add(i);
-            }
-
-            if (tile.getCorners()[i] == tile.getMiddle()) {
-                matchingCorners.add(i);
-            }
-        }
-
-        for (int side : matchingSides) {
-            if (tile.getArea(side*2) != -1) {
-                middleArea = tile.getArea(side*2);
-                // Set the middle area of the tile.
-                tile.setArea(8, middleArea);
-
-                for (int matchingSide : matchingSides) {
-                    tile.setArea(matchingSide*2, middleArea);
-                }
-
-                for (int corner : matchingCorners) {
-                    tile.setArea(corner*2 + 1, middleArea);
-                }
-
-                break;
-            }
-        }
-
-        // If the middle of the tile doesn't have an area, it means that all other parts of the same type also don't
-        // have an area. Therefore we need to assign a new area to all parts of the tile of the same type.
-        if (tile.getArea(8) == -1) {
-            int newArea = assignNewArea(tile.getMiddle());
-
-            // Assign the new area to the middle.
-            tile.setArea(8, newArea);
-
-            // Assign the new area to all matching parts of the tile.
-            for (int side : matchingSides) {
-                tile.setArea(side * 2, newArea);
-            }
-
-            for (int corner : matchingCorners) {
-                tile.setArea(corner * 2 + 1, newArea);
-            }
-        }
-
-        List<List<Integer>> adjacentPoints = new ArrayList<>();
-        adjacentPoints.add(new ArrayList<>());
-        //adjacentPoints.get(0).add(tile.getPoint(0));
         int runner = 0;
 
-        // If an area on a tile consists of different areas, we need to change this to one area.
-        for (int point = 0; point < 6; point++) {
+        if (tile.getPoint(0) == tile.getMiddle()) {
+            indices.add(runner);
+        }
+
+        for (int point = 0; point < 11; point++) {
+            // Assign areas to all points which don't have an area yet.
+
             if (tile.getPoint(point) == tile.getPoint(point+1)) {
-
-                if (!adjacentPoints.get(runner).contains(point)) {
-                    adjacentPoints.get(runner).add(point);
-                }
-
-                if (!adjacentPoints.get(runner).contains(point+1)) {
-                    adjacentPoints.get(runner).add(point+1);
-                }
-
+                adjacentPointsOfSameType.get(runner).add(point);
+                adjacentPointsOfSameType.get(runner).add(point+1);
             } else {
                 runner++;
-                adjacentPoints.add(new ArrayList<>());
+                adjacentPointsOfSameType.add(new TreeSet<>());
+                adjacentPointsOfSameType.get(runner).add(point+1);
+
+                if (tile.getPoint(point+1) == tile.getMiddle()) {
+                    indices.add(runner);
+                }
             }
         }
 
-        // Check the last two points which can't be covered by the for-loop.
-        if (tile.getPoint(7) == tile.getPoint(0) && tile.getPoint(6) == tile.getPoint(7)) {
-            adjacentPoints.get(adjacentPoints.size() - 1).add(0);
+        if (tile.getPoint(11) == tile.getPoint(0)) {
+            adjacentPointsOfSameType.get(0).addAll(adjacentPointsOfSameType.get(runner));
+            adjacentPointsOfSameType.remove(runner);
         }
 
-        adjacentPoints.removeIf(list -> list.size() <= 1);
+        adjacentPointsOfSameType.removeIf(set -> set.size() == 0);
 
-        // If the first and the last list of adjacent points are of the same type then we can merge those two lists.
-        if (tile.getPoint(adjacentPoints.get(adjacentPoints.size() - 1).get(0)) == tile.getPoint(adjacentPoints.get(0).get(0))
-                && !adjacentPoints.get(0).get(0).equals(adjacentPoints.get(adjacentPoints.size() - 1).get(0))) {
-            adjacentPoints.get(0).addAll(adjacentPoints.get(adjacentPoints.size() - 1));
-            adjacentPoints.remove(adjacentPoints.size() - 1);
+        // Merge all sets of adjacent points of the same type for the types corresponding to the middle.
+
+        for (int i = 1; i < indices.size(); i++) {
+            adjacentPointsOfSameType.get(indices.get(0)).addAll(adjacentPointsOfSameType.get(indices.get(i)));
+            int index = indices.get(i);
+            adjacentPointsOfSameType.remove(index);
         }
 
         List<Integer> areas = new ArrayList<>();
 
-        // Find the area code which should be assigned to each area.
-        for (List<Integer> list : adjacentPoints) {
-            assert (list.size() > 1);
+        for (Set<Integer> set : adjacentPointsOfSameType) {
             int area = Integer.MAX_VALUE;
-            for (int point : list) {
+            int type = -1;
+
+            for (int point : set) {
+                type = tile.getPoint(point);
+
                 if (tile.getArea(point) < area && tile.getArea(point) != -1) {
                     area = tile.getArea(point);
                 }
             }
 
             if (area == Integer.MAX_VALUE) {
-                area = -1;
+                area = assignNewArea(tile.getPoint(type));
             }
 
             areas.add(area);
-
         }
 
-        assert (adjacentPoints.size() == areas.size());
+        for (int i = 0; i < adjacentPointsOfSameType.size(); i++) {
+            Set<Integer> set = adjacentPointsOfSameType.get(i);
 
-        for (int i = 0; i < adjacentPoints.size(); i++) {
-            for (int point : adjacentPoints.get(i)) {
+            for (int point : set) {
                 tile.setArea(point, areas.get(i));
             }
         }
+
+//        // Assign the adjacent areas to each side of the tile.
+//        for (int side : neighbours.keySet()) {
+//            int[] adjacentSides = getAdjacentSides(side*2);
+//
+//            int oppositeSide = GameStateSpace.getOppositeSide(side)*2;
+//            int oppositeArea = neighbours.get(side).getArea(oppositeSide);
+//
+//            tile.setArea(side*2, oppositeArea);
+//
+//            // The indexes are swapped as a bodge but it seems to work.
+//            if (tile.containsRoad()) {
+////                tile.setArea(adjacentSides[0], neighbours.get(side).getArea(getOppositeCorner(adjacentSides[1] / 2) * 2 + 1));
+////                tile.setArea(adjacentSides[1], neighbours.get(side).getArea(getOppositeCorner(adjacentSides[0] / 2) * 2 + 1));
+//
+//                int[] neighbourAdjacentSides = getAdjacentSides(oppositeSide);
+//
+//                tile.setArea(adjacentSides[0], neighbours.get(side).getArea(neighbourAdjacentSides[1]));
+//                tile.setArea(adjacentSides[1], neighbours.get(side).getArea(neighbourAdjacentSides[0]));
+//            }
+//        }
+//
+//        // Here we need to consider adjacent sides belonging to the same area, even if the middle isn't of that type.
+//        for (int j = 0; j < 2; j++) {
+//            for (int i = 1; i < 5; i++) {
+//                int sideType1;
+//                int sideType2;
+//
+//                int sideIndex1 = i - 1;
+//                int sideIndex2 = i;
+//
+//                if (i == 4) {
+//                    sideIndex1 = 3;
+//                    sideIndex2 = 0;
+//                }
+//
+//                sideType1 = tile.getSide(sideIndex1);
+//                sideType2 = tile.getSide(sideIndex2);
+//
+//                // TODO: Case where this connects two existing areas
+//                if (sideType1 == sideType2) {
+//
+//                    // If two roads are next to each other and the middle is a crossroad, then the two roads
+//                    // aren't part of the same area.
+//                    if ((sideType1 == 2 && tile.getMiddle() == 3) || (sideType1 == 1 && tile.getMiddle() == 0)) {
+//
+//                        if (tile.getArea(sideIndex1*2) == -1) {
+//                            tile.setArea(sideIndex1*2, assignNewArea(sideType1));
+//                        }
+//
+//                        if (tile.getArea(sideIndex2*2) == -1) {
+//                            tile.setArea(sideIndex2, assignNewArea(sideType2));
+//                        }
+//
+//                        continue;
+//                    }
+//
+//                    if (tile.getArea(sideIndex1 * 2) == -1 && tile.getArea(sideIndex2 * 2) == -1) {
+//                        int newArea = assignNewArea(sideType1);
+//                        tile.setArea(sideIndex1*2, newArea);
+//                        tile.setArea(sideIndex2*2, newArea);
+//                        if (sideType1 != 2) {
+//                            tile.setArea(sideIndex1 * 2 + 1, newArea);
+//                        }
+//
+//                        continue;
+//                    }
+//
+//                    if (tile.getArea(sideIndex1 * 2) != -1) {
+//                        tile.setArea(sideIndex2 * 2, tile.getArea(sideIndex1 * 2));
+//                    } else if (tile.getArea(sideIndex2 * 2) != -1) {
+//                        tile.setArea(sideIndex1 * 2, tile.getArea(sideIndex2 * 2));
+//                    }
+//
+//                    if (tile.getSide(sideIndex1) == tile.getCorner(sideIndex1)) {
+//                        tile.setArea(sideIndex1 * 2 + 1, tile.getArea(sideIndex1 * 2));
+//                    }
+//                }
+//            }
+//        }
+//
+//        int middleArea = -1;
+//
+//        // Get the sides whose type matches the type of the middle.
+//        List<Integer> matchingSides = new ArrayList<>();
+//        List<Integer> matchingCorners = new ArrayList<>();
+//        for (int i = 0; i < 4; i++) {
+//            if (tile.getSide(i) == tile.getMiddle()) {
+//                matchingSides.add(i);
+//            }
+//
+//            if (tile.getCorners()[i] == tile.getMiddle()) {
+//                matchingCorners.add(i);
+//            }
+//        }
+//
+//        for (int side : matchingSides) {
+//            if (tile.getArea(side*2) != -1) {
+//                middleArea = tile.getArea(side*2);
+//                // Set the middle area of the tile.
+//                tile.setArea(8, middleArea);
+//
+//                for (int matchingSide : matchingSides) {
+//                    tile.setArea(matchingSide*2, middleArea);
+//                }
+//
+//                for (int corner : matchingCorners) {
+//                    tile.setArea(corner*2 + 1, middleArea);
+//                }
+//
+//                break;
+//            }
+//        }
+//
+//        // If the middle of the tile doesn't have an area, it means that all other parts of the same type also don't
+//        // have an area. Therefore we need to assign a new area to all parts of the tile of the same type.
+//        if (tile.getArea(8) == -1) {
+//            int newArea = assignNewArea(tile.getMiddle());
+//
+//            // Assign the new area to the middle.
+//            tile.setArea(8, newArea);
+//
+//            // Assign the new area to all matching parts of the tile.
+//            for (int side : matchingSides) {
+//                tile.setArea(side * 2, newArea);
+//            }
+//
+//            for (int corner : matchingCorners) {
+//                tile.setArea(corner * 2 + 1, newArea);
+//            }
+//        }
+//
+//        List<List<Integer>> adjacentPoints = new ArrayList<>();
+//        adjacentPoints.add(new ArrayList<>());
+//        //adjacentPoints.get(0).add(tile.getPoint(0));
+//        int runner = 0;
+//
+//
+//        // The remaining points with area -1 now have to be either assigned the area of their neighbour if applicable,
+//        // or otherwise be assigned a new area.
+//
+//        List<Integer> pointsWithNoArea = new ArrayList<>();
+//
+//        for (int i = 0; i < 8; i++) {
+//            if (tile.getArea(i) == -1) {
+//                pointsWithNoArea.add(i);
+//            }
+//        }
+//
+//        for (int point : pointsWithNoArea) {
+//            tile.setArea(point, assignNewArea(tile.getPoint(point)));
+//        }
+//
+//        // If an area on a tile consists of different areas, we need to change this to one area.
+//        for (int point = 0; point < 6; point++) {
+//            if (tile.getPoint(point) == tile.getPoint(point+1)) {
+//
+//                if (!adjacentPoints.get(runner).contains(point)) {
+//                    adjacentPoints.get(runner).add(point);
+//                }
+//
+//                if (!adjacentPoints.get(runner).contains(point+1)) {
+//                    adjacentPoints.get(runner).add(point+1);
+//                }
+//
+//            } else {
+//                runner++;
+//                adjacentPoints.add(new ArrayList<>());
+//            }
+//        }
+//
+//        // Check the last two points which can't be covered by the for-loop.
+//        if (tile.getPoint(7) == tile.getPoint(0) && tile.getPoint(6) == tile.getPoint(7)) {
+//            adjacentPoints.get(adjacentPoints.size() - 1).add(0);
+//        }
+//
+//        adjacentPoints.removeIf(list -> list.size() <= 1);
+//
+//        // If the first and the last list of adjacent points are of the same type then we can merge those two lists.
+//        if (tile.getPoint(adjacentPoints.get(adjacentPoints.size() - 1).get(0)) == tile.getPoint(adjacentPoints.get(0).get(0))
+//                && !adjacentPoints.get(0).get(0).equals(adjacentPoints.get(adjacentPoints.size() - 1).get(0))) {
+//            adjacentPoints.get(0).addAll(adjacentPoints.get(adjacentPoints.size() - 1));
+//            adjacentPoints.remove(adjacentPoints.size() - 1);
+//        }
+//
+//        List<Integer> areas = new ArrayList<>();
+//
+//        // Find the area code which should be assigned to each area.
+//        for (List<Integer> list : adjacentPoints) {
+//            assert (list.size() > 1);
+//            int area = Integer.MAX_VALUE;
+//            for (int point : list) {
+//                if (tile.getArea(point) < area && tile.getArea(point) != -1) {
+//                    area = tile.getArea(point);
+//                }
+//            }
+//
+//            if (area == Integer.MAX_VALUE) {
+//                area = -1;
+//            }
+//
+//            areas.add(area);
+//
+//        }
+//
+//        assert (adjacentPoints.size() == areas.size());
+//
+//        for (int i = 0; i < adjacentPoints.size(); i++) {
+//            for (int point : adjacentPoints.get(i)) {
+//                tile.setArea(point, areas.get(i));
+//            }
+//        }
 
         // Okay so this implementation is total bullshit and what remains of my rational thinking ability tells me
         // to take a break and go to bed before trying to redo this. But the idea is not that bad: I save all the connected areas
@@ -546,12 +663,11 @@ public class GameState {
 
     /**
      * If type == -1, then all neighbours are returned.
-     * @param tile
      * @param move
      * @param type
      * @return
      */
-    public Map<Integer, Tile> getNeighboursByType(Tile tile, int[] move, int type) {
+    public Map<Integer, Tile> getNeighboursByType(int[] move, int type) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
         // Create a deep copy of the move array
@@ -588,20 +704,47 @@ public class GameState {
             return neighbourMap;
     }
 
-    private int getOppositeCorner(int corner) {
-        assert (corner >= 0 && corner < 4);
+    private int getOppositePoint(int point) {
+        int oppositePoint;
 
-        if (corner == 0) {
-            return 1;
-        } else if (corner == 1) {
-            return 0;
-        } else if (corner == 2) {
-            return 3;
-        } else if (corner == 3) {
-            return 2;
+        if (point == 0) {
+            oppositePoint = 8;
+        } else if (point == 1) {
+            oppositePoint = 7;
+        } else if (point == 2) {
+            oppositePoint = 6;
+        } else if (point == 3) {
+            oppositePoint = 11;
+        } else if (point == 4) {
+            oppositePoint = 10;
+        } else if (point == 5) {
+            oppositePoint = 9;
+        } else if (point == 6) {
+            oppositePoint = 2;
+        } else if (point == 7) {
+            oppositePoint = 1;
+        } else if (point == 8) {
+            oppositePoint = 0;
+        } else if (point == 9) {
+            oppositePoint = 5;
+        } else if (point == 10) {
+            oppositePoint = 4;
+        } else if (point == 11) {
+            oppositePoint = 3;
         } else {
-            return -1;
+            oppositePoint = -1;
+            System.out.println("Error in function getOppositePoint(...)");
         }
+
+        return oppositePoint;
+    }
+
+    private int getOppositeArea(int point, Tile neighbour) {
+        return neighbour.getArea(getOppositePoint(point));
+    }
+
+    private boolean isSameTypeAsOppositePoint(int point, Tile tile, Tile neighbour) {
+        return tile.getPoint(point) == neighbour.getPoint(getOppositePoint(point));
     }
 
     private int assignNewArea(int type) {

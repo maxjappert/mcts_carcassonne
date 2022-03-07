@@ -18,7 +18,7 @@ public class Tile {
     /**
      * Starting from bottom right.
      */
-    private int[] corners;
+    private int[] points;
 
     /**
      * To which connected areas to the points belong to?
@@ -40,6 +40,8 @@ public class Tile {
      * 4: monastery
      */
     private int middle;
+
+    private int middleArea;
 
     /**
      * The possible types are the following:
@@ -66,96 +68,107 @@ public class Tile {
     public Tile(int type, boolean pennant) {
         this.pennant = pennant;
 
-        areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1};
-        corners = new int[]{0, 0, 0, 0};
+        areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
         meeple = new int[]{-1, -1};
 
         switch (type) {
             case 0 -> {
                 sides = new int[]{0, 2, 1, 2};
+                points = new int[]{0, 0, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
             }
             case 1 -> {
                 sides = new int[]{2, 0, 1, 2};
+                points = new int[]{0, 2, 0, 0, 0, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
             }
             case 2 -> {
                 sides = new int[]{2, 2, 1, 0};
+                points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 0, 0};
                 middle = 2;
             }
             case 3 -> {
                 sides = new int[]{2, 2, 1, 2};
+                points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 3;
             }
             case 4 -> {
                 sides = new int[]{0, 0, 1, 0};
+                points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
             }
             case 5 -> {
                 sides = new int[]{1, 0, 1, 0};
+                points = new int[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
             }
             case 6 -> {
                 // TODO: this leads to a misleading representation.
                 sides = new int[]{0, 0, 1, 1};
-                corners = new int[]{0, 0, 1, 0};
+                points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 0;
             }
             case 7 -> {
                 sides = new int[]{0, 2, 0, 2};
-                corners = new int[]{1, 1, 1, 1};
+                points = new int[]{0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
             }
             case 8 -> {
                 sides = new int[]{2, 0, 0, 2};
+                points = new int[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
             }
             case 9 -> {
                 sides = new int[]{2, 2, 0, 2};
+                points = new int[]{0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 3;
             }
             case 10 -> {
                 sides = new int[]{2, 2, 2, 2};
+                points = new int[]{0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0};
                 middle = 3;
             }
             case 11 -> {
                 sides = new int[]{2, 0, 0, 0};
+                points = new int[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
             }
             case 12 -> {
                 sides = new int[]{0, 0, 0, 0};
+                points = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
             }
             case 13 -> {
                 sides = new int[]{0, 1, 0, 1};
+                points = new int[]{0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1};
                 middle = 1;
             }
             case 14 -> {
                 // TODO: this leads to a misleading representation.
                 sides = new int[]{0, 0, 1, 1};
-                corners = new int[]{0, 0, 1, 0};
+                points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 15 -> {
                 // There could be a problem here regarding the connection of the two roads, since the middle has to be a city.
                 sides = new int[]{2, 2, 1, 1};
-                corners = new int[]{0, 0, 1, 0};
+                points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 16 -> {
                 sides = new int[]{2, 1, 1, 1};
-                corners = new int[]{0, 1, 1, 0};
+                points = new int[]{0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 17 -> {
                 sides = new int[]{0, 1, 1, 1};
-                corners = new int[]{0, 1, 1, 0};
+                points = new int[]{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 18 -> {
                 sides = new int[]{1, 1, 1, 1};
-                corners = new int[]{1, 1, 1, 1};
+                points = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
         }
@@ -359,24 +372,42 @@ public class Tile {
         int temp1;
         int temp2;
 
-        List<int[]> toRotate = new ArrayList<>();
-        toRotate.add(sides);
-        toRotate.add(corners);
-
-        for (int[] sides : toRotate) {
-            temp1 = sides[1];
-            sides[1] = sides[0];
-            temp2 = sides[2];
-            sides[2] = temp1;
-            temp1 = sides[3];
-            sides[3] = temp2;
-            sides[0] = temp1;
-        }
+        temp1 = sides[1];
+        sides[1] = sides[0];
+        temp2 = sides[2];
+        sides[2] = temp1;
+        temp1 = sides[3];
+        sides[3] = temp2;
+        sides[0] = temp1;
 
         if (meeple [0] >= 0 && meeple[0] < 3) {
             meeple[0] += 1;
         } else if (meeple[0] == 3) {
             meeple[0] = 0;
+        }
+
+        List<int[]> toRotate = new ArrayList<>();
+        toRotate.add(points);
+        toRotate.add(areas);
+
+        int temp3;
+
+        for (int[] array : toRotate) {
+            assert (array.length == 12);
+
+            temp1 = array[9];
+            temp2 = array[10];
+            temp3 = array[11];
+
+            for (int i = 8; i >= 2; i -= 3) {
+                array[i+3] = array[i];
+                array[i+2] = array[i-1];
+                array[i+1] = array[i-2];
+            }
+
+            array[0] = temp1;
+            array[1] = temp2;
+            array[2] = temp3;
         }
     }
 
@@ -410,32 +441,21 @@ public class Tile {
         return areas;
     }
 
-    public int[] getCorners() {
-        return corners;
-    }
-
     public int getSide(int index) {
         return sides[index];
     }
 
-    public int getCorner(int index) {
-        return corners[index];
-    }
 
     public int getPoint(int point) {
-        if (point % 2 == 0) {
-            return sides[point / 2];
-        } else {
-            return corners[point / 2];
-        }
+        return points[point];
     }
 
     public int getArea(int index) {
         return areas[index];
     }
 
-    public void setArea(int side, int area) {
-        areas[side] = area;
+    public void setArea(int point, int area) {
+        areas[point] = area;
     }
 
     public boolean containsRoad() {
