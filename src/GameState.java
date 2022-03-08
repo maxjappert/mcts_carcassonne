@@ -106,6 +106,8 @@ public class GameState {
             indices.add(runner);
         }
 
+        int indexOfMiddleArea = -1;
+
         for (int point = 0; point < 11; point++) {
             // Assign areas to all points which don't have an area yet.
 
@@ -119,6 +121,7 @@ public class GameState {
 
                 if (tile.getPoint(point+1) == tile.getMiddle()) {
                     indices.add(runner);
+                    indexOfMiddleArea = point+1;
                 }
             }
         }
@@ -128,7 +131,7 @@ public class GameState {
             adjacentPointsOfSameType.remove(runner);
 
             if (indices.contains(adjacentPointsOfSameType.size())) {
-                indices.remove(adjacentPointsOfSameType.size());
+                indices.remove(indices.size()-1);
             }
         }
 
@@ -175,6 +178,10 @@ public class GameState {
             for (int point : set) {
                 tile.setArea(point, areas.get(i));
             }
+        }
+
+        if (indexOfMiddleArea != -1) {
+            tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
         }
 
         //--------------------------
@@ -532,5 +539,22 @@ public class GameState {
                 }
             }
         }
+    }
+
+    public List<Tile> getTilesOfArea(int area) {
+        List<Tile> tiles = new ArrayList<>();
+
+        for (List<Tile> row : board) {
+            for (Tile tile : row) {
+                for (int i = 0; i < 12; i++) {
+                    if (tile.getArea(i) == area) {
+                        tiles.add(tile);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return tiles;
     }
 }

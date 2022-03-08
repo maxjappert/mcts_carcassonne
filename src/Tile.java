@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -175,6 +176,20 @@ public class Tile {
     }
 
     /**
+     * Copy constructor.
+     * @param tile The tile for which a deep copy should be created.
+     */
+    public Tile(Tile tile) {
+        this.sides = Arrays.copyOf(tile.getSides(), tile.getSides().length);
+        this.points = Arrays.copyOf(tile.getPoints(), 12);
+        this.areas = Arrays.copyOf(tile.getAreas(), 12);
+        this.meeple = Arrays.copyOf(tile.getMeeple(), 2);
+        this.middle = tile.getMiddle();
+        this.middleArea = tile.getMiddleArea();
+        this.pennant = tile.hasPennant();
+    }
+
+    /**
      * Generates a printable format of the tile. The following characters denote the following things:
      * '.' -> field
      * '-' -> road
@@ -328,18 +343,50 @@ public class Tile {
             output[2][2] = c;
         }
 
-        // Add the meeples if necessary.
-        if (meeple[0] != -1) {
+        if (meeple[1] != -1) {
+            char digit = Character.forDigit(meeple[1], 10);
+
             if (meeple[0] == 0) {
-                output[4][2] = Character.forDigit(meeple[1], 10);
+                output[4][1] = digit;
             } else if (meeple[0] == 1) {
-                output[2][4] = Character.forDigit(meeple[1], 10);
+                output[4][2] = digit;
             } else if (meeple[0] == 2) {
-                output[0][2] = Character.forDigit(meeple[1], 10);
+                output[4][3] = digit;
             } else if (meeple[0] == 3) {
-                output[2][0] = Character.forDigit(meeple[1], 10);
+                output[3][4] = digit;
+            } else if (meeple[0] == 4) {
+                output[2][4] = digit;
+            } else if (meeple[0] == 5) {
+                output[1][4] = digit;
+            } else if (meeple[0] == 6) {
+                output[0][3] = digit;
+            } else if (meeple[0] == 7) {
+                output[0][2] = digit;
+            } else if (meeple[0] == 8) {
+                output[0][1] = digit;
+            } else if (meeple[0] == 9) {
+                output[1][0] = digit;
+            } else if (meeple[0] == 10) {
+                output[2][0] = digit;
+            } else if (meeple[0] == 11) {
+                output[3][0] = digit;
+            } else if (meeple[0] == 12) {
+                output[2][2] = digit;
             }
         }
+
+        // Add the meeples if necessary.
+//        if (meeple[0] != -1) {
+//            if (meeple[0] == 0) {
+//                output[4][2] = Character.forDigit(meeple[1], 10);
+//            } else if (meeple[0] == 1) {
+//                output[2][4] = Character.forDigit(meeple[1], 10);
+//            } else if (meeple[0] == 2) {
+//                output[0][2] = Character.forDigit(meeple[1], 10);
+//            } else if (meeple[0] == 3) {
+//                output[2][0] = Character.forDigit(meeple[1], 10);
+//            }
+//        }
 
         return output;
     }
@@ -451,6 +498,10 @@ public class Tile {
     }
 
     public int getArea(int index) {
+        if (index == 12) {
+            return middleArea;
+        }
+
         return areas[index];
     }
 
@@ -470,5 +521,17 @@ public class Tile {
 
     public int[] getPoints() {
         return points;
+    }
+
+    public int getMiddleArea() {
+        return middleArea;
+    }
+
+    public void setMiddleArea(int area) {
+        middleArea = area;
+    }
+
+    public boolean hasPennant() {
+        return pennant;
     }
 }

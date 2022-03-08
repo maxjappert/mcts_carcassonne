@@ -12,8 +12,6 @@ public class GameStateSpace {
     }
 
     public List<ActionRotationStateTriple> succ(GameState state, Tile drawnTile) {
-        List<List<Tile>> board =  state.getBoard();
-
         List<ActionRotationStateTriple> successors = new ArrayList<>();
 
         int[] boardDimensions = state.getBoardDimensions();
@@ -43,13 +41,13 @@ public class GameStateSpace {
      * @param tile The tile in question.
      * @return Subset of {0, 1, 2, 3, 4}, denoting the sides on which meeples can be placed.
      */
-    public List<Integer> legalMeeples(GameState state, int[] move, Tile tile) {
+    public List<Integer> legalMeeples(GameState state, Tile tile, int[] move) {
         List<Integer> placements = new ArrayList<>();
 
-        for (int side = 0; side < 9; side++) {
-            if (checkIfLegalMeeplePlacement(tile, move, side, state)) {
-                placements.add(side);
-                System.out.println(side);
+        for (int point = 0; point < 13; point++) {
+            if (checkIfLegalMeeplePlacement(tile, point, move, state)) {
+                placements.add(point);
+                System.out.println(point);
             }
         }
 
@@ -127,27 +125,25 @@ public class GameStateSpace {
         return connected[0] || connected[1] || connected[2] || connected[3];
     }
 
-    private boolean checkIfLegalMeeplePlacement(Tile tile, int[] move, int side, GameState state) {
-        assert (side >= 0 && side < 9);
+    private boolean checkIfLegalMeeplePlacement(Tile tile, int point, int[] move, GameState state) {
 
-        int areaID;
+        // Use the copy constructors to create deep copies of the state and the tile in order to operate on them
+        // without changing the actual state and tile.
+        GameState potentialState = new GameState(state);
+        Tile potentialTile = new Tile(tile);
 
-        if (side == 4 && tile.getMiddle() == 3) {
-            // One cannot place a meeple on an intersection.
-            return false;
-        } else if (side == 4 && tile.getMiddle() == 4) {
-            // Placing a meeple of a monastery is always allowed.
-            return true;
-        } if (side == 4) {
-            areaID = tile.getMiddle();
+        potentialState.updateBoard(move, potentialTile);
+
+        List<Tile> tilesInArea;
+
+        if (point == 12) {
+            tilesInArea = potentialState.getTilesOfArea(potentialTile.getMiddleArea());
         } else {
-            areaID = tile.getSides()[side];
+            tilesInArea = potentialState.getTilesOfArea(potentialTile.getArea(point));
         }
 
-        for (Tile otherTile : getTilesOfArea(areaID, state)) {
-            int meepleLocation = otherTile.getMeeple()[0];
-
-            if (meepleLocation != -1) {
+        for (Tile tileInArea : tilesInArea) {
+            if (tileInArea.getMeeple()[0] != -1 && tileInArea.getArea(tileInArea.getMeeple()[0]) == potentialTile.getArea(point)) {
                 return false;
             }
         }
@@ -172,15 +168,5 @@ public class GameStateSpace {
         }
 
         return tiles;
-    }
-
-    public static int getOppositeSide(int side) {
-        if (side == 4) {
-            return 4;
-        } else if (side == 1) {
-            return 3;
-        } else {
-            return abs(side - 2);
-        }
     }
 }

@@ -49,19 +49,18 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
-            boolean legalMove = true;
+            boolean legalMove = false;
 
             // TODO: reactivate
 
-//            List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
-//
-//            for (ActionRotationStateTriple successor : legalSuccessors) {
-//                if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
-//                    legalMove = true;
-//                    break;
-//                }
-//            }
+            List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
 
+            for (ActionRotationStateTriple successor : legalSuccessors) {
+                if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
+                    legalMove = true;
+                    break;
+                }
+            }
 
             // If the move isn't legal the loop jumps to the top.
             if (!legalMove) {
@@ -73,18 +72,18 @@ public class HumanPlayer extends Player {
                 System.out.print("Would you like to place a meeple? [y/n] ");
 
                 if (sc.next().equalsIgnoreCase("y")) {
-                    System.out.print("On which edge, counting from the bottom edge counterclockwise, would you like to place the meeple? [0-4] ");
+                    System.out.print("On which corner would you like to place the meeple? [0-12] ");
                     input = sc.next().toLowerCase();
 
-                    int edge = Integer.parseInt(input);
+                    int point = Integer.parseInt(input);
 
-                    assert (edge >= 0 && edge < 5);
+                    assert (point >= 0 && point <= 12);
 
-                    //boolean legalMeeple = stateSpace.legalMeeples(state, move, tile).contains(edge);
-                    boolean legalMeeple = true;
+                    boolean legalMeeple = stateSpace.legalMeeples(state, tile, move).contains(point);
+                    //boolean legalMeeple = true;
 
                     if (legalMeeple) {
-                        tile.placeMeeple(edge, playerID);
+                        tile.placeMeeple(point, playerID);
                     } else {
                         System.out.println("You can't place a meeple there. Please try again.");
                         continue;
