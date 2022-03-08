@@ -467,4 +467,8 @@ public class Tile {
 
         return false;
     }
+
+    public int[] getPoints() {
+        return points;
+    }
 }

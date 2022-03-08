@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -16,12 +17,14 @@ public class Main {
         while (true) {
             state.displayBoard();
 
-            //Tile drawnTile = state.drawTile();
-            Tile drawnTile = new Tile(1, false);
+            Tile drawnTile = state.drawTile();
+            //Tile drawnTile = new Tile(12, false);
 
             int[] move = player1.decideOnNextMove(state, stateSpace, drawnTile);
 
             state.updateBoard(move, drawnTile);
+
+            System.out.println(Arrays.toString(drawnTile.getAreas()));
         }
     }
 }
