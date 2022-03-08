@@ -9,9 +9,15 @@ abstract class Player {
      */
     protected int playerID;
 
+    protected int currentPoints;
+
+    protected int numberOfMeeples;
+
     public Player(int playerID) {
         assert (playerID == 1 || playerID == 2);
         this.playerID = playerID;
+        this.currentPoints = 0;
+        this.numberOfMeeples = 7;
     }
 
     abstract int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception;

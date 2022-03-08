@@ -373,27 +373,6 @@ public class GameState {
         System.out.println(boardString);
     }
 
-    private int[] getAdjacentSides(int side) {
-        int[] adjacentSides = new int[2];
-
-        if (side == 0) {
-            adjacentSides[0] = 1;
-            adjacentSides[1] = 7;
-        } else if (side == 7) {
-            adjacentSides[0] = 0;
-            adjacentSides[1] = 6;
-        } else if (side == 8) {
-            System.out.println("Weird call in getAdjacentSides(...)");
-            adjacentSides[0] = 8;
-            adjacentSides[1] = 8;
-        } else {
-            adjacentSides[0] = side + 1;
-            adjacentSides[1] = side - 1;
-        }
-
-        return adjacentSides;
-    }
-
     /**
      * @return Array of size 2 denoting the dimensions of the board: [height, width].
      */
@@ -407,6 +386,10 @@ public class GameState {
         return new int[] {board.size(), maxWidth};
     }
 
+    /**
+     * @param coordinates The coordinates of the tile.
+     * @return The tile at the given coordinates on the board.
+     */
     public Tile getTile(int[] coordinates) {
 
         Tile tile = null;
@@ -419,6 +402,11 @@ public class GameState {
         return tile;
     }
 
+    /**
+     * Finds the coordinates of a given tile on the board.
+     * @param tile The tile at the given coordinates.
+     * @return The coordinates of the given tile as an int array of length 2.
+     */
     public int[] getCoordinates(Tile tile) {
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.get(0).size(); j++) {
@@ -433,10 +421,9 @@ public class GameState {
     }
 
     /**
-     * If type == -1, then all neighbours are returned.
-     * @param move
-     * @param type
-     * @return
+     * @param move The coordinates of which the neighbours are to be determined.
+     * @param type The type along which the returned neighbours are connected.
+     * @return All neighbouring tiles which are connected along the given type. If type == -1, then all neighbours are returned.
      */
     public Map<Integer, Tile> getNeighboursByType(int[] move, int type) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
@@ -475,6 +462,10 @@ public class GameState {
             return neighbourMap;
     }
 
+    /**
+     * @param point The point index whose opposite should be returned.
+     * @return The point index opposite the given point index.
+     */
     private int getOppositePoint(int point) {
         int oppositePoint;
 
@@ -514,10 +505,6 @@ public class GameState {
         return neighbour.getArea(getOppositePoint(point));
     }
 
-    private boolean isSameTypeAsOppositePoint(int point, Tile tile, Tile neighbour) {
-        return tile.getPoint(point) == neighbour.getPoint(getOppositePoint(point));
-    }
-
     private int assignNewArea(int type) {
         int areaCode = areaTypes.size();
         areaTypes.add(type);
@@ -547,7 +534,7 @@ public class GameState {
         for (List<Tile> row : board) {
             for (Tile tile : row) {
                 for (int i = 0; i < 12; i++) {
-                    if (tile.getArea(i) == area) {
+                    if (tile != null && tile.getArea(i) == area) {
                         tiles.add(tile);
                         break;
                     }
@@ -556,5 +543,36 @@ public class GameState {
         }
 
         return tiles;
+    }
+
+    public void checkForPointsAfterRound() {
+        for (List<Tile> row : board) {
+            for (Tile tile : row) {
+                if (tile.hasMeeple()) {
+
+                    // If the tile has a monastery
+                    if (tile.getMiddle() == 4) {
+                        Map<Integer, Tile> neighbours = getNeighboursByType(getCoordinates(tile), -1);
+                        if (neighbours.size() == 8) {
+                            getPlayer(tile.getMeeple()[1]).currentPoints += 9;
+                            getPlayer(tile.getMeeple()[1]).numberOfMeeples += 1;
+                            return;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    public Player getPlayer(int nr) {
+        if (nr == 1) {
+            return player1;
+        } else if (nr == 2) {
+            return player2;
+        } else {
+            System.out.println("Error in getPlayer(...)");
+            return null;
+        }
     }
 }

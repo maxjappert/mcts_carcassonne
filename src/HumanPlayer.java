@@ -84,6 +84,7 @@ public class HumanPlayer extends Player {
 
                     if (legalMeeple) {
                         tile.placeMeeple(point, playerID);
+                        numberOfMeeples -= 1;
                     } else {
                         System.out.println("You can't place a meeple there. Please try again.");
                         continue;

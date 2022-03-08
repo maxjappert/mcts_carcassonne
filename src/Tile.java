@@ -534,4 +534,8 @@ public class Tile {
     public boolean hasPennant() {
         return pennant;
     }
+
+    public boolean hasMeeple() {
+        return meeple[0] != -1;
+    }
 }
