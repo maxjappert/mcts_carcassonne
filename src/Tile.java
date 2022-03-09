@@ -33,6 +33,8 @@ public class Tile {
      */
     private int[] meeple;
 
+    private int type;
+
     /**
      * 0: grass
      * 1: city
@@ -68,6 +70,7 @@ public class Tile {
      */
     public Tile(int type, boolean pennant) {
         this.pennant = pennant;
+        this.type = type;
 
         areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
@@ -375,19 +378,6 @@ public class Tile {
             }
         }
 
-        // Add the meeples if necessary.
-//        if (meeple[0] != -1) {
-//            if (meeple[0] == 0) {
-//                output[4][2] = Character.forDigit(meeple[1], 10);
-//            } else if (meeple[0] == 1) {
-//                output[2][4] = Character.forDigit(meeple[1], 10);
-//            } else if (meeple[0] == 2) {
-//                output[0][2] = Character.forDigit(meeple[1], 10);
-//            } else if (meeple[0] == 3) {
-//                output[2][0] = Character.forDigit(meeple[1], 10);
-//            }
-//        }
-
         return output;
     }
 
@@ -537,5 +527,13 @@ public class Tile {
 
     public boolean hasMeeple() {
         return meeple[0] != -1;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void removeMeeple() {
+        meeple = new int[]{-1, -1};
     }
 }

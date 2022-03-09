@@ -556,9 +556,21 @@ public class GameState {
                         if (neighbours.size() == 8) {
                             getPlayer(tile.getMeeple()[1]).currentPoints += 9;
                             getPlayer(tile.getMeeple()[1]).numberOfMeeples += 1;
+                            tile.removeMeeple();
                             return;
                         }
                     }
+
+                    if (tile.getPoint(tile.getMeeple()[0]) == 1) {
+                        int points = checkForCityCompletion(tile.getArea(tile.getMeeple()[0]));
+                        if (points != 0) {
+                            getPlayer(tile.getMeeple()[1]).currentPoints += points;
+                            getPlayer(tile.getMeeple()[1]).numberOfMeeples += 1;
+                            tile.removeMeeple();
+                        }
+                    }
+
+
 
                 }
             }
@@ -573,6 +585,100 @@ public class GameState {
         } else {
             System.out.println("Error in getPlayer(...)");
             return null;
+        }
+    }
+
+    private Set<Integer> getTilesWithOneSidedCity() {
+        Set<Integer> tilesWithOneSidedCity = new TreeSet<>();
+
+        tilesWithOneSidedCity.add(0);
+        tilesWithOneSidedCity.add(1);
+        tilesWithOneSidedCity.add(2);
+        tilesWithOneSidedCity.add(3);
+        tilesWithOneSidedCity.add(4);
+        tilesWithOneSidedCity.add(5);
+        tilesWithOneSidedCity.add(6);
+
+        return tilesWithOneSidedCity;
+    }
+
+    /**
+     *
+     * @param area The area in question.
+     * @return 0 if the city hasn't been completed, otherwise the number of points which the city has generated.
+     */
+    private int checkForCityCompletion(int area) {
+        List<Tile> tiles = getTilesOfArea(area);
+
+        Set<Integer> tilesWithOneSidedCity = getTilesWithOneSidedCity();
+
+        int nrOfPennants = 0;
+        int numberOfFinishersNeeded = 2;
+
+        for (Tile tile : tiles) {
+            int tileCode = tile.getType();
+            if (tilesWithOneSidedCity.contains(tileCode)) {
+                numberOfFinishersNeeded -= 1;
+            } else if (tileCode == 18) {
+                numberOfFinishersNeeded += 3;
+            } else if (tileCode == 16 || tileCode == 17) {
+                numberOfFinishersNeeded += 2;
+            }
+
+            if (tile.hasPennant()) {
+                nrOfPennants++;
+            }
+        }
+
+        if (numberOfFinishersNeeded != 0) {
+            return 0;
+        } else {
+            return (tiles.size() * 2) + (nrOfPennants * 2);
+        }
+    }
+
+    private int checkForRoadCompletion(int area) {
+        List<Tile> tiles = getTilesOfArea(area);
+
+        int endPoints = 0;
+
+        for (Tile tile : tiles) {
+            if (tile.getType() == 16 || tile.getType() == 11) {
+                endPoints += 1;
+            } else if (tile.getType() == 3 || tile.getType() == 9 || tile.getType() == 10) {
+                int numRoadsOfGivenType = 0;
+
+                if (tile.getArea(1) == area) {
+                    numRoadsOfGivenType += 1;
+                }
+
+                if (tile.getArea(4) == area) {
+                    numRoadsOfGivenType += 1;
+                }
+
+                if (tile.getArea(7) == area) {
+                    numRoadsOfGivenType += 1;
+                }
+
+                if (tile.getArea(10) == area) {
+                    numRoadsOfGivenType += 1;
+                }
+
+                if (numRoadsOfGivenType == 2) {
+                    endPoints += 2;
+                } else if (numRoadsOfGivenType > 2) {
+                    System.out.println("Weird stuff happening in checkForRoadCompletion(...)");
+                }
+            }
+        }
+
+        if (endPoints == 2) {
+            return tiles.size();
+        } else if (endPoints < 2) {
+            return 0;
+        } else {
+            System.out.println("Weird return value in checkForRoardCompletion(...)");
+            return -1;
         }
     }
 }

@@ -150,23 +150,4 @@ public class GameStateSpace {
 
         return true;
     }
-
-    private List<Tile> getTilesOfArea(int areaID, GameState state) {
-        List<Tile> tiles = new ArrayList<>();
-
-        for (List<Tile> row : state.getBoard()) {
-            for (Tile tile : row) {
-                if (tile != null) {
-                    for (int area : tile.getAreas()) {
-                        if (area == areaID) {
-                            tiles.add(tile);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return tiles;
-    }
 }
