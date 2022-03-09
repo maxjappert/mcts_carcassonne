@@ -31,8 +31,9 @@ public class AIPlayer extends Player {
 
         List<Integer> meeplePlacements = stateSpace.legalMeeples(state, tile, action);
 
-        if (new Random().nextInt(4) == 0 && meeplePlacements.size() > 0) {
+        if (new Random().nextBoolean() && meeplePlacements.size() > 0 && numberOfMeeples > 0) {
             tile.placeMeeple(meeplePlacements.get(new Random().nextInt(meeplePlacements.size())), playerID);
+            numberOfMeeples--;
         }
 
         return move.getAction();

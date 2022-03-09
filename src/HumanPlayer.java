@@ -9,8 +9,6 @@ public class HumanPlayer extends Player {
     }
 
     int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
-        System.out.println("** begin decideOnNextMove(...)");
-
         List<List<Tile>> board = state.getBoard();
 
         tile.printTile();
@@ -50,8 +48,6 @@ public class HumanPlayer extends Player {
             }
 
             boolean legalMove = false;
-
-            // TODO: reactivate
 
             List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
 

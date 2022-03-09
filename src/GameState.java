@@ -7,6 +7,8 @@ public class GameState {
     private List<Integer> areaTypes;
     private List<Integer> completedCities;
 
+    // TODO: step by step debug of the random walk.
+
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
      */
@@ -386,7 +388,9 @@ public class GameState {
         int maxWidth = board.get(0).size();
 
         for (List<Tile> row : board) {
-            assert(row.size() == maxWidth);
+            if (row.size() > maxWidth) {
+                maxWidth = row.size();
+            }
         }
 
         return new int[] {board.size(), maxWidth};
@@ -416,7 +420,7 @@ public class GameState {
     public int[] getCoordinates(Tile tile) {
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.get(0).size(); j++) {
-                if (board.get(i).get(j).equals(tile)) {
+                if (board.get(i).get(j) != null && board.get(i).get(j).equals(tile)) {
                     return new int[]{i, j};
                 }
             }

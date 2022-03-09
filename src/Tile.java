@@ -484,6 +484,10 @@ public class Tile {
 
 
     public int getPoint(int point) {
+        if (point == 12) {
+            return middle;
+        }
+
         return points[point];
     }
 

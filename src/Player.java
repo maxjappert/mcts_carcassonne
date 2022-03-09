@@ -21,4 +21,8 @@ abstract class Player {
     }
 
     abstract int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception;
+
+    public int getPoints() {
+        return currentPoints;
+    }
 }

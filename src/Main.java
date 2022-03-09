@@ -14,11 +14,14 @@ public class Main {
         Player player1 = new AIPlayer(1);
         Player player2 = new AIPlayer(2);
 
+//        Player player1 = new HumanPlayer(1);
+//        Player player2 = new HumanPlayer(2);
+
         do {
             state.displayBoard();
 
             Tile drawnTile = state.drawTile();
-            //Tile drawnTile = new Tile(4, false);
+            //Tile drawnTile = new Tile(1, false);
 
             int[] move = new int[]{-1, -1};
 
@@ -35,6 +38,11 @@ public class Main {
             state.checkForPointsAfterRound(player1, player2);
 
         } while (state.deckSize() > 0);
+
+        state.assignPointsAtEndOfGame(player1, player2);
+
+        System.out.println("Player 1 has " + player1.getPoints() + " points.");
+        System.out.println("Player 2 has " + player2.getPoints() + " points.");
     }
 }
 
