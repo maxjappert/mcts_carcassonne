@@ -8,7 +8,7 @@ public class GameStateSpace {
     }
 
     public boolean isGoal(GameState state) {
-        return state.deck.isEmpty();
+        return state.deckSize() == 0;
     }
 
     public List<ActionRotationStateTriple> succ(GameState state, Tile drawnTile) {

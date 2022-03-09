@@ -1,12 +1,11 @@
 import java.util.*;
 
 public class GameState {
-    List<Tile> deck;
-    List<List<Tile>> board;
-    Player player1;
-    Player player2;
+    private List<Tile> deck;
+    private List<List<Tile>> board;
 
-    List<Integer> areaTypes;
+    private List<Integer> areaTypes;
+    private List<Integer> completedCities;
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
@@ -42,6 +41,8 @@ public class GameState {
         areaTypes.add(2);
         areaTypes.add(1);
         areaTypes.add(0);
+
+        completedCities = new ArrayList<>();
     }
 
     /**
@@ -51,11 +52,12 @@ public class GameState {
     public GameState(GameState state) {
         this.deck = state.deck;
         this.board = new ArrayList<>();
-        this.player1 = state.player1;
-        this.player2 = state.player2;
-        this.areaTypes = new ArrayList<>();
 
+        this.areaTypes = new ArrayList<>();
         this.areaTypes.addAll(state.areaTypes);
+
+        this.completedCities = new ArrayList<>();
+        this.completedCities.addAll(state.completedCities);
 
         for (int i = 0; i < state.board.size(); i++) {
             this.board.add(new ArrayList<>());
@@ -80,7 +82,7 @@ public class GameState {
      */
     public void updateBoard(int[] move, Tile tile) {
 
-        Map<Integer, Tile> neighbours = getNeighboursByType(move, -1);
+        Map<Integer, Tile> neighbours = getNeighboursByType(move, -1, false);
 
         for (int side : neighbours.keySet()) {
             int point1 = side * 3;
@@ -193,6 +195,10 @@ public class GameState {
                 board.get(0).add(null);
             }
             board.get(0).add(tile);
+
+            for (int i = move[1]; i < getBoardDimensions()[1]; i++) {
+                board.get(0).add(null);
+            }
 
             return;
         }
@@ -425,7 +431,7 @@ public class GameState {
      * @param type The type along which the returned neighbours are connected.
      * @return All neighbouring tiles which are connected along the given type. If type == -1, then all neighbours are returned.
      */
-    public Map<Integer, Tile> getNeighboursByType(int[] move, int type) {
+    public Map<Integer, Tile> getNeighboursByType(int[] move, int type, boolean monasteryNeighbours) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
         // Create a deep copy of the move array
@@ -459,7 +465,25 @@ public class GameState {
             }
         }
 
-            return neighbourMap;
+        //-----------------------------------------------------
+
+        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] - 1, tileCoords[1] - 1}) != null) {
+            neighbourMap.put(4, board.get(tileCoords[0] - 1).get(tileCoords[1] - 1));
+        }
+
+        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] + 1, tileCoords[1] - 1}) != null) {
+            neighbourMap.put(5, board.get(tileCoords[0] + 1).get(tileCoords[1] - 1));
+        }
+
+        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] + 1, tileCoords[1] + 1}) != null) {
+            neighbourMap.put(6, board.get(tileCoords[0] + 1).get(tileCoords[1] + 1));
+        }
+
+        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] - 1, tileCoords[1] + 1}) != null) {
+            neighbourMap.put(7, board.get(tileCoords[0] - 1).get(tileCoords[1] + 1));
+        }
+
+        return neighbourMap;
     }
 
     /**
@@ -520,7 +544,7 @@ public class GameState {
         for (List<Tile> row : board) {
             for (Tile tile : row) {
                 for (int i = 0; i < 12; i++) {
-                    if (tile.getArea(i) == replacedArea) {
+                    if (tile != null && tile.getArea(i) == replacedArea) {
                         tile.setArea(i, newArea);
                     }
                 }
@@ -545,18 +569,19 @@ public class GameState {
         return tiles;
     }
 
-    public void checkForPointsAfterRound() {
+    public void checkForPointsAfterRound(Player player1, Player player2) {
         for (List<Tile> row : board) {
             for (Tile tile : row) {
-                if (tile.hasMeeple()) {
+                if (tile != null && tile.hasMeeple()) {
 
                     // If the tile has a monastery
                     if (tile.getMiddle() == 4) {
-                        Map<Integer, Tile> neighbours = getNeighboursByType(getCoordinates(tile), -1);
+                        Map<Integer, Tile> neighbours = getNeighboursByType(getCoordinates(tile), -1, true);
                         if (neighbours.size() == 8) {
-                            getPlayer(tile.getMeeple()[1]).currentPoints += 9;
-                            getPlayer(tile.getMeeple()[1]).numberOfMeeples += 1;
+                            getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += 9;
+                            getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             tile.removeMeeple();
+                            System.out.println("Monastery completed!");
                             return;
                         }
                     }
@@ -564,20 +589,32 @@ public class GameState {
                     if (tile.getPoint(tile.getMeeple()[0]) == 1) {
                         int points = checkForCityCompletion(tile.getArea(tile.getMeeple()[0]));
                         if (points != 0) {
-                            getPlayer(tile.getMeeple()[1]).currentPoints += points;
-                            getPlayer(tile.getMeeple()[1]).numberOfMeeples += 1;
+                            getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
+                            getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             tile.removeMeeple();
+                            System.out.println("City completed!");
+                            completedCities.add(tile.getType());
+                            return;
                         }
                     }
 
-
+                    if (tile.getPoint(tile.getMeeple()[0]) == 2) {
+                        int points = checkForRoadCompletion(checkForRoadCompletion(tile.getType()));
+                        if (points != 0) {
+                            getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
+                            getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
+                            tile.removeMeeple();
+                            System.out.println("Road completed!");
+                            return;
+                        }
+                    }
 
                 }
             }
         }
     }
 
-    public Player getPlayer(int nr) {
+    public Player getPlayer(int nr, Player player1, Player player2) {
         if (nr == 1) {
             return player1;
         } else if (nr == 2) {
@@ -677,8 +714,94 @@ public class GameState {
         } else if (endPoints < 2) {
             return 0;
         } else {
-            System.out.println("Weird return value in checkForRoardCompletion(...)");
+            System.out.println("Weird return value in checkForRoadCompletion(...)");
             return -1;
+        }
+    }
+
+    public int deckSize() {
+        return deck.size();
+    }
+
+    public void assignPointsAtEndOfGame(Player player1, Player player2) {
+        int player1Points = 0;
+        int player2Points = 0;
+
+        for (int i = 0; i < areaTypes.size(); i++) {
+            // If the area is a field, then we need to evaluate it.
+            if (areaTypes.get(i) == 0) {
+                List<Tile> tilesOfArea = getTilesOfArea(i);
+                List<Integer> consideredCities = new ArrayList<>();
+                int numAdjacentCities = 0;
+
+                for (Tile tile : tilesOfArea) {
+                    for (int point : tile.getPoints()) {
+                        if (completedCities.contains(tile.getArea(point)) && !consideredCities.contains(tile.getArea(point))) {
+                            numAdjacentCities++;
+                            consideredCities.add(tile.getArea(point));
+                        }
+                    }
+                }
+
+                for (int playerNr : getAreaOwners(i)) {
+                    Player player = getPlayer(playerNr, player1, player2);
+
+                    player.currentPoints += numAdjacentCities * 3;
+                }
+            }
+
+            if (areaTypes.get(i) == 1 || areaTypes.get(i) == 2) {
+                for (int playerNr : getAreaOwners(i)) {
+                    Player player = getPlayer(playerNr, player1, player2);
+
+                    List<Tile> tilesOfArea = getTilesOfArea(i);
+
+                    player.currentPoints += tilesOfArea.size();
+                }
+            }
+
+            if (areaTypes.get(i) == 4) {
+                for (int playerNr : getAreaOwners(i)) {
+                    Player player = getPlayer(playerNr, player1, player2);
+
+                    Tile tileWithMonastery = new Tile(0, false);
+
+                    for (List<Tile> row : board) {
+                        for (Tile tile : row) {
+                            if (tile.getArea(12) == 4) {
+                                Map<Integer, Tile> monasteryTiles = getNeighboursByType(getCoordinates(tile), -1, true);
+                                player.currentPoints += monasteryTiles.size();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private int[] getAreaOwners(int area) {
+        int numMeeplesP1 = 0;
+        int numMeeplesP2 = 0;
+
+        List<Tile> tilesInArea = getTilesOfArea(area);
+
+        for (Tile tile : tilesInArea) {
+            if (tile.getMeeple()[1] == 1) {
+                numMeeplesP1++;
+            } else if (tile.getMeeple()[1] == 2) {
+                numMeeplesP2++;
+            }
+        }
+
+        if (numMeeplesP1 > numMeeplesP2) {
+            return new int[]{1};
+        } else if (numMeeplesP2 > numMeeplesP1) {
+            return new int[]{2};
+        } else if (numMeeplesP1 == 0 && numMeeplesP2 == 0) {
+            return new int[0];
+        } else {
+            return new int[]{1, 2};
         }
     }
 }

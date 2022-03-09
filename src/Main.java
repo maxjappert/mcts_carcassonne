@@ -11,21 +11,30 @@ public class Main {
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = new GameState();
 
-        Player player1 = new HumanPlayer(1);
-        Player player2 = new HumanPlayer(2);
+        Player player1 = new AIPlayer(1);
+        Player player2 = new AIPlayer(2);
 
-        while (true) {
+        do {
             state.displayBoard();
 
             Tile drawnTile = state.drawTile();
-            //Tile drawnTile = new Tile(12, false);
+            //Tile drawnTile = new Tile(4, false);
 
-            int[] move = player1.decideOnNextMove(state, stateSpace, drawnTile);
+            int[] move = new int[]{-1, -1};
+
+            while (move[0] == -1) {
+                if (state.deckSize() % 2 == 0) {
+                    move = player1.decideOnNextMove(state, stateSpace, drawnTile);
+                } else {
+                    move = player2.decideOnNextMove(state, stateSpace, drawnTile);
+                }
+            }
 
             state.updateBoard(move, drawnTile);
 
-            System.out.println(Arrays.toString(drawnTile.getAreas()));
-        }
+            state.checkForPointsAfterRound(player1, player2);
+
+        } while (state.deckSize() > 0);
     }
 }
 
