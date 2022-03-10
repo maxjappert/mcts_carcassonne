@@ -11,12 +11,16 @@ public class GameStateSpace {
         return state.deckSize() == 0;
     }
 
-    public List<ActionRotationStateTriple> succ(GameState state, Tile drawnTile) {
+    public List<ActionRotationStateTriple> succ(GameState state, Tile tile) {
         List<ActionRotationStateTriple> successors = new ArrayList<>();
+
+        Tile drawnTile = new Tile(tile);
 
         int[] boardDimensions = state.getBoardDimensions();
         boardDimensions[0] += 2;
         boardDimensions[1] += 2;
+
+        System.out.println("** Legal successors: ");
 
         for (int i = 0; i < boardDimensions[0]; i++) {
             for (int j = 0; j < boardDimensions[1]; j++) {
@@ -25,7 +29,9 @@ public class GameStateSpace {
                     if (isLegalMove(move, drawnTile, state)) {
                         GameState updatedState = new GameState(state);
                         updatedState.updateBoard(move, drawnTile);
-                        successors.add(new ActionRotationStateTriple(move, rotation, updatedState));
+                        ActionRotationStateTriple arst = new ActionRotationStateTriple(move, rotation, updatedState);
+                        System.out.println("** [" + arst.getAction()[0] + ", " + arst.getAction()[1] + "] with rotation " + arst.getRotation());
+                        successors.add(arst);
                     }
                     drawnTile.rotate();
                 }
@@ -47,9 +53,10 @@ public class GameStateSpace {
         for (int point = 0; point < 13; point++) {
             if (checkIfLegalMeeplePlacement(tile, point, move, state)) {
                 placements.add(point);
-                System.out.println(point);
             }
         }
+
+        System.out.println("** Legal meeple placements: " + placements);
 
         return placements;
     }

@@ -8,6 +8,7 @@ public class GameState {
     private List<Integer> completedCities;
 
     // TODO: step by step debug of the random walk.
+    // TODO: why aren't new areas assigned? I.e., why do the point types seem to be assigned as areas?
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
@@ -162,15 +163,17 @@ public class GameState {
                     // If two adjacent points have different areas with non-trivial codes, then the tile connects
                     // those two areas. We then need to merge those two areas by replacing the larger area code
                     // with the smaller one.
-                    if (area < Integer.MAX_VALUE) {
-                        replaceArea(area, tile.getArea(point));
-                    }
+
+                    // TODO: Implement a system for connecting two areas that actually works. This previous system messes up the entire thing.
+//                    if (area < Integer.MAX_VALUE) {
+//                        replaceArea(area, tile.getArea(point));
+//                    }
                     area = tile.getArea(point);
                 }
             }
 
             if (area == Integer.MAX_VALUE) {
-                area = assignNewArea(tile.getPoint(type));
+                area = assignNewArea(type);
             }
 
             areas.add(area);

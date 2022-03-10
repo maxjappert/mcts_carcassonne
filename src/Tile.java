@@ -46,6 +46,8 @@ public class Tile {
 
     private int middleArea;
 
+    private int rotation;
+
     /**
      * The possible types are the following:
      * 0: City and straight road (4, including starting tile)
@@ -71,6 +73,7 @@ public class Tile {
     public Tile(int type, boolean pennant) {
         this.pennant = pennant;
         this.type = type;
+        this.rotation = 0;
 
         areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
@@ -190,6 +193,8 @@ public class Tile {
         this.middle = tile.getMiddle();
         this.middleArea = tile.getMiddleArea();
         this.pennant = tile.hasPennant();
+        this.rotation = tile.rotation;
+        this.type = tile.type;
     }
 
     /**
@@ -406,6 +411,12 @@ public class Tile {
      */
     public void rotate() {
 
+        if (rotation == 3) {
+            rotation = 0;
+        } else {
+            rotation++;
+        }
+
         int temp1;
         int temp2;
 
@@ -539,5 +550,9 @@ public class Tile {
 
     public void removeMeeple() {
         meeple = new int[]{-1, -1};
+    }
+
+    public int getRotation() {
+        return rotation;
     }
 }

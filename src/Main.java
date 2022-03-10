@@ -22,6 +22,7 @@ public class Main {
 
             Tile drawnTile = state.drawTile();
             //Tile drawnTile = new Tile(1, false);
+            drawnTile.printTile();
 
             int[] move = new int[]{-1, -1};
 
@@ -33,11 +34,13 @@ public class Main {
                 }
             }
 
+            System.out.println("** Move: [" + move[0] + ", " + move[1] + "] with rotation " + drawnTile.getRotation());
+
             state.updateBoard(move, drawnTile);
 
             state.checkForPointsAfterRound(player1, player2);
 
-        } while (state.deckSize() > 0);
+        } while (!stateSpace.isGoal(state));
 
         state.assignPointsAtEndOfGame(player1, player2);
 
