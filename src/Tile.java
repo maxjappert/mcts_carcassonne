@@ -345,11 +345,13 @@ public class Tile {
             }
         }
 
-        if (meeple[0] == 4) {
-            output[2][2] = Character.forDigit(meeple[1], 10);
-        } else {
-            output[2][2] = c;
-        }
+//        if (meeple[0] == 4) {
+//            output[2][2] = Character.forDigit(meeple[1], 10);
+//        } else {
+//            output[2][2] = c;
+//        }
+
+        output[2][2] = c;
 
         if (meeple[1] != -1) {
             char digit = Character.forDigit(meeple[1], 10);

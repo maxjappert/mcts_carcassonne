@@ -191,6 +191,23 @@ public class GameState {
             tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
         }
 
+        // Yeah, here's where the bodges start again...
+        if (tile.getType() == 15) {
+            int roadArea = Integer.MAX_VALUE;
+
+            for (int i = 0; i < 4; i++) {
+                if (tile.getSide(i) == 2 && tile.getArea(i*3 + 1) < roadArea) {
+                    roadArea = tile.getArea(i*3 + 1);
+                }
+            }
+
+            for (int i = 0; i < 4; i++) {
+                if (tile.getSide(i) == 2) {
+                    tile.setArea(i*3 + 1, roadArea);
+                }
+            }
+        }
+
         //--------------------------
 
         // This is the case where the tile generates a new top row.
@@ -731,9 +748,6 @@ public class GameState {
     }
 
     public void assignPointsAtEndOfGame(Player player1, Player player2) {
-        int player1Points = 0;
-        int player2Points = 0;
-
         for (int i = 0; i < areaTypes.size(); i++) {
             // If the area is a field, then we need to evaluate it.
             if (areaTypes.get(i) == 0) {

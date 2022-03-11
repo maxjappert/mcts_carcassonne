@@ -40,7 +40,10 @@ public class Main {
 
             state.checkForPointsAfterRound(player1, player2);
 
-        } while (!stateSpace.isGoal(state));
+         } while (!stateSpace.isGoal(state));
+        //} while (state.deckSize() > 60);
+
+        state.displayBoard();
 
         state.assignPointsAtEndOfGame(player1, player2);
 

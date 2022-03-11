@@ -45,7 +45,7 @@ public class GameStateSpace {
      *
      * @param state The state in question.
      * @param tile The tile in question.
-     * @return Subset of {0, 1, 2, 3, 4}, denoting the sides on which meeples can be placed.
+     * @return Subset of {0, ..., 12}, denoting the sides on which meeples can be placed.
      */
     public List<Integer> legalMeeples(GameState state, Tile tile, int[] move) {
         List<Integer> placements = new ArrayList<>();
@@ -70,7 +70,11 @@ public class GameStateSpace {
      */
     private boolean isLegalMove(int[] move, Tile tile, GameState state) {
 
-        List<List<Tile>> board = state.getBoard();
+        if (move[0] > 0 && move[0] <= state.getBoardDimensions()[0] && move[1] > 0 && move[1] <= state.getBoardDimensions()[1]) {
+            if (state.getTile(new int[]{move[0]-1, move[1]-1}) != null) {
+                return false;
+            }
+        }
 
         // If the new tile is placed such that a new row and a new column of the board are created, then it necessarily
         // follows that the tile doesn't connect to any tile on the board and therefore the move must be illegal.
@@ -89,19 +93,19 @@ public class GameStateSpace {
         } else if (move[1] == state.getBoardDimensions()[1] + 1) {
             connected = new boolean[]{false, false, false, true};
         } else {
-            if (state.getTile(new int[]{move[0] + 1, move[1]}) == null) {
+            if (state.getTile(new int[]{move[0], move[1] - 1}) == null) {
                 connected[0] = false;
             }
 
-            if (state.getTile(new int[]{move[0], move[1] + 1}) == null) {
+            if (state.getTile(new int[]{move[0] - 1, move[1]}) == null) {
                 connected[1] = false;
             }
 
-            if (state.getTile(new int[]{move[0] - 1, move[1]}) == null) {
+            if (state.getTile(new int[]{move[0] - 2, move[1] - 1}) == null) {
                 connected[2] = false;
             }
 
-            if (state.getTile(new int[]{move[0], move[1] - 1}) == null) {
+            if (state.getTile(new int[]{move[0] - 1, move[1] - 2}) == null) {
                 connected[3] = false;
             }
         }
