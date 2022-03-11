@@ -621,7 +621,7 @@ public class GameState {
                     }
 
                     if (tile.getPoint(tile.getMeeple()[0]) == 2) {
-                        int points = checkForRoadCompletion(checkForRoadCompletion(tile.getType()));
+                        int points = checkForRoadCompletion(tile.getArea(tile.getMeeple()[0]));
                         if (points != 0) {
                             getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
                             getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
