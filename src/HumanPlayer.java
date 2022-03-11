@@ -9,10 +9,6 @@ public class HumanPlayer extends Player {
     }
 
     int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
-        List<List<Tile>> board = state.getBoard();
-
-        tile.printTile();
-
         System.out.println("This is the tile you've drawn:");
 
         Scanner sc = new Scanner(System.in);

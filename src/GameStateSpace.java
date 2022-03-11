@@ -20,7 +20,7 @@ public class GameStateSpace {
         boardDimensions[0] += 2;
         boardDimensions[1] += 2;
 
-        System.out.println("** Legal successors: ");
+        //System.out.println("** Legal successors: ");
 
         for (int i = 0; i < boardDimensions[0]; i++) {
             for (int j = 0; j < boardDimensions[1]; j++) {
@@ -30,7 +30,7 @@ public class GameStateSpace {
                         GameState updatedState = new GameState(state);
                         updatedState.updateBoard(move, drawnTile);
                         ActionRotationStateTriple arst = new ActionRotationStateTriple(move, rotation, updatedState);
-                        System.out.println("** [" + arst.getAction()[0] + ", " + arst.getAction()[1] + "] with rotation " + arst.getRotation());
+                        //System.out.println("** [" + arst.getAction()[0] + ", " + arst.getAction()[1] + "] with rotation " + arst.getRotation());
                         successors.add(arst);
                     }
                     drawnTile.rotate();
@@ -127,7 +127,7 @@ public class GameStateSpace {
                 return false;
             }
         } catch (NullPointerException e) {
-            // TODO: This is a bodge.
+            // This is a bodge.
             return false;
             //System.out.println("For move " + Arrays.toString(move) + " and a board of size " + Arrays.toString(state.getBoardDimensions()) + " there was a null pointer exception.");
         }

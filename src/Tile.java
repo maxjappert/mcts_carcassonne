@@ -111,7 +111,7 @@ public class Tile {
                 middle = 0;
             }
             case 6 -> {
-                // TODO: this leads to a misleading representation.
+                // this leads to a misleading representation.
                 sides = new int[]{0, 0, 1, 1};
                 points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 0;
@@ -152,7 +152,7 @@ public class Tile {
                 middle = 1;
             }
             case 14 -> {
-                // TODO: this leads to a misleading representation.
+                // this leads to a misleading representation.
                 sides = new int[]{0, 0, 1, 1};
                 points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;

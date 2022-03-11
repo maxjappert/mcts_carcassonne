@@ -11,10 +11,10 @@ public class Main {
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = new GameState();
 
-        Player player1 = new AIPlayer(1);
+//        Player player1 = new AIPlayer(1);
         Player player2 = new AIPlayer(2);
 
-//        Player player1 = new HumanPlayer(1);
+        Player player1 = new HumanPlayer(1);
 //        Player player2 = new HumanPlayer(2);
 
         do {

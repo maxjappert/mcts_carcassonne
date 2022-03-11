@@ -7,8 +7,6 @@ public class GameState {
     private List<Integer> areaTypes;
     private List<Integer> completedCities;
 
-    // TODO: step by step debug of the random walk.
-    // TODO: why aren't new areas assigned? I.e., why do the point types seem to be assigned as areas?
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
@@ -567,7 +565,7 @@ public class GameState {
     private void replaceArea(int replacedArea, int newArea) {
         for (List<Tile> row : board) {
             for (Tile tile : row) {
-                for (int i = 0; i < 12; i++) {
+                for (int i = 0; i <= 12; i++) {
                     if (tile != null && tile.getArea(i) == replacedArea) {
                         tile.setArea(i, newArea);
                     }
@@ -604,8 +602,8 @@ public class GameState {
                         if (neighbours.size() == 8) {
                             getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += 9;
                             getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
+                            System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
                             tile.removeMeeple();
-                            System.out.println("Monastery completed!");
                             return;
                         }
                     }
@@ -615,8 +613,8 @@ public class GameState {
                         if (points != 0) {
                             getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
                             getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
+                            System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             tile.removeMeeple();
-                            System.out.println("City completed!");
                             completedCities.add(tile.getType());
                             return;
                         }
@@ -627,8 +625,8 @@ public class GameState {
                         if (points != 0) {
                             getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
                             getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
+                            System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             tile.removeMeeple();
-                            System.out.println("Road completed!");
                             return;
                         }
                     }
