@@ -1,12 +1,16 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class GameState {
-    private List<Tile> deck;
-    private List<List<Tile>> board;
+    private final List<Tile> deck;
+    private final List<List<Tile>> board;
 
-    private List<Integer> areaTypes;
-    private List<Integer> completedCities;
+    private final List<Integer> areaTypes;
+    private final List<Integer> completedCities;
 
+    static final Logger logger = LoggerFactory.getLogger("GameStateLogger");
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
@@ -83,6 +87,10 @@ public class GameState {
      */
     public void updateBoard(int[] move, Tile tile) {
 
+        if (tile.getMiddle() == 4) {
+            tile.setArea(12, 4);
+        }
+
         Map<Integer, Tile> neighbours = getNeighboursByType(move, -1, false);
 
         for (int side : neighbours.keySet()) {
@@ -138,7 +146,7 @@ public class GameState {
             }
         }
 
-        adjacentPointsOfSameType.removeIf(set -> set.size() == 0);
+        adjacentPointsOfSameType.removeIf(TreeSet::isEmpty);
 
         // Merge all sets of adjacent points of the same type for the types corresponding to the middle.
 
@@ -444,8 +452,8 @@ public class GameState {
             }
         }
 
-        System.out.println("Tile not found in getCoordinates(...)");
-        return null;
+        logger.error("Tile not found in getCoordinates(...)");
+        return new int[0];
     }
 
     /**
@@ -541,7 +549,7 @@ public class GameState {
             oppositePoint = 3;
         } else {
             oppositePoint = -1;
-            System.out.println("Error in function getOppositePoint(...)");
+            logger.error("Error in function getOppositePoint(...)");
         }
 
         return oppositePoint;
@@ -597,9 +605,10 @@ public class GameState {
                 if (tile != null && tile.hasMeeple()) {
 
                     // If the tile has a monastery
-                    if (tile.getMiddle() == 4) {
+                    if (tile.getMiddle() == 4 && tile.getMeeple()[0] == 12) {
+                        // TODO: This doesn't work, probably because of the getNeighboursByType(...) method with the type -1.
                         Map<Integer, Tile> neighbours = getNeighboursByType(getCoordinates(tile), -1, true);
-                        if (neighbours.size() == 8) {
+                        if (neighbours.size() >= 8) {
                             getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += 9;
                             getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
@@ -614,8 +623,8 @@ public class GameState {
                             getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
                             getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
+                            completedCities.add(tile.getArea(tile.getMeeple()[0]));
                             tile.removeMeeple();
-                            completedCities.add(tile.getType());
                             return;
                         }
                     }
@@ -642,7 +651,7 @@ public class GameState {
         } else if (nr == 2) {
             return player2;
         } else {
-            System.out.println("Error in getPlayer(...)");
+            logger.error("Error in getPlayer(...)");
             return null;
         }
     }
@@ -726,7 +735,7 @@ public class GameState {
                 if (numRoadsOfGivenType == 2) {
                     endPoints += 2;
                 } else if (numRoadsOfGivenType > 2) {
-                    System.out.println("Weird stuff happening in checkForRoadCompletion(...)");
+                    logger.error("Weird stuff happening in checkForRoadCompletion(...)");
                 }
             }
         }
@@ -736,7 +745,7 @@ public class GameState {
         } else if (endPoints < 2) {
             return 0;
         } else {
-            System.out.println("Weird return value in checkForRoadCompletion(...)");
+            logger.error("Weird return value in checkForRoadCompletion(...)");
             return -1;
         }
     }
@@ -783,8 +792,6 @@ public class GameState {
                 for (int playerNr : getAreaOwners(i)) {
                     Player player = getPlayer(playerNr, player1, player2);
 
-                    Tile tileWithMonastery = new Tile(0, false);
-
                     for (List<Tile> row : board) {
                         for (Tile tile : row) {
                             if (tile.getArea(12) == 4) {
@@ -822,5 +829,10 @@ public class GameState {
         } else {
             return new int[]{1, 2};
         }
+    }
+
+    public void addToDeck(Tile tile) {
+        deck.add(tile);
+        Collections.shuffle(deck);
     }
 }
