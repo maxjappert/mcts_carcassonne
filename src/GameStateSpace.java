@@ -1,7 +1,5 @@
 import java.util.*;
 
-import static java.lang.Math.abs;
-
 public class GameStateSpace {
     public GameState init() {
         return new GameState();
@@ -20,8 +18,6 @@ public class GameStateSpace {
         boardDimensions[0] += 2;
         boardDimensions[1] += 2;
 
-        //System.out.println("** Legal successors: ");
-
         for (int i = 0; i < boardDimensions[0]; i++) {
             for (int j = 0; j < boardDimensions[1]; j++) {
                 int[] move = new int[]{i, j};
@@ -30,7 +26,6 @@ public class GameStateSpace {
                         GameState updatedState = new GameState(state);
                         updatedState.updateBoard(move, drawnTile);
                         ActionRotationStateTriple arst = new ActionRotationStateTriple(move, rotation, updatedState);
-                        //System.out.println("** [" + arst.getAction()[0] + ", " + arst.getAction()[1] + "] with rotation " + arst.getRotation());
                         successors.add(arst);
                     }
                     drawnTile.rotate();
@@ -55,8 +50,6 @@ public class GameStateSpace {
                 placements.add(point);
             }
         }
-
-        System.out.println("** Legal meeple placements: " + placements);
 
         return placements;
     }
@@ -129,7 +122,6 @@ public class GameStateSpace {
         } catch (NullPointerException e) {
             // This is a bodge.
             return false;
-            //System.out.println("For move " + Arrays.toString(move) + " and a board of size " + Arrays.toString(state.getBoardDimensions()) + " there was a null pointer exception.");
         }
 
         // The move needs to be connected on least one side.

@@ -1,7 +1,9 @@
-import java.util.Arrays;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class Player {
+
+    static final Logger logger = LoggerFactory.getLogger("PlayerLogger");
 
     /**
      * An integer to uniquely identify each player. Since this implementation only considers the two-player version
@@ -13,8 +15,10 @@ abstract class Player {
 
     protected int numberOfMeeples;
 
-    public Player(int playerID) {
-        assert (playerID == 1 || playerID == 2);
+    protected Player(int playerID) {
+        if (playerID != 1 && playerID != 2) {
+            logger.error("Player initialised with invalid ID");
+        }
         this.playerID = playerID;
         this.currentPoints = 0;
         this.numberOfMeeples = 7;

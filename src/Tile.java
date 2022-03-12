@@ -1,3 +1,6 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -5,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Tile {
+    static final Logger logger = LoggerFactory.getLogger("TileLogger");
+
     private final boolean pennant;
 
     /**
@@ -33,7 +38,7 @@ public class Tile {
      */
     private int[] meeple;
 
-    private int type;
+    private final int type;
 
     /**
      * 0: grass
@@ -111,7 +116,6 @@ public class Tile {
                 middle = 0;
             }
             case 6 -> {
-                // this leads to a misleading representation.
                 sides = new int[]{0, 0, 1, 1};
                 points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 0;
@@ -152,13 +156,11 @@ public class Tile {
                 middle = 1;
             }
             case 14 -> {
-                // this leads to a misleading representation.
                 sides = new int[]{0, 0, 1, 1};
                 points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 15 -> {
-                // There could be a problem here regarding the connection of the two roads, since the middle has to be a city.
                 sides = new int[]{2, 2, 1, 1};
                 points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
@@ -232,7 +234,7 @@ public class Tile {
             output[1][2] = '|';
             road = true;
         } else {
-            throw new Exception("Wrong tile code passed.");
+            logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -255,7 +257,7 @@ public class Tile {
             output[3][2] = '|';
             road = true;
         } else {
-            throw new Exception("Wrong tile code passed.");
+            logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -279,7 +281,7 @@ public class Tile {
             output[2][3] = '-';
             road = true;
         } else {
-            throw new Exception("Wrong tile code passed.");
+            logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -304,7 +306,7 @@ public class Tile {
             output[2][1] = '-';
             road = true;
         } else {
-            throw new Exception("Wrong tile code passed.");
+            logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -334,7 +336,7 @@ public class Tile {
         } else if (middle == 4) {
             c = '@';
         } else {
-            throw new Exception("Wrong input for the middle of the tile.");
+            logger.error("Wrong input for the middle of the tile.");
         }
 
         for(int i = 0; i < 5; i++) {
@@ -345,11 +347,22 @@ public class Tile {
             }
         }
 
-//        if (meeple[0] == 4) {
-//            output[2][2] = Character.forDigit(meeple[1], 10);
-//        } else {
-//            output[2][2] = c;
-//        }
+        // Inelegant workaround to avoid the identical representation of tiles 6 and 14.
+        if (type == 6) {
+            if (sides[0] == 1 && sides[1] == 1) {
+                output[3][3] = '.';
+                output[4][4] = '.';
+            } else if (sides[1] == 1 && sides[2] == 1) {
+                output[1][3] = '.';
+                output[0][4] = '.';
+            } else if (sides[2] == 1 && sides[3] == 1) {
+                output[1][1] = '.';
+                output[0][0] = '.';
+            } else if (sides[3] == 1 && sides[0] == 1) {
+                output[3][1] = '.';
+                output[4][0] = '.';
+            }
+        }
 
         output[2][2] = c;
 
@@ -473,9 +486,6 @@ public class Tile {
     }
 
     public void placeMeeple(int side, int playerID) {
-        assert (side >= 0 && side < 5);
-        assert (playerID == 1 || playerID == 2);
-
         meeple = new int[]{side, playerID};
     }
 
@@ -513,17 +523,12 @@ public class Tile {
     }
 
     public void setArea(int point, int area) {
-        areas[point] = area;
-    }
 
-    public boolean containsRoad() {
-        for (int sideType : sides) {
-            if (sideType == 2) {
-                return true;
-            }
+        if (point == 12) {
+            middleArea = area;
+        } else {
+            areas[point] = area;
         }
-
-        return false;
     }
 
     public int[] getPoints() {

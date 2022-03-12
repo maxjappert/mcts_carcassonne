@@ -1,8 +1,12 @@
-import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Scanner;
 
 public class HumanPlayer extends Player {
+
+    static final Logger logger = LoggerFactory.getLogger("HumanPlayerLogger");
 
     public HumanPlayer(int playerID) {
         super(playerID);
@@ -47,6 +51,10 @@ public class HumanPlayer extends Player {
 
             List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
 
+            if (legalSuccessors.isEmpty()) {
+                return new int[]{-1, -1};
+            }
+
             for (ActionRotationStateTriple successor : legalSuccessors) {
                 if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
                     legalMove = true;
@@ -72,18 +80,19 @@ public class HumanPlayer extends Player {
                     assert (point >= 0 && point <= 12);
 
                     boolean legalMeeple = stateSpace.legalMeeples(state, tile, move).contains(point);
-                    //boolean legalMeeple = true;
 
                     if (legalMeeple) {
                         tile.placeMeeple(point, playerID);
                         numberOfMeeples -= 1;
+                        logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], numberOfMeeples);
+
                     } else {
                         System.out.println("You can't place a meeple there. Please try again.");
                         continue;
                     }
                 }
 
-                System.out.println("** end of decideOnNextMove(...)");
+                logger.info("End of decideOnNextMove(...)");
 
                 return move;
             }

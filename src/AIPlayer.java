@@ -1,11 +1,17 @@
-import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Random;
 
 public class AIPlayer extends Player {
 
+    static final Logger logger = LoggerFactory.getLogger("AIPlayerLogger");
+    Random random;
+
     public AIPlayer(int playerID) {
         super(playerID);
+        random = new Random();
     }
 
     /**
@@ -17,11 +23,11 @@ public class AIPlayer extends Player {
         List<ActionRotationStateTriple> ars = stateSpace.succ(state, tile);
 
         // In this case no move is possible and a new tile has to be drawn.
-        if (ars.size() == 0) {
+        if (ars.isEmpty()) {
             return new int[]{-1, -1};
         }
 
-        ActionRotationStateTriple move = ars.get(new Random().nextInt(ars.size()));
+        ActionRotationStateTriple move = ars.get(random.nextInt(ars.size()));
 
         for (int i = 0; i < move.getRotation(); i++) {
             tile.rotate();
@@ -29,11 +35,16 @@ public class AIPlayer extends Player {
 
         int[] action = move.getAction();
 
+        logger.info("Player {} placed tile at [{}, {}] with rotation {}.", playerID, move.getAction()[0], move.getAction()[1], tile.getRotation());
+
+        // Here the placement of the meeple is decided
+
         List<Integer> meeplePlacements = stateSpace.legalMeeples(state, tile, action);
 
-        if (new Random().nextBoolean() && meeplePlacements.size() > 0 && numberOfMeeples > 0) {
-            tile.placeMeeple(meeplePlacements.get(new Random().nextInt(meeplePlacements.size())), playerID);
+        if (random.nextBoolean() && !meeplePlacements.isEmpty() && numberOfMeeples > 0) {
+            tile.placeMeeple(meeplePlacements.get(random.nextInt(meeplePlacements.size())), playerID);
             numberOfMeeples--;
+            logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], numberOfMeeples);
         }
 
         return move.getAction();
