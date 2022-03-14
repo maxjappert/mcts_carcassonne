@@ -531,6 +531,11 @@ public class Tile {
         }
     }
 
+    public void resetAreas() {
+        middleArea = -1;
+        areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    }
+
     public int[] getPoints() {
         return points;
     }

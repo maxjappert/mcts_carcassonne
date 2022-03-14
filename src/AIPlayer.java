@@ -44,7 +44,7 @@ public class AIPlayer extends Player {
         if (random.nextBoolean() && !meeplePlacements.isEmpty() && numberOfMeeples > 0) {
             tile.placeMeeple(meeplePlacements.get(random.nextInt(meeplePlacements.size())), playerID);
             numberOfMeeples--;
-            logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], numberOfMeeples);
+            logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), tile.getMeeple()[0], numberOfMeeples);
         }
 
         return move.getAction();

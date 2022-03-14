@@ -87,6 +87,8 @@ public class GameState {
      */
     public void updateBoard(int[] move, Tile tile) {
 
+        tile.resetAreas();
+
         if (tile.getMiddle() == 4) {
             tile.setArea(12, 4);
         }
@@ -161,19 +163,26 @@ public class GameState {
         for (Set<Integer> set : adjacentPointsOfSameType) {
             int area = Integer.MAX_VALUE;
             int type = -1;
+            Set<Integer> inheritedAreas = new TreeSet<>();
 
             for (int point : set) {
                 type = tile.getPoint(point);
 
-                if (tile.getArea(point) < area && tile.getArea(point) != -1) {
-                    // If two adjacent points have different areas with non-trivial codes, then the tile connects
-                    // those two areas. We then need to merge those two areas by replacing the larger area code
-                    // with the smaller one.
+                if (/*tile.getArea(point) < area && */tile.getArea(point) != -1) {
+                    inheritedAreas.add(tile.getArea(point));
 
-                    // TODO: Implement a system for connecting two areas that actually works. This previous system messes up the entire thing.
-//                    if (area < Integer.MAX_VALUE) {
-//                        replaceArea(area, tile.getArea(point));
-//                    }
+                    // TODO: Test this implementation.
+                    // If adjacent points of the same type inherit from different areas, then this tile connects
+                    // those two areas and consequently we must replace the one of the areas. In our case this is
+                    // the area with the higher area code with the area with the lower area code.
+                    if (inheritedAreas.size() > 1) {
+                        int replacedArea = Collections.max(inheritedAreas);
+                        int newArea = Collections.min(inheritedAreas);
+                        replaceArea(replacedArea, newArea);
+
+                        inheritedAreas.remove(replacedArea);
+                    }
+
                     area = tile.getArea(point);
                 }
             }
@@ -192,6 +201,8 @@ public class GameState {
                 tile.setArea(point, areas.get(i));
             }
         }
+
+        System.out.println(adjacentPointsOfSameType.toString());
 
         if (indexOfMiddleArea != -1) {
             tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
@@ -710,6 +721,8 @@ public class GameState {
             } else if (tile.getType() == 3 || tile.getType() == 9 || tile.getType() == 10) {
                 int numRoadsOfGivenType = 0;
 
+                endPoints++;
+
                 if (tile.getArea(1) == area) {
                     numRoadsOfGivenType += 1;
                 }
@@ -727,7 +740,7 @@ public class GameState {
                 }
 
                 if (numRoadsOfGivenType == 2) {
-                    endPoints += 2;
+                    endPoints = 2;
                 } else if (numRoadsOfGivenType > 2) {
                     logger.error("Weird stuff happening in checkForRoadCompletion(...)");
                 }

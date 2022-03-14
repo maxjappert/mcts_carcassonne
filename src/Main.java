@@ -16,7 +16,7 @@ public class Main {
         GameState state = stateSpace.init();
 
         Player player1 = new AIPlayer(1);
-        Player player2 = new AIPlayer(2);
+        Player player2 = new HumanPlayer(2);
 
         do {
             state.displayBoard();

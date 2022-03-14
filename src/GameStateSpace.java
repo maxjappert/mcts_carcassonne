@@ -1,6 +1,11 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class GameStateSpace {
+    final static Logger logger = LoggerFactory.getLogger("GameStateSpaceLogger");
+
     public GameState init() {
         return new GameState();
     }
@@ -27,6 +32,8 @@ public class GameStateSpace {
                         updatedState.updateBoard(move, drawnTile);
                         ActionRotationStateTriple arst = new ActionRotationStateTriple(move, rotation, updatedState);
                         successors.add(arst);
+
+                        logger.info("[{}, {}] with rotation {} is a legal move.", move[0], move[1], rotation);
                     }
                     drawnTile.rotate();
                 }
