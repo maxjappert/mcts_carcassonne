@@ -91,7 +91,7 @@ public class GameState {
             tile.setArea(12, 4);
         }
 
-        Map<Integer, Tile> neighbours = getNeighboursByType(move, -1, false);
+        Map<Integer, Tile> neighbours = getNeighboursByType(move, false);
 
         for (int side : neighbours.keySet()) {
             int point1 = side * 3;
@@ -458,41 +458,36 @@ public class GameState {
 
     /**
      * @param move The coordinates of which the neighbours are to be determined.
-     * @param type The type along which the returned neighbours are connected.
      * @return All neighbouring tiles which are connected along the given type. If type == -1, then all neighbours are returned.
      */
-    public Map<Integer, Tile> getNeighboursByType(int[] move, int type, boolean monasteryNeighbours) {
+    public Map<Integer, Tile> getNeighboursByType(int[] move, boolean monasteryNeighbours) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
         // Create a deep copy of the move array
         int[] tileCoords = Arrays.copyOf(move, move.length);
 
-        tileCoords[0] -= 1;
-        tileCoords[1] -= 1;
+        // We only need to subtract 1 if the coordinates reference the placement space which considers a first row
+        // which doesn't exist in the board space. If we want to check for the monastery neighbours, we check in the
+        // board space.
+        if (!monasteryNeighbours) {
+            tileCoords[0] -= 1;
+            tileCoords[1] -= 1;
+        }
 
         if (getTile(new int[]{tileCoords[0] - 1, tileCoords[1]}) != null) {
-            if (type == -1 || board.get(tileCoords[0] - 1).get(tileCoords[1]).getSides()[0] == type) {
                 neighbourMap.put(2, board.get(tileCoords[0] - 1).get(tileCoords[1]));
-            }
         }
 
         if (getTile(new int[]{tileCoords[0], tileCoords[1] - 1}) != null) {
-            if (type == -1 || board.get(tileCoords[0]).get(tileCoords[1] - 1).getSides()[1] == type) {
                 neighbourMap.put(3, board.get(tileCoords[0]).get(tileCoords[1] - 1));
-            }
         }
 
         if (getTile(new int[]{tileCoords[0], tileCoords[1] + 1}) != null) {
-            if (type == -1 || board.get(tileCoords[0]).get(tileCoords[1] + 1).getSides()[3] == type) {
                 neighbourMap.put(1, board.get(tileCoords[0]).get(tileCoords[1] + 1));
-            }
         }
 
         if (getTile(new int[]{tileCoords[0] + 1, tileCoords[1]}) != null) {
-            if (type == -1 || board.get(tileCoords[0] + 1).get(tileCoords[1]).getSides()[2] == type) {
                 neighbourMap.put(0, board.get(tileCoords[0] + 1).get(tileCoords[1]));
-
-            }
         }
 
         //-----------------------------------------------------
@@ -606,8 +601,7 @@ public class GameState {
 
                     // If the tile has a monastery
                     if (tile.getMiddle() == 4 && tile.getMeeple()[0] == 12) {
-                        // TODO: This doesn't work, probably because of the getNeighboursByType(...) method with the type -1.
-                        Map<Integer, Tile> neighbours = getNeighboursByType(getCoordinates(tile), -1, true);
+                        Map<Integer, Tile> neighbours = getNeighboursByType(getCoordinates(tile), true);
                         if (neighbours.size() >= 8) {
                             getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += 9;
                             getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
@@ -795,7 +789,7 @@ public class GameState {
                     for (List<Tile> row : board) {
                         for (Tile tile : row) {
                             if (tile.getArea(12) == 4) {
-                                Map<Integer, Tile> monasteryTiles = getNeighboursByType(getCoordinates(tile), -1, true);
+                                Map<Integer, Tile> monasteryTiles = getNeighboursByType(getCoordinates(tile), true);
                                 player.currentPoints += monasteryTiles.size();
                                 break;
                             }

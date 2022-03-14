@@ -15,19 +15,19 @@ public class Main {
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
 
-        Player player1 = new HumanPlayer(1);
+        Player player1 = new AIPlayer(1);
         Player player2 = new AIPlayer(2);
 
         do {
             state.displayBoard();
 
-            Tile drawnTile = new Tile(12, false);//state.drawTile();
+            Tile drawnTile = state.drawTile();
             drawnTile.printTile();
 
             int[] move = new int[]{-1, -1};
 
             while (move[0] == -1) {
-                if (/*state.deckSize() % 2 == 0*/ true) {
+                if (state.deckSize() % 2 == 0) {
                     move = player1.decideOnNextMove(state, stateSpace, drawnTile);
                 } else {
                     move = player2.decideOnNextMove(state, stateSpace, drawnTile);
@@ -36,11 +36,9 @@ public class Main {
                 // In the rare case that the drawn tile cannot legally be placed, the tile is added back to the deck
                 // and a new tile is drawn.
                 if (move[0] == -1) {
-                    logger.info("Player {} draws tile with no possible legal moves.", ((state.deckSize() % 2) + 1));
+                    logger.info("Player {} draws tile with no possible legal moves. The tile is therefore redrawn.", ((state.deckSize() % 2) + 1));
                     state.addToDeck(drawnTile);
                     drawnTile = state.drawTile();
-                    System.out.println("The drawn tile cannot legally be placed. Therefore the tile has been added back" +
-                            "to the deck and a new tile has been drawn:");
                     drawnTile.printTile();
                 }
             }
