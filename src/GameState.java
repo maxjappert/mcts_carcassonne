@@ -201,9 +201,7 @@ public class GameState {
                 tile.setArea(point, areas.get(i));
             }
         }
-
-        System.out.println(adjacentPointsOfSameType.toString());
-
+        
         if (indexOfMiddleArea != -1) {
             tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
         }
