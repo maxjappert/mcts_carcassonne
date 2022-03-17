@@ -4,12 +4,12 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Random;
 
-public class AIPlayer extends Player {
+public class RandomPlayer extends Player {
 
     static final Logger logger = LoggerFactory.getLogger("AIPlayerLogger");
     Random random;
 
-    public AIPlayer(int playerID) {
+    public RandomPlayer(int playerID) {
         super(playerID);
         random = new Random();
     }

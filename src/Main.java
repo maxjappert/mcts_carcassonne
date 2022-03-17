@@ -15,7 +15,7 @@ public class Main {
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
 
-        Player player1 = new AIPlayer(1);
+        Player player1 = new RandomPlayer(1);
         Player player2 = new HumanPlayer(2);
 
         do {
@@ -45,7 +45,7 @@ public class Main {
 
             state.updateBoard(move, drawnTile);
 
-            state.checkForPointsAfterRound(player1, player2);
+            state.checkForScoreAfterRound(player1, player2);
 
          } while (!stateSpace.isGoal(state));
 
@@ -53,8 +53,8 @@ public class Main {
 
         state.assignPointsAtEndOfGame(player1, player2);
 
-        System.out.println("Player 1 has " + player1.getPoints() + " points.");
-        System.out.println("Player 2 has " + player2.getPoints() + " points.");
+        //System.out.println("Player 1 has " + player1.getPoints() + " points.");
+        //System.out.println("Player 2 has " + player2.getPoints() + " points.");
 
         logger.info("play() finished.");
     }

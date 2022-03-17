@@ -11,7 +11,7 @@ abstract class Player {
      */
     protected int playerID;
 
-    protected int currentPoints;
+    //protected int currentPoints;
 
     protected int numberOfMeeples;
 
@@ -20,13 +20,9 @@ abstract class Player {
             logger.error("Player initialised with invalid ID");
         }
         this.playerID = playerID;
-        this.currentPoints = 0;
+        //this.currentPoints = 0;
         this.numberOfMeeples = 7;
     }
 
     abstract int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception;
-
-    public int getPoints() {
-        return currentPoints;
-    }
 }
