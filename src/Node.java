@@ -8,20 +8,11 @@ public class Node {
     private int[] qValues;
     private int visits;
     private Node parent;
-    private TreeSet<Node> children;
+    private List<Node> children;
     private Tile drawnTile;
     private int player;
     private Random random;
-
-//    private Comparator<Node> comparator = new Comparator<Node>() {
-//        @Override
-//        public int compare(Node n1, Node n2) {
-//
-//            uct1 =
-//
-//            return n1.qValues[player] - n2.qValues[player];
-//        }
-//    };
+    private int[] move;
 
     /**
      * 0: Placement Node
@@ -32,17 +23,20 @@ public class Node {
 
     Logger logger = LoggerFactory.getLogger("NodeLogger");
 
-    public Node(GameState state, Node parent, int type, int player) {
+    public Node(GameState state, Node parent, int type, int player, int[] move, Tile tile) {
 
 
         this.state = state;
         this.parent = parent;
         this.type = type;
         this.player = player;
+        this.drawnTile = tile;
         qValues = new int[]{0, 0};
-        visits = Integer.MAX_VALUE;
-        children = new TreeSet<>();
+        visits = 0;
+        children = new ArrayList<>();
         random = new Random();
+
+        this.move = move;
     }
 
     /**
@@ -53,24 +47,28 @@ public class Node {
         this.parent = node.parent;
         this.qValues = node.qValues;
         this.visits = node.visits;
-        this.children = (TreeSet<Node>) Set.copyOf(children);
+        this.children = List.copyOf(node.children);
         this.drawnTile = node.drawnTile;
         this.player = node.player;
         this.random = node.random;
+        this.move = node.getMove();
+        this.drawnTile = node.drawnTile;
     }
-
-//    public void expand(GameStateSpace stateSpace) {
-//        if (drawnTile == null) {
-//            logger.error("A node was expanded without it having a tile assigned.");
-//        } else if (type != 0) {
-//            logger.error("A wrong type of node was expanded.");
-//        }
-//
-//        //List<ActionRotationStateTriple> ars = stateSpace.succ(state, drawnTile, )
-//    }
 
     public void addChild(Node child) {
         children.add(child);
+
+        if (child.parent != this) {
+            logger.error("Child initialized with wrong parent.");
+        }
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    public int[] getMove() {
+        return move;
     }
 
 
@@ -78,7 +76,7 @@ public class Node {
         return !children.isEmpty();
     }
 
-    public TreeSet<Node> getChildren() {
+    public List<Node> getChildren() {
         return children;
     }
 
@@ -95,7 +93,12 @@ public class Node {
     }
 
     public Node getRandomChild() {
-        return children.stream().toList().get(random.nextInt(children.size()));
+        if (!children.isEmpty()) {
+            return children.get(random.nextInt(children.size()));
+        } else {
+            logger.error("No child available when querying for children!");
+            return null;
+        }
     }
 
     public GameState getState() {

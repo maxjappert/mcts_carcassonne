@@ -15,7 +15,7 @@ public class Main {
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
 
-        Player player1 = new RandomPlayer(1);
+        Player player1 = new UCTPlayer(1, 2, 5000);
         Player player2 = new HumanPlayer(2);
 
         do {

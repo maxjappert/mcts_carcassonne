@@ -1,36 +1,57 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class UCTPlayer extends Player {
-    private double explorationTerm;
+    private final double explorationTerm;
+    private final int trainingIterations;
 
-    protected UCTPlayer(int playerID, double explorationTerm) {
+
+    protected UCTPlayer(int playerID, double explorationTerm, int trainingIterations) {
         super(playerID);
 
         this.explorationTerm = explorationTerm;
+        this.trainingIterations = trainingIterations;
     }
 
     @Override
     int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
-        Node root = new Node(state, null, 0, playerID);
+        Node root = new Node(state, null, 0, playerID, null, tile);
 
-        for (int i = 0; i < 5000; i++) {
-            Node node = treePolicy(root, stateSpace);
+        for (int i = 0; i < trainingIterations; i++) {
+            Node node = treePolicy(root, stateSpace, tile);
 
-            int payoff = defaultPolicy(node);
+            int payoff = defaultPolicy(node, stateSpace);
 
             backup(node, payoff);
         }
 
-        return null;
+        // Exploration term set to 0, since when executing we only want to consider the exploitation term.
+        Node meepleNode = bestChild(root, 0);
+
+        int[] move = meepleNode.getMove();
+
+        for (int i = 0; i < meepleNode.getDrawnTile().getRotation(); i++) {
+            tile.rotate();
+        }
+
+        Node chanceNode = bestChild(meepleNode, 0);
+
+        int meeplePlacement = chanceNode.getDrawnTile().getMeeple()[0];
+
+        if (meeplePlacement > -1) {
+            tile.placeMeeple(meeplePlacement, playerID);
+        }
+
+        return move;
     }
 
-    private Node treePolicy(Node root, GameStateSpace stateSpace) {
+    private Node treePolicy(Node root, GameStateSpace stateSpace, Tile tile) {
         Node node = root;
 
         while (!node.isTerminal()) {
             if (!node.hasChildren()) {
-                return expand(node, stateSpace);
+                return expand(node, stateSpace, tile);
             } else {
                 node = bestChild(node, explorationTerm);
             }
@@ -39,9 +60,11 @@ public class UCTPlayer extends Player {
         return node;
     }
 
-    private int defaultPolicy(Node node) {
+    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace) {
+        Node node = new Node(leafNode);
+
         while (!node.isTerminal()) {
-            node = node.getRandomChild();
+            node = expand(node, stateSpace, node.getState().drawTile());
         }
 
         return node.getState().getScore()[playerID - 1];
@@ -86,7 +109,7 @@ public class UCTPlayer extends Player {
         return bestChild;
     }
 
-    private Node expand(Node placementNode, GameStateSpace stateSpace) {
+    private Node expand(Node placementNode, GameStateSpace stateSpace, Tile tile) {
 
         if (!placementNode.isPlacementNode()) {
             logger.error("Node needs to be placement node in order to be expanded.");
@@ -96,51 +119,68 @@ public class UCTPlayer extends Player {
 
         // First we add the meeple nodes.
         for (ActionRotationStateTriple move : ars) {
-            Node meepleNode = new Node(move.getState(), placementNode, 1, playerID);
+            Node meepleNode = new Node(move.getState(), placementNode, 1, playerID, move.getAction(), tile);
 
             placementNode.addChild(meepleNode);
         }
 
-        //Node randomNode = placementNode.getRandomChild();
-
         // Now we add the chance nodes
         for (Node meepleNode : placementNode.getChildren()) {
-            List<Integer> legalMeeples = stateSpace.legalMeeples(meepleNode.getState(), meepleNode.getDrawnTile(), meepleNode.getState().getCoordinates(meepleNode.getDrawnTile()));
+            // The legalMeeples method needs the state without the tiles having been placed, therefore we pass the state
+            // of the parent node.
+            List<Integer> legalMeeples = stateSpace.legalMeeples(placementNode.getState(), meepleNode.getDrawnTile(), meepleNode.getMove());
 
             for (int meeplePlacement : legalMeeples) {
 
-                GameState newState = new GameState(meepleNode.getState());
-                newState.getTile(newState.getCoordinates(meepleNode.getDrawnTile())).placeMeeple(meeplePlacement, playerID);
+                GameState newState = new GameState(placementNode.getState());
 
-                Node chanceNode = new Node(newState, meepleNode, 2, playerID);
+                Tile newTile = new Tile(meepleNode.getDrawnTile());
+
+                newTile.placeMeeple(meeplePlacement, playerID);
+
+                newState.updateBoard(meepleNode.getMove(), newTile);
+
+                Node chanceNode = new Node(newState, meepleNode, 2, playerID, meepleNode.getMove(), tile);
                 meepleNode.addChild(chanceNode);
             }
 
+            // Now add the chance node corresponding to not placing a meeple.
+            meepleNode.addChild(new Node(meepleNode.getState(), meepleNode, 2, playerID, meepleNode.getMove(), meepleNode.getDrawnTile()));
+
+            // TODO: From here on there are problems.
             // Then for each chance node we add the placement nodes corresponding to drawing each tile in the deck.
-            for (Node chanceNode : meepleNode.getChildren()) {
+            for (int i = 0; i < meepleNode.getChildren().size(); i++) {
 
+                Node chanceNode = meepleNode.getChildren().get(i);
                 List<Tile> tilesInDeck = chanceNode.getState().getDeck();
+                List<Integer> consideredTileTypes = new ArrayList<>();
 
-                //
-                for (Tile tile : tilesInDeck) {
-                    GameState newState = new GameState(chanceNode.getState());
 
-                    boolean successfullyRemoved = newState.removeFromDeck(tile);
+                for (int j = 0; j < tilesInDeck.size(); j++) {
+                    Tile tileInDeck = tilesInDeck.get(j);
 
-                    if (!successfullyRemoved) {
-                        logger.error("Unsuccessfully removed tile from deck.");
+                    // We don't need placement node for each tile in the deck, only for each tile type in the deck.
+                    if (!consideredTileTypes.contains(tileInDeck.getType())) {
+                        consideredTileTypes.add(tileInDeck.getType());
+                        GameState newState = new GameState(chanceNode.getState());
+
+                        boolean successfullyRemoved = newState.removeFromDeck(tileInDeck);
+
+                        if (!successfullyRemoved) {
+                            logger.error("Unsuccessfully removed tile from deck.");
+                        }
+
+                        Node newPlacementNode = new Node(newState, chanceNode, 0, playerID, null, tileInDeck);
+                        chanceNode.addChild(newPlacementNode);
                     }
-
-                    Node newPlacementNode = new Node(newState, chanceNode, 0, playerID);
-                    newPlacementNode.setDrawnTile(tile);
-                    chanceNode.addChild(newPlacementNode);
                 }
-
             }
         }
 
+        Node returnNode = placementNode.getRandomChild().getRandomChild();
+
         // Returns a newly generated placement node at random.
-        return placementNode.getRandomChild().getRandomChild().getRandomChild();
+        return returnNode;
     }
 
     /**
