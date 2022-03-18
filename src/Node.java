@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Node {
     private GameState state;
-    private int[] qValues;
+    private int qValue;
     private int visits;
     private Node parent;
     private List<Node> children;
@@ -13,6 +13,8 @@ public class Node {
     private int player;
     private Random random;
     private int[] move;
+    private int meeplePlacement;
+    private int rotation;
 
     /**
      * 0: Placement Node
@@ -23,7 +25,7 @@ public class Node {
 
     Logger logger = LoggerFactory.getLogger("NodeLogger");
 
-    public Node(GameState state, Node parent, int type, int player, int[] move, Tile tile) {
+    public Node(GameState state, Node parent, int type, int player, int[] move, Tile tile, int rotation) {
 
 
         this.state = state;
@@ -31,21 +33,23 @@ public class Node {
         this.type = type;
         this.player = player;
         this.drawnTile = tile;
-        qValues = new int[]{0, 0};
+        qValue = 0;
         visits = 0;
         children = new ArrayList<>();
         random = new Random();
+        this.rotation = rotation;
 
         this.move = move;
+        this.meeplePlacement = -1;
     }
 
     /**
      * Copy constructor.
      */
-    public Node(Node node) {
+    public Node(Node node, int type) {
         this.state = new GameState(node.state);
         this.parent = node.parent;
-        this.qValues = node.qValues;
+        this.qValue = node.qValue;
         this.visits = node.visits;
         this.children = List.copyOf(node.children);
         this.drawnTile = node.drawnTile;
@@ -53,6 +57,17 @@ public class Node {
         this.random = node.random;
         this.move = node.getMove();
         this.drawnTile = node.drawnTile;
+        this.meeplePlacement = node.meeplePlacement;
+        this.rotation = node.rotation;
+        this.type = type;
+    }
+
+    public void addMeeple(int placement) {
+        meeplePlacement = placement;
+    }
+
+    public int getRotation() {
+        return rotation;
     }
 
     public void addChild(Node child) {
@@ -80,8 +95,8 @@ public class Node {
         return children;
     }
 
-    public int getQValue(int player) {
-        return qValues[player-1];
+    public int getQValue() {
+        return qValue;
     }
 
     public boolean isChanceNode() {
@@ -110,7 +125,7 @@ public class Node {
     }
 
     public void updateQValue(int payoff) {
-        qValues[player-1] += payoff;
+        qValue += payoff;
     }
 
     public Node getParent() {

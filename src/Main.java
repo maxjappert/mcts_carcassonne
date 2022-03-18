@@ -45,13 +45,13 @@ public class Main {
 
             state.updateBoard(move, drawnTile);
 
-            state.checkForScoreAfterRound(player1, player2);
+            state.checkForScoreAfterRound();
 
          } while (!stateSpace.isGoal(state));
 
         state.displayBoard();
 
-        state.assignPointsAtEndOfGame(player1, player2);
+        state.assignPointsAtEndOfGame();
 
         //System.out.println("Player 1 has " + player1.getPoints() + " points.");
         //System.out.println("Player 2 has " + player2.getPoints() + " points.");
