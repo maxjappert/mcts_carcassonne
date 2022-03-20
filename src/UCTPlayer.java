@@ -16,8 +16,9 @@ public class UCTPlayer extends Player {
     }
 
     @Override
-    int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
-        Node root = new Node(state, null, 0, playerID, null, tile, 0);
+    int[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile) throws Exception {
+        GameState state = new GameState(originalState);
+        Node root = new Node(state, 0, playerID, null, tile, 0);
 
         for (int i = 0; i < trainingIterations; i++) {
             Node node = treePolicy(root, stateSpace);
@@ -32,13 +33,11 @@ public class UCTPlayer extends Player {
 
         int[] move = meepleNode.getMove();
 
-        for (int i = 0; i < meepleNode.getDrawnTile().getRotation(); i++) {
-            tile.rotate();
-        }
+        tile.rotateBy(meepleNode.getRotation());
 
         Node chanceNode = bestChild(meepleNode, 0);
 
-        int meeplePlacement = chanceNode.getDrawnTile().getMeeple()[0];
+        int meeplePlacement = chanceNode.getMeeplePlacement();
 
         if (meeplePlacement > -1) {
             tile.placeMeeple(meeplePlacement, playerID);
@@ -47,14 +46,18 @@ public class UCTPlayer extends Player {
         return move;
     }
 
-    private Node treePolicy(Node root, GameStateSpace stateSpace) {
+    private Node treePolicy(Node root, GameStateSpace stateSpace) throws Exception {
         Node node = root;
 
         while (!node.isTerminal()) {
             if (!node.hasChildren()) {
                 return expand(node, stateSpace);
             } else {
-                node = bestChild(node, explorationTerm);
+                if (node.getType() == 2) {
+                    node = node.getRandomChild();
+                } else {
+                    node = bestChild(node, explorationTerm);
+                }
             }
         }
 
@@ -68,9 +71,16 @@ public class UCTPlayer extends Player {
 
         while (!state.isTerminal()) {
 
+            //state.displayBoard();
+
             Tile tile = state.drawTile();
 
             List<ActionRotationStateTriple> actions = stateSpace.succ(state, tile);
+
+            if (actions.isEmpty()) {
+                state.addToDeck(tile);
+                continue;
+            }
 
             ActionRotationStateTriple action = actions.get(new Random().nextInt(actions.size()));
 
@@ -80,10 +90,12 @@ public class UCTPlayer extends Player {
 
             List<Integer> legalMeeples = stateSpace.legalMeeples(state, tile, action.getAction());
 
-            int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
+            if (!legalMeeples.isEmpty()) {
+                int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
 
-            if (meeplePlacement > -1) {
-                tile.placeMeeple(meeplePlacement, state.getPlayer());
+                if (meeplePlacement > -1) {
+                    tile.placeMeeple(meeplePlacement, state.getPlayer());
+                }
             }
 
             state.updateBoard(action.getAction(), tile);
@@ -92,7 +104,7 @@ public class UCTPlayer extends Player {
 
         state.assignPointsAtEndOfGame();
 
-        return node.getState().getScore()[playerID - 1];
+        return state.getScore()[playerID - 1];
     }
 
     private void backup(Node node, int payoff) {
@@ -134,72 +146,90 @@ public class UCTPlayer extends Player {
         return bestChild;
     }
 
-    private List<Node> addMeepleNodes(Node parent, GameStateSpace stateSpace) {
+    private List<Node> getMeepleNodes(Node parent, GameStateSpace stateSpace) {
         List<ActionRotationStateTriple> actions = stateSpace.succ(parent.getState(), parent.getDrawnTile());
         List<Node> meepleNodes = new ArrayList<>();
 
         for (ActionRotationStateTriple action : actions) {
-            Node meepleNode = new Node(parent.getState(), parent, 1, playerID, action.getAction(), parent.getDrawnTile(), action.getRotation());
+
+            Node meepleNode = new Node(parent.getState(), 1, playerID, action.getAction(), parent.getDrawnTile(), action.getRotation());
 
             meepleNodes.add(meepleNode);
-            parent.addChild(meepleNode);
+            //parent.addChild(meepleNode);
         }
 
         return meepleNodes;
     }
 
-    private List<Node> addChanceNodes(Node parent, GameStateSpace stateSpace) {
+    private List<Node> getChanceNodes(Node parent, GameStateSpace stateSpace) {
         List<Integer> legalMeeplePlacements = stateSpace.legalMeeples(parent.getState(), parent.getDrawnTile(), parent.getMove());
         List<Node> chanceNodes = new ArrayList<>();
 
-        for (int legalMeeple : legalMeeplePlacements) {
-            Node chanceNode = new Node(parent, 2);
-            chanceNode.addMeeple(legalMeeple);
+        if (parent.getState().getNumMeeples(parent.getPlayer()) > 0) {
+            for (int legalMeeple : legalMeeplePlacements) {
+                Node chanceNode = new Node(parent, 2);
 
-            parent.addChild(chanceNode);
-            chanceNodes.add(chanceNode);
+                chanceNode.addMeeple(legalMeeple);
+                chanceNode.getState().removeMeeple(parent.getPlayer());
+
+                chanceNodes.add(chanceNode);
+            }
         }
+
+        chanceNodes.add(new Node(parent, 2));
 
         return chanceNodes;
     }
 
-    private List<Node> addPlacementNodes(Node parent, GameStateSpace stateSpace) {
+    private List<Node> getPlacementNodes(Node parent, GameStateSpace stateSpace) {
         List<Tile> deck = parent.getState().getDeck();
         List<Node> placementNodes = new ArrayList<>();
         List<Integer> consideredTiles = new ArrayList<>();
 
         for (Tile tile : deck) {
-            if (!consideredTiles.contains(tile)) {
+            if (!consideredTiles.contains(tile.getType())) {
                 consideredTiles.add(tile.getType());
 
                 GameState newState = new GameState(parent.getState());
+
                 Tile newTile = new Tile(parent.getDrawnTile());
 
-                for (int i = 0; i < parent.getRotation(); i++) {
-                    newTile.rotate();
-                }
+                newTile.rotateBy(parent.getRotation());
+                newTile.placeMeeple(parent.getMeeplePlacement(), parent.getPlayer());
 
                 newState.updateBoard(parent.getMove(), newTile);
 
-                Node placementNode = new Node(newState, parent, 0, otherPlayer(playerID), new int[]{-1, -1}, tile, 0);
+                Node placementNode = new Node(newState, 0, otherPlayer(parent.getPlayer()), new int[]{-1, -1}, tile, 0);
                 placementNodes.add(placementNode);
-                parent.addChild(placementNode);
             }
         }
 
         return placementNodes;
     }
 
-    private Node expand(Node placementNode, GameStateSpace stateSpace) {
-        List<Node> meepleNodes = addMeepleNodes(placementNode, stateSpace);
+    private Node expand(Node placementNode, GameStateSpace stateSpace) throws Exception {
+        List<Node> meepleNodes = getMeepleNodes(placementNode, stateSpace);
         List<Node> placementNodes = new ArrayList<>();
 
-        for (Node meepleNode : meepleNodes) {
-            List<Node> chanceNodes = addChanceNodes(meepleNode, stateSpace);
+        for (int i = 0; i < meepleNodes.size(); i++) {
+            Node meepleNode = meepleNodes.get(i);
+            placementNode.addChild(meepleNode);
+            List<Node> chanceNodes = getChanceNodes(meepleNode, stateSpace);
 
-            for (Node chanceNode : chanceNodes) {
-                placementNodes = addPlacementNodes(chanceNode, stateSpace);
+            for (int j = 0; j < chanceNodes.size(); j++) {
+                Node chanceNode = chanceNodes.get(j);
+                meepleNode.addChild(chanceNode);
+                placementNodes = getPlacementNodes(chanceNode, stateSpace);
+
+                for (int k = 0; k < placementNodes.size(); k++) {
+                    Node newPlacementNode = placementNodes.get(k);
+                    chanceNode.addChild(newPlacementNode);
+                }
             }
+        }
+
+        if (placementNodes.isEmpty()) {
+            return null;
         }
 
         // return a random following placement node.

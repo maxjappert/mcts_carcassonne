@@ -61,22 +61,24 @@ public class GameState {
      * @param state The GameState object for which a deep copy should be created.
      */
     public GameState(GameState state) {
-        this.deck = state.deck;
+        this.deck = new ArrayList<>(List.copyOf(state.deck));
         this.board = new ArrayList<>();
 
-        this.areaTypes = new ArrayList<>();
-        this.areaTypes.addAll(state.areaTypes);
+        this.areaTypes = new ArrayList<>(List.copyOf(state.areaTypes));
 
-        this.completedCities = new ArrayList<>();
-        this.completedCities.addAll(state.completedCities);
+        this.completedCities = new ArrayList<>(List.copyOf(state.completedCities));
 
-        this.scores = state.scores;
+        this.scores = Arrays.copyOf(state.scores, state.scores.length);
         this.numMeeples = state.numMeeples;
 
         for (int i = 0; i < state.board.size(); i++) {
             this.board.add(new ArrayList<>());
             for (int j = 0; j < state.board.get(0).size(); j++) {
-                this.board.get(i).add(state.board.get(i).get(j));
+                if (state.board.get(i).get(j) == null) {
+                    this.board.get(i).add(null);
+                } else {
+                    this.board.get(i).add(new Tile(state.board.get(i).get(j)));
+                }
             }
         }
     }
@@ -348,7 +350,7 @@ public class GameState {
      * Takes the tiles on the board and prints an ASCII-representation of the board. This is achieved by assembling
      * a 2D-char-array using the individual ASCII-representations of the relevant tiles.
      */
-    public void displayBoard() throws Exception {
+    public void displayBoard() {
         int[] boardDimensions = getBoardDimensions();
 
         char[][] boardFormat = new char[boardDimensions[0] * 5 + 1 + 10][boardDimensions[1] * 10 + 1 + 20];
@@ -625,7 +627,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += 9;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
+                            //System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
                             tile.removeMeeple();
                             return;
                         }
@@ -638,7 +640,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += points;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
+                            //System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             completedCities.add(tile.getArea(tile.getMeeple()[0]));
                             tile.removeMeeple();
                             return;
@@ -652,7 +654,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += points;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
+                            //System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             tile.removeMeeple();
                             return;
                         }
@@ -661,6 +663,14 @@ public class GameState {
                 }
             }
         }
+    }
+
+    public void removeMeeple(int player) {
+        numMeeples[player-1]--;
+    }
+
+    public int getNumMeeples(int player) {
+        return numMeeples[player-1];
     }
 
     public Player getPlayer(int nr, Player player1, Player player2) {

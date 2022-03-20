@@ -33,7 +33,7 @@ public class GameStateSpace {
                         ActionRotationStateTriple arst = new ActionRotationStateTriple(move, rotation, updatedState);
                         successors.add(arst);
 
-                        logger.info("[{}, {}] with rotation {} is a legal move.", move[0], move[1], rotation);
+                        //logger.info("[{}, {}] with rotation {} is a legal move.", move[0], move[1], rotation);
                     }
                     drawnTile.rotate();
                 }

@@ -200,6 +200,15 @@ public class Tile {
     }
 
     /**
+     * @param factor The factor of 90 degrees which the tile should be rotated by.
+     */
+    public void rotateBy(int factor) {
+        for (int i = 0; i < factor; i++) {
+            rotate();
+        }
+    }
+
+    /**
      * Generates a printable format of the tile. The following characters denote the following things:
      * '.' -> field
      * '-' -> road
@@ -212,7 +221,7 @@ public class Tile {
      * @return A 2D-char-array which when printed represents the given visually in an ASCII-format.
      * @throws Exception Is thrown if for some reason an invalid type number is used.
      */
-    public char[][] getPrintFormatOfTile() throws Exception {
+    public char[][] getPrintFormatOfTile() {
         char[][] output = new char[5][5];
 
         for (int i = 0; i < 5; i++) {
@@ -401,7 +410,7 @@ public class Tile {
         return output;
     }
 
-    public void printTile() throws Exception {
+    public void printTile() {
         char[][] printFormat = getPrintFormatOfTile();
         StringBuilder tileString = new StringBuilder();
 

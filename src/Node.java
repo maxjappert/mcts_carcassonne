@@ -25,11 +25,11 @@ public class Node {
 
     Logger logger = LoggerFactory.getLogger("NodeLogger");
 
-    public Node(GameState state, Node parent, int type, int player, int[] move, Tile tile, int rotation) {
+    public Node(GameState state, int type, int player, int[] move, Tile tile, int rotation) {
 
 
         this.state = state;
-        this.parent = parent;
+        this.parent = null;
         this.type = type;
         this.player = player;
         this.drawnTile = tile;
@@ -51,7 +51,7 @@ public class Node {
         this.parent = node.parent;
         this.qValue = node.qValue;
         this.visits = node.visits;
-        this.children = List.copyOf(node.children);
+        this.children = new ArrayList<>(List.copyOf(node.children));
         this.drawnTile = node.drawnTile;
         this.player = node.player;
         this.random = node.random;
@@ -70,12 +70,23 @@ public class Node {
         return rotation;
     }
 
-    public void addChild(Node child) {
-        children.add(child);
+    public int getMeeplePlacement() {
+        return meeplePlacement;
+    }
 
-        if (child.parent != this) {
-            logger.error("Child initialized with wrong parent.");
+    public void addChild(Node child) throws Exception {
+        if (children.contains(child)) {
+            throw new Exception();
         }
+
+        children.add(child);
+        child.setParent(this);
+
+//        if (child.parent != this) {
+//
+////            logger.error("Child initialized with wrong parent.");
+////            throw new Exception();
+//        }
     }
 
     public void setParent(Node parent) {
@@ -86,6 +97,9 @@ public class Node {
         return move;
     }
 
+    public int getPlayer() {
+        return player;
+    }
 
     public boolean hasChildren() {
         return !children.isEmpty();
