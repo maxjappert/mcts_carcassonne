@@ -16,7 +16,7 @@ public class Main {
         GameState state = stateSpace.init();
 
         Player player1 = new UCTPlayer(1, 2, 100);
-        Player player2 = new HumanPlayer(2);
+        Player player2 = new RandomPlayer(2);
 
         do {
             state.displayBoard();
@@ -53,8 +53,8 @@ public class Main {
 
         state.assignPointsAtEndOfGame();
 
-        //System.out.println("Player 1 has " + player1.getPoints() + " points.");
-        //System.out.println("Player 2 has " + player2.getPoints() + " points.");
+        System.out.println("Player 1 has " + state.getScore()[0] + " points.");
+        System.out.println("Player 2 has " + state.getScore()[1] + " points.");
 
         logger.info("play() finished.");
     }

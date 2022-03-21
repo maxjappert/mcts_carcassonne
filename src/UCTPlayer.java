@@ -65,8 +65,6 @@ public class UCTPlayer extends Player {
     }
 
     private int defaultPolicy(Node leafNode, GameStateSpace stateSpace) {
-        Node node = new Node(leafNode, 0);
-
         GameState state = new GameState(leafNode.getState());
 
         while (!state.isTerminal()) {
