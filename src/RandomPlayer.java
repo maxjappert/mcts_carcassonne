@@ -45,8 +45,8 @@ public class RandomPlayer extends Player {
         List<Byte> meeplePlacements = stateSpace.legalMeeples(state, tile, action);
 
         if (random.nextBoolean() && !meeplePlacements.isEmpty() && state.getNumMeeples(playerID) > 0) {
+            logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getMeeple()[0], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), state.getNumMeeples(playerID));
             tile.placeMeeple(meeplePlacements.get(random.nextInt(meeplePlacements.size())), playerID, state);
-            logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), tile.getMeeple()[0], state.getNumMeeples(playerID));
         }
 
         return move.getAction();
