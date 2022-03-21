@@ -6,19 +6,27 @@ public class Main {
     static final Logger logger = LoggerFactory.getLogger("MainLogger");
 
     public static void main(String[] args) throws Exception {
-        play();
+        int[] score = new int[]{0, 0};
+
+        for (int i = 0; i < 50; i++) {
+            int[] roundScore = play();
+            score[0] += roundScore[0];
+            score[1] += roundScore[1];
+        }
+
+        System.out.printf("Score: %d:%d", score[0], score[1]);
     }
 
-    public static void play() throws Exception {
+    public static int[] play() throws Exception {
         logger.info("play() started.");
 
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
 
-        Player player1 = new UCTPlayer(1, 2, 100);
+        Player player1 = new UCTPlayer(1, 1, 40);
         Player player2 = new RandomPlayer(2);
 
-        do {
+        while (!stateSpace.isGoal(state)) {
             state.displayBoard();
 
             Tile drawnTile = state.drawTile();
@@ -47,7 +55,7 @@ public class Main {
 
             state.checkForScoreAfterRound();
 
-         } while (!stateSpace.isGoal(state));
+         }
 
         state.displayBoard();
 
@@ -57,6 +65,8 @@ public class Main {
         System.out.println("Player 2 has " + state.getScore()[1] + " points.");
 
         logger.info("play() finished.");
+
+        return state.getScore();
     }
 }
 

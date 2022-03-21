@@ -40,7 +40,7 @@ public class UCTPlayer extends Player {
         int meeplePlacement = chanceNode.getMeeplePlacement();
 
         if (meeplePlacement > -1) {
-            tile.placeMeeple(meeplePlacement, playerID);
+            tile.placeMeeple(meeplePlacement, playerID, originalState);
         }
 
         return move;
@@ -49,7 +49,7 @@ public class UCTPlayer extends Player {
     private Node treePolicy(Node root, GameStateSpace stateSpace) throws Exception {
         Node node = root;
 
-        while (!node.isTerminal()) {
+        do {
             if (!node.hasChildren()) {
                 return expand(node, stateSpace);
             } else {
@@ -59,7 +59,7 @@ public class UCTPlayer extends Player {
                     node = bestChild(node, explorationTerm);
                 }
             }
-        }
+        } while (!node.isTerminal());
 
         return node;
     }
@@ -68,8 +68,6 @@ public class UCTPlayer extends Player {
         GameState state = new GameState(leafNode.getState());
 
         while (!state.isTerminal()) {
-
-            //state.displayBoard();
 
             Tile tile = state.drawTile();
 
@@ -92,7 +90,7 @@ public class UCTPlayer extends Player {
                 int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
 
                 if (meeplePlacement > -1) {
-                    tile.placeMeeple(meeplePlacement, state.getPlayer());
+                    tile.placeMeeple(meeplePlacement, state.getPlayer(), state);
                 }
             }
 
@@ -124,7 +122,7 @@ public class UCTPlayer extends Player {
         Node bestChild = null;
 
         if (!parent.hasChildren()) {
-            logger.error("bestChild can't be called for a node without children");
+            logger.error("bestChild can't be called for a node without children. Deck size: {}", parent.getState().getDeck().size());
         }
 
         for (Node child : parent.getChildren()) {
@@ -150,7 +148,7 @@ public class UCTPlayer extends Player {
 
         for (ActionRotationStateTriple action : actions) {
 
-            Node meepleNode = new Node(parent.getState(), 1, playerID, action.getAction(), parent.getDrawnTile(), action.getRotation());
+            Node meepleNode = new Node(parent.getState(), 1, parent.getState().getPlayer(), action.getAction(), parent.getDrawnTile(), action.getRotation());
 
             meepleNodes.add(meepleNode);
             //parent.addChild(meepleNode);
@@ -168,7 +166,7 @@ public class UCTPlayer extends Player {
                 Node chanceNode = new Node(parent, 2);
 
                 chanceNode.addMeeple(legalMeeple);
-                chanceNode.getState().removeMeeple(parent.getPlayer());
+                //chanceNode.getState().removeMeeple(parent.getPlayer());
 
                 chanceNodes.add(chanceNode);
             }
@@ -193,7 +191,7 @@ public class UCTPlayer extends Player {
                 Tile newTile = new Tile(parent.getDrawnTile());
 
                 newTile.rotateBy(parent.getRotation());
-                newTile.placeMeeple(parent.getMeeplePlacement(), parent.getPlayer());
+                newTile.placeMeeple(parent.getMeeplePlacement(), parent.getPlayer(), newState);
 
                 newState.updateBoard(parent.getMove(), newTile);
 
@@ -222,12 +220,17 @@ public class UCTPlayer extends Player {
                 for (int k = 0; k < placementNodes.size(); k++) {
                     Node newPlacementNode = placementNodes.get(k);
                     chanceNode.addChild(newPlacementNode);
+
+                    if (chanceNode.getState().getNumMeeples(1) < 0 || chanceNode.getState().getNumMeeples(2) < 0 ||
+                            chanceNode.getState().getNumMeeples(1) > 7 || chanceNode.getState().getNumMeeples(2) > 7) {
+                        logger.error("Illegal amount of meeples: {} {}", chanceNode.getState().getNumMeeples(1), chanceNode.getState().getNumMeeples(2));
+                    }
                 }
             }
         }
 
         if (placementNodes.isEmpty()) {
-            return null;
+            return placementNode;
         }
 
         // return a random following placement node.

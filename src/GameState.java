@@ -61,7 +61,15 @@ public class GameState {
      * @param state The GameState object for which a deep copy should be created.
      */
     public GameState(GameState state) {
-        this.deck = new ArrayList<>(List.copyOf(state.deck));
+        //this.deck = new ArrayList<>(List.copyOf(state.deck));
+
+        this.deck = new ArrayList<>();
+
+        for (Tile tile : state.getDeck()) {
+            this.deck.add(new Tile(tile));
+        }
+
+
         this.board = new ArrayList<>();
 
         this.areaTypes = new ArrayList<>(List.copyOf(state.areaTypes));
@@ -69,7 +77,7 @@ public class GameState {
         this.completedCities = new ArrayList<>(List.copyOf(state.completedCities));
 
         this.scores = Arrays.copyOf(state.scores, state.scores.length);
-        this.numMeeples = state.numMeeples;
+        this.numMeeples = Arrays.copyOf(state.numMeeples, 2);
 
         for (int i = 0; i < state.board.size(); i++) {
             this.board.add(new ArrayList<>());

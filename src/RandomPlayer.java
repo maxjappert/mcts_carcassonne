@@ -18,7 +18,9 @@ public class RandomPlayer extends Player {
      * For now this will be a random walk.
      */
     @Override
-    public int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
+    public int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) {
+
+        //GameState state = new GameState(originalState);
 
         List<ActionRotationStateTriple> ars = stateSpace.succ(state, tile);
 
@@ -41,10 +43,9 @@ public class RandomPlayer extends Player {
 
         List<Integer> meeplePlacements = stateSpace.legalMeeples(state, tile, action);
 
-        if (random.nextBoolean() && !meeplePlacements.isEmpty() && numberOfMeeples > 0) {
-            tile.placeMeeple(meeplePlacements.get(random.nextInt(meeplePlacements.size())), playerID);
-            numberOfMeeples--;
-            logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), tile.getMeeple()[0], numberOfMeeples);
+        if (random.nextBoolean() && !meeplePlacements.isEmpty() && state.getNumMeeples(playerID) > 0) {
+            tile.placeMeeple(meeplePlacements.get(random.nextInt(meeplePlacements.size())), playerID, state);
+            logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), tile.getMeeple()[0], state.getNumMeeples(playerID));
         }
 
         return move.getAction();

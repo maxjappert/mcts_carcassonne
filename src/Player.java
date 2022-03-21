@@ -13,7 +13,7 @@ abstract class Player {
 
     //protected int currentPoints;
 
-    protected int numberOfMeeples;
+    //protected int numberOfMeeples;
 
     protected Player(int playerID) {
         if (playerID != 1 && playerID != 2) {
@@ -21,7 +21,6 @@ abstract class Player {
         }
         this.playerID = playerID;
         //this.currentPoints = 0;
-        this.numberOfMeeples = 7;
     }
 
     abstract int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception;

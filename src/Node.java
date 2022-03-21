@@ -4,24 +4,24 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class Node {
-    private GameState state;
+    private final GameState state;
     private int qValue;
     private int visits;
     private Node parent;
-    private List<Node> children;
+    private final List<Node> children;
     private Tile drawnTile;
-    private int player;
-    private Random random;
-    private int[] move;
+    private final int player;
+    private final Random random;
+    private final int[] move;
     private int meeplePlacement;
-    private int rotation;
+    private final int rotation;
 
     /**
      * 0: Placement Node
      * 1: Meeple Node
      * 2: Chance Node
      */
-    private int type;
+    private final int type;
 
     Logger logger = LoggerFactory.getLogger("NodeLogger");
 
@@ -81,12 +81,6 @@ public class Node {
 
         children.add(child);
         child.setParent(this);
-
-//        if (child.parent != this) {
-//
-////            logger.error("Child initialized with wrong parent.");
-////            throw new Exception();
-//        }
     }
 
     public void setParent(Node parent) {
@@ -156,13 +150,5 @@ public class Node {
 
     public int getType() {
         return type;
-    }
-
-    public boolean isPlacementNode() {
-        return type == 0;
-    }
-
-    public void setDrawnTile(Tile tile) {
-        drawnTile = tile;
     }
 }

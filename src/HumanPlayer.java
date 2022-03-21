@@ -82,9 +82,8 @@ public class HumanPlayer extends Player {
                     boolean legalMeeple = stateSpace.legalMeeples(state, tile, move).contains(point);
 
                     if (legalMeeple) {
-                        tile.placeMeeple(point, playerID);
-                        numberOfMeeples -= 1;
-                        logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], numberOfMeeples);
+                        tile.placeMeeple(point, playerID, state);
+                        logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], state.getNumMeeples(playerID));
 
                     } else {
                         System.out.println("You can't place a meeple there. Please try again.");

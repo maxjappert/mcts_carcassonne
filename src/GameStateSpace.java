@@ -52,12 +52,16 @@ public class GameStateSpace {
     public List<Integer> legalMeeples(GameState state, Tile tile, int[] move) {
         List<Integer> placements = new ArrayList<>();
 
+        if (state.getNumMeeples(state.getPlayer()) < 1) {
+            return placements;
+        }
+
         for (int point = 0; point < 13; point++) {
             if (checkIfLegalMeeplePlacement(tile, point, move, state)) {
                 placements.add(point);
             }
         }
-
+        
         return placements;
     }
 
