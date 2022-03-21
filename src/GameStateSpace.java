@@ -23,9 +23,9 @@ public class GameStateSpace {
         boardDimensions[0] += 2;
         boardDimensions[1] += 2;
 
-        for (int i = 0; i < boardDimensions[0]; i++) {
-            for (int j = 0; j < boardDimensions[1]; j++) {
-                int[] move = new int[]{i, j};
+        for (byte i = 0; i < boardDimensions[0]; i++) {
+            for (byte j = 0; j < boardDimensions[1]; j++) {
+                byte[] move = new byte[]{i, j};
                 for (int rotation = 0; rotation < 4; rotation++) {
                     if (isLegalMove(move, drawnTile, state)) {
                         GameState updatedState = new GameState(state);
@@ -49,8 +49,8 @@ public class GameStateSpace {
      * @param tile The tile in question.
      * @return Subset of {0, ..., 12}, denoting the sides on which meeples can be placed.
      */
-    public List<Integer> legalMeeples(GameState state, Tile tile, int[] move) {
-        List<Integer> placements = new ArrayList<>();
+    public List<Byte> legalMeeples(GameState state, Tile tile, byte[] move) {
+        List<Byte> placements = new ArrayList<>();
 
         if (state.getNumMeeples(state.getPlayer()) < 1) {
             return placements;
@@ -58,7 +58,7 @@ public class GameStateSpace {
 
         for (int point = 0; point < 13; point++) {
             if (checkIfLegalMeeplePlacement(tile, point, move, state)) {
-                placements.add(point);
+                placements.add((byte) point);
             }
         }
         
@@ -72,7 +72,7 @@ public class GameStateSpace {
      * @param state The current game state.
      * @return True if the move is legal.
      */
-    private boolean isLegalMove(int[] move, Tile tile, GameState state) {
+    private boolean isLegalMove(byte[] move, Tile tile, GameState state) {
 
         if (move[0] > 0 && move[0] <= state.getBoardDimensions()[0] && move[1] > 0 && move[1] <= state.getBoardDimensions()[1]) {
             if (state.getTile(new int[]{move[0]-1, move[1]-1}) != null) {
@@ -139,7 +139,7 @@ public class GameStateSpace {
         return connected[0] || connected[1] || connected[2] || connected[3];
     }
 
-    private boolean checkIfLegalMeeplePlacement(Tile tile, int point, int[] move, GameState state) {
+    private boolean checkIfLegalMeeplePlacement(Tile tile, int point, byte[] move, GameState state) {
 
         // Use the copy constructors to create deep copies of the state and the tile in order to operate on them
         // without changing the actual state and tile.

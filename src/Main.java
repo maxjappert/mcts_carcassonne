@@ -8,8 +8,9 @@ public class Main {
     public static void main(String[] args) throws Exception {
         int[] score = new int[]{0, 0};
 
-        for (int i = 0; i < 50; i++) {
-            int[] roundScore = play();
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Round " + (i+1));
+            short[] roundScore = play();
             score[0] += roundScore[0];
             score[1] += roundScore[1];
         }
@@ -17,13 +18,13 @@ public class Main {
         System.out.printf("Score: %d:%d", score[0], score[1]);
     }
 
-    public static int[] play() throws Exception {
+    public static short[] play() throws Exception {
         logger.info("play() started.");
 
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
 
-        Player player1 = new UCTPlayer(1, 1, 40);
+        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 50);
         Player player2 = new RandomPlayer(2);
 
         while (!stateSpace.isGoal(state)) {
@@ -32,7 +33,7 @@ public class Main {
             Tile drawnTile = state.drawTile();
             drawnTile.printTile();
 
-            int[] move = new int[]{-1, -1};
+            byte[] move = new byte[]{-1, -1};
 
             while (move[0] == -1) {
                 if (state.deckSize() % 2 == 0) {

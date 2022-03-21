@@ -10,15 +10,16 @@ public class RandomPlayer extends Player {
     Random random;
 
     public RandomPlayer(int playerID) {
-        super(playerID);
+        super((byte) playerID);
         random = new Random();
     }
 
     /**
      * For now this will be a random walk.
+     * @return
      */
     @Override
-    public int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) {
+    public byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) {
 
         //GameState state = new GameState(originalState);
 
@@ -26,7 +27,7 @@ public class RandomPlayer extends Player {
 
         // In this case no move is possible and a new tile has to be drawn.
         if (ars.isEmpty()) {
-            return new int[]{-1, -1};
+            return new byte[]{-1, -1};
         }
 
         ActionRotationStateTriple move = ars.get(random.nextInt(ars.size()));
@@ -35,13 +36,13 @@ public class RandomPlayer extends Player {
             tile.rotate();
         }
 
-        int[] action = move.getAction();
+        byte[] action = move.getAction();
 
         logger.info("Player {} placed tile at [{}, {}] with rotation {}.", playerID, move.getAction()[0], move.getAction()[1], tile.getRotation());
 
         // Here the placement of the meeple is decided
 
-        List<Integer> meeplePlacements = stateSpace.legalMeeples(state, tile, action);
+        List<Byte> meeplePlacements = stateSpace.legalMeeples(state, tile, action);
 
         if (random.nextBoolean() && !meeplePlacements.isEmpty() && state.getNumMeeples(playerID) > 0) {
             tile.placeMeeple(meeplePlacements.get(random.nextInt(meeplePlacements.size())), playerID, state);

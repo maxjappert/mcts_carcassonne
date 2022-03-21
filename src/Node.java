@@ -5,27 +5,27 @@ import java.util.*;
 
 public class Node {
     private final GameState state;
-    private int qValue;
-    private int visits;
+    private short qValue;
+    private short visits;
     private Node parent;
     private final List<Node> children;
-    private Tile drawnTile;
-    private final int player;
+    private final Tile drawnTile;
+    private final byte player;
     private final Random random;
-    private final int[] move;
-    private int meeplePlacement;
-    private final int rotation;
+    private final byte[] move;
+    private byte meeplePlacement;
+    private final byte rotation;
 
     /**
      * 0: Placement Node
      * 1: Meeple Node
      * 2: Chance Node
      */
-    private final int type;
+    private final byte type;
 
     Logger logger = LoggerFactory.getLogger("NodeLogger");
 
-    public Node(GameState state, int type, int player, int[] move, Tile tile, int rotation) {
+    public Node(GameState state, byte type, byte player, byte[] move, Tile tile, byte rotation) {
 
 
         this.state = state;
@@ -46,31 +46,31 @@ public class Node {
     /**
      * Copy constructor.
      */
-    public Node(Node node, int type) {
-        this.state = new GameState(node.state);
-        this.parent = node.parent;
-        this.qValue = node.qValue;
-        this.visits = node.visits;
-        this.children = new ArrayList<>(List.copyOf(node.children));
+    public Node(Node node, byte type) {
+        //this.state = new GameState(node.state);
+        this.state = node.state;
+        this.parent = node;
+        this.qValue = 0;
+        this.visits = 0;
+        this.children = new ArrayList<>();
         this.drawnTile = node.drawnTile;
         this.player = node.player;
         this.random = node.random;
-        this.move = node.getMove();
-        this.drawnTile = node.drawnTile;
+        this.move = node.move;
         this.meeplePlacement = node.meeplePlacement;
         this.rotation = node.rotation;
         this.type = type;
     }
 
-    public void addMeeple(int placement) {
+    public void addMeeple(byte placement) {
         meeplePlacement = placement;
     }
 
-    public int getRotation() {
+    public byte getRotation() {
         return rotation;
     }
 
-    public int getMeeplePlacement() {
+    public byte getMeeplePlacement() {
         return meeplePlacement;
     }
 
@@ -87,11 +87,11 @@ public class Node {
         this.parent = parent;
     }
 
-    public int[] getMove() {
+    public byte[] getMove() {
         return move;
     }
 
-    public int getPlayer() {
+    public byte getPlayer() {
         return player;
     }
 
@@ -103,7 +103,7 @@ public class Node {
         return children;
     }
 
-    public int getQValue() {
+    public short getQValue() {
         return qValue;
     }
 
@@ -130,17 +130,26 @@ public class Node {
 
     public void updateVisits() {
         visits++;
+
+        if (visits > 30000) {
+            logger.error("Short doesn't suffice as a datatype for the visits!");
+        }
     }
 
     public void updateQValue(int payoff) {
         qValue += payoff;
+
+        if (qValue > 30000) {
+            logger.error("Short doesn't suffice as a datatype for the q value!");
+        }
+
     }
 
     public Node getParent() {
         return parent;
     }
 
-    public int getVisits() {
+    public short getVisits() {
         return visits;
     }
 
@@ -148,7 +157,7 @@ public class Node {
         return drawnTile;
     }
 
-    public int getType() {
+    public byte getType() {
         return type;
     }
 }

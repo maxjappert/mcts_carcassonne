@@ -1,19 +1,19 @@
 class ActionRotationStateTriple {
-    private final int[] action;
-    private final int rotation;
+    private final byte[] action;
+    private final byte rotation;
     private final GameState state;
 
-    ActionRotationStateTriple(int[] action, int rotation, GameState state) {
+    ActionRotationStateTriple(byte[] action, int rotation, GameState state) {
         this.action = action;
-        this.rotation = rotation;
+        this.rotation = (byte) rotation;
         this.state = state;
     }
 
-    public int[] getAction() {
+    public byte[] getAction() {
         return action;
     }
 
-    public int getRotation() {
+    public byte getRotation() {
         return rotation;
     }
 

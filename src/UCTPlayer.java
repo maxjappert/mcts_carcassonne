@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 public class UCTPlayer extends Player {
-    private final double explorationTerm;
-    private final int trainingIterations;
+    private final float explorationTerm;
+    private final short trainingIterations;
 
 
-    protected UCTPlayer(int playerID, double explorationTerm, int trainingIterations) {
+    protected UCTPlayer(byte playerID, float explorationTerm, short trainingIterations) {
         super(playerID);
 
         this.explorationTerm = explorationTerm;
@@ -16,9 +16,9 @@ public class UCTPlayer extends Player {
     }
 
     @Override
-    int[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile) throws Exception {
+    byte[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile) throws Exception {
         GameState state = new GameState(originalState);
-        Node root = new Node(state, 0, playerID, null, tile, 0);
+        Node root = new Node(state, (byte) 0, playerID, null, tile, (byte) 0);
 
         for (int i = 0; i < trainingIterations; i++) {
             Node node = treePolicy(root, stateSpace);
@@ -31,7 +31,7 @@ public class UCTPlayer extends Player {
         // Exploration term set to 0, since when executing we only want to consider the exploitation term.
         Node meepleNode = bestChild(root, 0);
 
-        int[] move = meepleNode.getMove();
+        byte[] move = meepleNode.getMove();
 
         tile.rotateBy(meepleNode.getRotation());
 
@@ -40,7 +40,7 @@ public class UCTPlayer extends Player {
         int meeplePlacement = chanceNode.getMeeplePlacement();
 
         if (meeplePlacement > -1) {
-            tile.placeMeeple(meeplePlacement, playerID, originalState);
+            tile.placeMeeple((byte) meeplePlacement, playerID, originalState);
         }
 
         return move;
@@ -84,13 +84,13 @@ public class UCTPlayer extends Player {
                 tile.rotate();
             }
 
-            List<Integer> legalMeeples = stateSpace.legalMeeples(state, tile, action.getAction());
+            List<Byte> legalMeeples = stateSpace.legalMeeples(state, tile, action.getAction());
 
             if (!legalMeeples.isEmpty()) {
                 int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
 
                 if (meeplePlacement > -1) {
-                    tile.placeMeeple(meeplePlacement, state.getPlayer(), state);
+                    tile.placeMeeple((byte) meeplePlacement, state.getPlayer(), state);
                 }
             }
 
@@ -148,7 +148,7 @@ public class UCTPlayer extends Player {
 
         for (ActionRotationStateTriple action : actions) {
 
-            Node meepleNode = new Node(parent.getState(), 1, parent.getState().getPlayer(), action.getAction(), parent.getDrawnTile(), action.getRotation());
+            Node meepleNode = new Node(parent.getState(), (byte) 1, parent.getState().getPlayer(), action.getAction(), parent.getDrawnTile(), action.getRotation());
 
             meepleNodes.add(meepleNode);
             //parent.addChild(meepleNode);
@@ -158,21 +158,21 @@ public class UCTPlayer extends Player {
     }
 
     private List<Node> getChanceNodes(Node parent, GameStateSpace stateSpace) {
-        List<Integer> legalMeeplePlacements = stateSpace.legalMeeples(parent.getState(), parent.getDrawnTile(), parent.getMove());
+        List<Byte> legalMeeplePlacements = stateSpace.legalMeeples(parent.getState(), parent.getDrawnTile(), parent.getMove());
         List<Node> chanceNodes = new ArrayList<>();
 
         if (parent.getState().getNumMeeples(parent.getPlayer()) > 0) {
             for (int legalMeeple : legalMeeplePlacements) {
-                Node chanceNode = new Node(parent, 2);
+                Node chanceNode = new Node(parent, (byte) 2);
 
-                chanceNode.addMeeple(legalMeeple);
+                chanceNode.addMeeple((byte) legalMeeple);
                 //chanceNode.getState().removeMeeple(parent.getPlayer());
 
                 chanceNodes.add(chanceNode);
             }
         }
 
-        chanceNodes.add(new Node(parent, 2));
+        chanceNodes.add(new Node(parent, (byte) 2));
 
         return chanceNodes;
     }
@@ -195,7 +195,7 @@ public class UCTPlayer extends Player {
 
                 newState.updateBoard(parent.getMove(), newTile);
 
-                Node placementNode = new Node(newState, 0, otherPlayer(parent.getPlayer()), new int[]{-1, -1}, tile, 0);
+                Node placementNode = new Node(newState, (byte) 0, otherPlayer(parent.getPlayer()), new byte[]{-1, -1}, tile, (byte) 0);
                 placementNodes.add(placementNode);
             }
         }
@@ -237,8 +237,8 @@ public class UCTPlayer extends Player {
         return placementNodes.get(new Random().nextInt(placementNodes.size()));
     }
 
-    private int otherPlayer(int player) {
-        return player == 1 ? 2 : 1;
+    private byte otherPlayer(int player) {
+        return (byte) (player == 1 ? 2 : 1);
     }
 
     /**

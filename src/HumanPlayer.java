@@ -9,10 +9,10 @@ public class HumanPlayer extends Player {
     static final Logger logger = LoggerFactory.getLogger("HumanPlayerLogger");
 
     public HumanPlayer(int playerID) {
-        super(playerID);
+        super((byte) playerID);
     }
 
-    int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
+    byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
         System.out.println("This is the tile you've drawn:");
 
         Scanner sc = new Scanner(System.in);
@@ -28,7 +28,7 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
-            int[] move;
+            byte[] move;
 
             // Tries to convert the input string into coordinates. If the NumberFormatException is thrown, the loop starts
             // from the beginning and the user gets another chance to input coordinates. 97 is subtracted from the first
@@ -36,10 +36,10 @@ public class HumanPlayer extends Player {
             // board starts indexing at 1, yet we need indexing starting at 0 to access the tiles in the list representation
             // of the board.
             try {
-                int co1 = input.charAt(0) - 97;
-                int co2 = Integer.parseInt(input.substring(1)) - 1;
+                byte co1 = (byte) (input.charAt(0) - 97);
+                byte co2 = (byte) (Integer.parseInt(input.substring(1)) - 1);
 
-                move = new int[]{co1, co2};
+                move = new byte[]{co1, co2};
 
             } catch (NumberFormatException nfe) {
                 System.out.println("You haven't provided valid coordinates as input. For example the top right corner" +
@@ -52,7 +52,7 @@ public class HumanPlayer extends Player {
             List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
 
             if (legalSuccessors.isEmpty()) {
-                return new int[]{-1, -1};
+                return new byte[]{-1, -1};
             }
 
             for (ActionRotationStateTriple successor : legalSuccessors) {
@@ -82,7 +82,7 @@ public class HumanPlayer extends Player {
                     boolean legalMeeple = stateSpace.legalMeeples(state, tile, move).contains(point);
 
                     if (legalMeeple) {
-                        tile.placeMeeple(point, playerID, state);
+                        tile.placeMeeple((byte) point, playerID, state);
                         logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], state.getNumMeeples(playerID));
 
                     } else {

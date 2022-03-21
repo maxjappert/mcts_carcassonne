@@ -7,11 +7,11 @@ public class GameState {
     private final List<Tile> deck;
     private final List<List<Tile>> board;
 
-    private final List<Integer> areaTypes;
-    private final List<Integer> completedCities;
+    private final List<Short> areaTypes;
+    private final List<Short> completedCities;
 
-    private int[] scores;
-    private int[] numMeeples;
+    private short[] scores;
+    private byte[] numMeeples;
 
     static final Logger logger = LoggerFactory.getLogger("GameStateLogger");
 
@@ -21,15 +21,15 @@ public class GameState {
     public GameState() {
         deck = new ArrayList<>();
         board = new ArrayList<>();
-        numMeeples = new int[]{7, 7};
+        numMeeples = new byte[]{7, 7};
         assembleDeck();
         assert(deck.size() == 71);
 
         board.add(new ArrayList<>());
 
-        scores = new int[]{0, 0};
+        scores = new short[]{0, 0};
 
-        Tile startingTile = new Tile(0, false);
+        Tile startingTile = new Tile((byte) 0, false);
 
         startingTile.setArea(0, 0);
         startingTile.setArea(1, 0);
@@ -48,10 +48,10 @@ public class GameState {
         board.get(0).add(startingTile);
 
         areaTypes = new ArrayList<>();
-        areaTypes.add(0);
-        areaTypes.add(2);
-        areaTypes.add(1);
-        areaTypes.add(0);
+        areaTypes.add((short) 0);
+        areaTypes.add((short) 2);
+        areaTypes.add((short) 1);
+        areaTypes.add((short) 0);
 
         completedCities = new ArrayList<>();
     }
@@ -61,8 +61,6 @@ public class GameState {
      * @param state The GameState object for which a deep copy should be created.
      */
     public GameState(GameState state) {
-        //this.deck = new ArrayList<>(List.copyOf(state.deck));
-
         this.deck = new ArrayList<>();
 
         for (Tile tile : state.getDeck()) {
@@ -95,16 +93,12 @@ public class GameState {
         return deck.remove(0);
     }
 
-    public List<List<Tile>> getBoard() {
-        return board;
-    }
-
     /**
      * Places the tile which the player drew from the deck onto the board.
      * @param move The coordinates of where the tile should be placed.
      * @param tile The tile which should be placed.
      */
-    public void updateBoard(int[] move, Tile tile) {
+    public void updateBoard(byte[] move, Tile tile) {
 
         tile.resetAreas();
 
@@ -350,7 +344,7 @@ public class GameState {
      */
     private void addTilesToDeck(int type, int amount, boolean pennant) {
         for (int i = 0; i < amount; i++) {
-            this.deck.add(new Tile(type, pennant));
+            this.deck.add(new Tile((byte) type, pennant));
         }
     }
 
@@ -471,28 +465,28 @@ public class GameState {
      * @param tile The tile at the given coordinates.
      * @return The coordinates of the given tile as an int array of length 2.
      */
-    public int[] getCoordinates(Tile tile) {
-        for (int i = 0; i < board.size(); i++) {
-            for (int j = 0; j < board.get(0).size(); j++) {
+    public byte[] getCoordinates(Tile tile) {
+        for (byte i = 0; i < board.size(); i++) {
+            for (byte j = 0; j < board.get(0).size(); j++) {
                 if (board.get(i).get(j) != null && board.get(i).get(j).equals(tile)) {
-                    return new int[]{i, j};
+                    return new byte[]{i, j};
                 }
             }
         }
 
         logger.error("Tile not found in getCoordinates(...)");
-        return new int[0];
+        return new byte[0];
     }
 
     /**
      * @param move The coordinates of which the neighbours are to be determined.
      * @return All neighbouring tiles which are connected along the given type. If type == -1, then all neighbours are returned.
      */
-    public Map<Integer, Tile> getNeighboursByType(int[] move, boolean monasteryNeighbours) {
+    public Map<Integer, Tile> getNeighboursByType(byte[] move, boolean monasteryNeighbours) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
         // Create a deep copy of the move array
-        int[] tileCoords = Arrays.copyOf(move, move.length);
+        byte[] tileCoords = Arrays.copyOf(move, move.length);
 
         // We only need to subtract 1 if the coordinates reference the placement space which considers a first row
         // which doesn't exist in the board space. If we want to check for the monastery neighbours, we check in the
@@ -584,7 +578,7 @@ public class GameState {
 
     private int assignNewArea(int type) {
         int areaCode = areaTypes.size();
-        areaTypes.add(type);
+        areaTypes.add((short) type);
         return areaCode;
     }
 
@@ -649,7 +643,7 @@ public class GameState {
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
                             //System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
-                            completedCities.add(tile.getArea(tile.getMeeple()[0]));
+                            completedCities.add((short) tile.getArea(tile.getMeeple()[0]));
                             tile.removeMeeple();
                             return;
                         }
@@ -878,7 +872,7 @@ public class GameState {
         Collections.shuffle(deck);
     }
 
-    public int[] getScore() {
+    public short[] getScore() {
         return scores;
     }
 
@@ -894,7 +888,7 @@ public class GameState {
         return deckSize() == 0;
     }
 
-    public int getPlayer() {
+    public byte getPlayer() {
         if (deckSize() % 2 == 0) {
             return 1;
         } else {
