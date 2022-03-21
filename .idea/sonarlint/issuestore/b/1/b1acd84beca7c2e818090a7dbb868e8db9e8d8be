@@ -1,0 +1,11 @@
+
+S	java:S106"9Replace this use of System.out or System.err by a logger.(İ‡ºøÿÿÿÿ
+N	java:S106"9Replace this use of System.out or System.err by a logger.(§Ï …
+S	java:S106-"9Replace this use of System.out or System.err by a logger.(»ú·Üúÿÿÿÿ
+S	java:S106C"9Replace this use of System.out or System.err by a logger.(ÚĞ€‹üÿÿÿÿ
+S	java:S106H"9Replace this use of System.out or System.err by a logger.(½ÔÔûÿÿÿÿ
+N	java:S106K"9Replace this use of System.out or System.err by a logger.(®¬â¨
+A
+java:S2175R"&A "List<Byte>" cannot contain a "int".(´ÿ‹—øÿÿÿÿ
+N	java:S106Y"9Replace this use of System.out or System.err by a logger.(åÄì¿
+s	java:S135"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆÿÿÿÿÿ

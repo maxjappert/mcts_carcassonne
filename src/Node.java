@@ -1,5 +1,5 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class Node {
      */
     private final byte type;
 
-    Logger logger = LoggerFactory.getLogger("NodeLogger");
+    ////logger //logger = //loggerFactory.get//logger("Node//logger");
 
     public Node(GameState state, byte type, byte player, byte[] move, Tile tile, byte rotation) {
 
@@ -119,7 +119,7 @@ public class Node {
         if (!children.isEmpty()) {
             return children.get(random.nextInt(children.size()));
         } else {
-            logger.error("No child available when querying for children!");
+            ////logger.error("No child available when querying for children!");
             return null;
         }
     }
@@ -132,7 +132,7 @@ public class Node {
         visits++;
 
         if (visits > 30000) {
-            logger.error("Short doesn't suffice as a datatype for the visits!");
+            ////logger.error("Short doesn't suffice as a datatype for the visits!");
         }
     }
 
@@ -140,7 +140,7 @@ public class Node {
         qValue += payoff;
 
         if (qValue > 30000) {
-            logger.error("Short doesn't suffice as a datatype for the q value!");
+            ////logger.error("Short doesn't suffice as a datatype for the q value!");
         }
 
     }

@@ -1,0 +1,23 @@
+
+O
+java:S2864o"4Iterate over the "entrySet" instead of the "keySet".(Ô¶Âóüÿÿÿÿ
+O	java:S106­"9Replace this use of System.out or System.err by a logger.(¦©ÿÎ
+W	java:S125ô"<This block of commented-out lines of code should be removed.(ÄÂ‚üÿÿÿÿ
+R	java:S125ö"<This block of commented-out lines of code should be removed.(À—ÍÓ
+W	java:S125ø"<This block of commented-out lines of code should be removed.(˜”î–şÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(ôĞŸïşÿÿÿÿ
+R	java:S125ƒ"<This block of commented-out lines of code should be removed.(À—ÍÓ
+W	java:S125…"<This block of commented-out lines of code should be removed.( ¨¼øùÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(ôĞŸïşÿÿÿÿ
+R	java:S125‘"<This block of commented-out lines of code should be removed.(À—ÍÓ
+W	java:S125“"<This block of commented-out lines of code should be removed.(‘àöÂùÿÿÿÿ
+C
+java:S2175Ÿ"'A "List<Short>" cannot contain a "int".(±æó˜ıÿÿÿÿ
+W	java:S125§"<This block of commented-out lines of code should be removed.(„õâËşÿÿÿÿ
+R	java:S125©"<This block of commented-out lines of code should be removed.(ºÙ›
+W	java:S125±"<This block of commented-out lines of code should be removed.(„õâËşÿÿÿÿ
+R	java:S125µ"<This block of commented-out lines of code should be removed.(Œ¸¢
+W	java:S125¼"<This block of commented-out lines of code should be removed.(„õâËşÿÿÿÿ
+R	java:S125Â"<This block of commented-out lines of code should be removed.(š¯ÃÑ
+S
+java:S2589ß"7Remove this expression which always evaluates to "true"(ÿ“èäüÿÿÿÿ

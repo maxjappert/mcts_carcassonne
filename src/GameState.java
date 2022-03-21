@@ -1,5 +1,5 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 import java.util.*;
 
@@ -13,7 +13,7 @@ public class GameState {
     private short[] scores;
     private byte[] numMeeples;
 
-    static final Logger logger = LoggerFactory.getLogger("GameStateLogger");
+    //static final //logger //logger = //loggerFactory.get//logger("GameState//logger");
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
@@ -474,7 +474,7 @@ public class GameState {
             }
         }
 
-        logger.error("Tile not found in getCoordinates(...)");
+        ////logger.error("Tile not found in getCoordinates(...)");
         return new byte[0];
     }
 
@@ -566,7 +566,7 @@ public class GameState {
             oppositePoint = 3;
         } else {
             oppositePoint = -1;
-            logger.error("Error in function getOppositePoint(...)");
+            ////logger.error("Error in function getOppositePoint(...)");
         }
 
         return oppositePoint;
@@ -681,7 +681,7 @@ public class GameState {
         } else if (nr == 2) {
             return player2;
         } else {
-            logger.error("Error in getPlayer(...)");
+            ////logger.error("Error in getPlayer(...)");
             return null;
         }
     }
@@ -767,7 +767,7 @@ public class GameState {
                 if (numRoadsOfGivenType == 2) {
                     endPoints = 2;
                 } else if (numRoadsOfGivenType > 2) {
-                    logger.error("Weird stuff happening in checkForRoadCompletion(...)");
+                    ////logger.error("Weird stuff happening in checkForRoadCompletion(...)");
                 }
             }
         }
@@ -777,7 +777,7 @@ public class GameState {
         } else if (endPoints < 2) {
             return 0;
         } else {
-            logger.error("Weird return value in checkForRoadCompletion(...)");
+            ////logger.error("Weird return value in checkForRoadCompletion(...)");
             return -1;
         }
     }

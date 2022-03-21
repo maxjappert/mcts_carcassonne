@@ -1,9 +1,9 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 public class Main {
 
-    static final Logger logger = LoggerFactory.getLogger("MainLogger");
+//    static final //logger //logger = //loggerFactory.get//logger("Main//logger");
 
     public static void main(String[] args) throws Exception {
         int[] score = new int[]{0, 0};
@@ -19,12 +19,12 @@ public class Main {
     }
 
     public static short[] play() throws Exception {
-        logger.info("play() started.");
+        //logger.info("play() started.");
 
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
 
-        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 150);
+        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 250);
         Player player2 = new RandomPlayer(2);
 
         while (!stateSpace.isGoal(state)) {
@@ -45,7 +45,7 @@ public class Main {
                 // In the rare case that the drawn tile cannot legally be placed, the tile is added back to the deck
                 // and a new tile is drawn.
                 if (move[0] == -1) {
-                    logger.info("Player {} draws tile with no possible legal moves. The tile is therefore redrawn.", ((state.deckSize() % 2) + 1));
+                    //logger.info("Player {} draws tile with no possible legal moves. The tile is therefore redrawn.", ((state.deckSize() % 2) + 1));
                     state.addToDeck(drawnTile);
                     drawnTile = state.drawTile();
                     drawnTile.printTile();
@@ -65,7 +65,7 @@ public class Main {
         System.out.println("Player 1 has " + state.getScore()[0] + " points.");
         System.out.println("Player 2 has " + state.getScore()[1] + " points.");
 
-        logger.info("play() finished.");
+        //logger.info("play() finished.");
 
         return state.getScore();
     }

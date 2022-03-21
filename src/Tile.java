@@ -1,5 +1,5 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Tile {
-    static final Logger logger = LoggerFactory.getLogger("TileLogger");
+    //static final //logger //logger = //loggerFactory.get//logger("Tile//logger");
 
     private final boolean pennant;
 
@@ -243,7 +243,7 @@ public class Tile {
             output[1][2] = '|';
             road = true;
         } else {
-            logger.error("Wrong tile code passed.");
+            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -266,7 +266,7 @@ public class Tile {
             output[3][2] = '|';
             road = true;
         } else {
-            logger.error("Wrong tile code passed.");
+            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -290,7 +290,7 @@ public class Tile {
             output[2][3] = '-';
             road = true;
         } else {
-            logger.error("Wrong tile code passed.");
+            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -315,7 +315,7 @@ public class Tile {
             output[2][1] = '-';
             road = true;
         } else {
-            logger.error("Wrong tile code passed.");
+            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -345,7 +345,7 @@ public class Tile {
         } else if (middle == 4) {
             c = '@';
         } else {
-            logger.error("Wrong input for the middle of the tile.");
+            //logger.error("Wrong input for the middle of the tile.");
         }
 
         for(int i = 0; i < 5; i++) {

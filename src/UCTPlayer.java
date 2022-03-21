@@ -122,7 +122,7 @@ public class UCTPlayer extends Player {
         Node bestChild = null;
 
         if (!parent.hasChildren()) {
-            logger.error("bestChild can't be called for a node without children. Deck size: {}", parent.getState().getDeck().size());
+            //logger.error("bestChild can't be called for a node without children. Deck size: {}", parent.getState().getDeck().size());
         }
 
         for (Node child : parent.getChildren()) {
@@ -223,7 +223,7 @@ public class UCTPlayer extends Player {
 
                     if (chanceNode.getState().getNumMeeples(1) < 0 || chanceNode.getState().getNumMeeples(2) < 0 ||
                             chanceNode.getState().getNumMeeples(1) > 7 || chanceNode.getState().getNumMeeples(2) > 7) {
-                        logger.error("Illegal amount of meeples: {} {}", chanceNode.getState().getNumMeeples(1), chanceNode.getState().getNumMeeples(2));
+                        ////logger.error("Illegal amount of meeples: {} {}", chanceNode.getState().getNumMeeples(1), chanceNode.getState().getNumMeeples(2));
                     }
                 }
             }

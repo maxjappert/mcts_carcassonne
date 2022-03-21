@@ -1,12 +1,12 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 import java.util.List;
 import java.util.Random;
 
 public class RandomPlayer extends Player {
 
-    static final Logger logger = LoggerFactory.getLogger("AIPlayerLogger");
+    //static final //logger //logger = //loggerFactory.get//logger("AIPlayer//logger");
     Random random;
 
     public RandomPlayer(int playerID) {
@@ -38,14 +38,14 @@ public class RandomPlayer extends Player {
 
         byte[] action = move.getAction();
 
-        logger.info("Player {} placed tile at [{}, {}] with rotation {}.", playerID, move.getAction()[0], move.getAction()[1], tile.getRotation());
+        //logger.info("Player {} placed tile at [{}, {}] with rotation {}.", playerID, move.getAction()[0], move.getAction()[1], tile.getRotation());
 
         // Here the placement of the meeple is decided
 
         List<Byte> meeplePlacements = stateSpace.legalMeeples(state, tile, action);
 
         if (random.nextBoolean() && !meeplePlacements.isEmpty() && state.getNumMeeples(playerID) > 0) {
-            logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getMeeple()[0], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), state.getNumMeeples(playerID));
+            //logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getMeeple()[0], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), state.getNumMeeples(playerID));
             tile.placeMeeple(meeplePlacements.get(random.nextInt(meeplePlacements.size())), playerID, state);
         }
 

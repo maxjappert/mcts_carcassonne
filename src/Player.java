@@ -1,9 +1,9 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 abstract class Player {
 
-    static final Logger logger = LoggerFactory.getLogger("PlayerLogger");
+    //static final //logger //logger = //loggerFactory.get//logger("Player//logger");
 
     /**
      * An integer to uniquely identify each player. Since this implementation only considers the two-player version
@@ -12,7 +12,7 @@ abstract class Player {
     protected byte playerID;
     protected Player(byte playerID) {
         if (playerID != 1 && playerID != 2) {
-            logger.error("Player initialised with invalid ID");
+            //logger.error("Player initialised with invalid ID");
         }
         this.playerID = playerID;
     }

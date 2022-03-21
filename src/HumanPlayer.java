@@ -1,12 +1,12 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 
-    static final Logger logger = LoggerFactory.getLogger("HumanPlayerLogger");
+//    static final //logger //logger = //loggerFactory.get//logger("HumanPlayer//logger");
 
     public HumanPlayer(int playerID) {
         super((byte) playerID);
@@ -83,7 +83,7 @@ public class HumanPlayer extends Player {
 
                     if (legalMeeple) {
                         tile.placeMeeple((byte) point, playerID, state);
-                        logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], state.getNumMeeples(playerID));
+                        //logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], state.getNumMeeples(playerID));
 
                     } else {
                         System.out.println("You can't place a meeple there. Please try again.");
@@ -91,7 +91,7 @@ public class HumanPlayer extends Player {
                     }
                 }
 
-                logger.info("End of decideOnNextMove(...)");
+                //logger.info("End of decideOnNextMove(...)");
 
                 return move;
             }
