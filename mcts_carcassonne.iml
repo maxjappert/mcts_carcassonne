@@ -24,5 +24,8 @@
     </orderEntry>
     <orderEntry type="library" exported="" name="slf4j.api" level="project" />
     <orderEntry type="library" exported="" name="slf4j.log4j12" level="project" />
+    <orderEntry type="library" name="graphstream.gs.ui.swing" level="project" />
+    <orderEntry type="library" name="graphstream.gs.core" level="project" />
+    <orderEntry type="library" name="graphstream.gs.algo" level="project" />
   </component>
 </module>

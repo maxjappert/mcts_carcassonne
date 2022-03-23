@@ -27,7 +27,6 @@ public class Node {
 
     public Node(GameState state, byte type, byte player, byte[] move, Tile tile, byte rotation) {
 
-
         this.state = state;
         this.parent = null;
         this.type = type;

@@ -1,3 +1,6 @@
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.SingleGraph;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +31,15 @@ public class UCTPlayer extends Player {
 
             backup(node, payoff);
         }
+
+        Graph graph = new SingleGraph("Test");
+
+        graph.addNode("A");
+        graph.addNode("B");
+        graph.addEdge("AB", "A", "B");
+
+        System.setProperty("org.graphstream.ui", "swing");
+        graph.display();
 
         // Exploration term set to 0, since when executing we only want to consider the exploitation term.
         Node meepleNode = bestChild(root, 0);
