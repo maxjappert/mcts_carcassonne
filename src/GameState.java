@@ -4,7 +4,7 @@
 import java.util.*;
 
 public class GameState {
-    private final List<Tile> deck;
+    //private final List<Tile> deck;
     private final List<List<Tile>> board;
 
     private final List<Short> areaTypes;
@@ -13,17 +13,19 @@ public class GameState {
     private short[] scores;
     private byte[] numMeeples;
 
+    private int deckSize;
+
     //static final //logger //logger = //loggerFactory.get//logger("GameState//logger");
 
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
      */
     public GameState() {
-        deck = new ArrayList<>();
+        //deck = new ArrayList<>();
         board = new ArrayList<>();
         numMeeples = new byte[]{7, 7};
-        assembleDeck();
-        assert(deck.size() == 71);
+
+        deckSize = 71;
 
         board.add(new ArrayList<>());
 
@@ -61,14 +63,9 @@ public class GameState {
      * @param state The GameState object for which a deep copy should be created.
      */
     public GameState(GameState state) {
-        this.deck = new ArrayList<>();
-
-        for (Tile tile : state.getDeck()) {
-            this.deck.add(new Tile(tile));
-        }
-
-
         this.board = new ArrayList<>();
+
+        this.deckSize = state.deckSize;
 
         this.areaTypes = new ArrayList<>(List.copyOf(state.areaTypes));
 
@@ -79,6 +76,7 @@ public class GameState {
 
         for (int i = 0; i < state.board.size(); i++) {
             this.board.add(new ArrayList<>());
+
             for (int j = 0; j < state.board.get(0).size(); j++) {
                 if (state.board.get(i).get(j) == null) {
                     this.board.get(i).add(null);
@@ -89,8 +87,8 @@ public class GameState {
         }
     }
 
-    public Tile drawTile() {
-        return deck.remove(0);
+    public void decreaseDeckSize() {
+        deckSize--;
     }
 
     /**
@@ -99,6 +97,8 @@ public class GameState {
      * @param tile The tile which should be placed.
      */
     public void updateBoard(byte[] move, Tile tile) {
+
+        deckSize--;
 
         tile.resetAreas();
 
@@ -184,7 +184,6 @@ public class GameState {
                 if (/*tile.getArea(point) < area && */tile.getArea(point) != -1) {
                     inheritedAreas.add(tile.getArea(point));
 
-                    // TODO: Test this implementation.
                     // If adjacent points of the same type inherit from different areas, then this tile connects
                     // those two areas and consequently we must replace the one of the areas. In our case this is
                     // the area with the higher area code with the area with the lower area code.
@@ -219,7 +218,8 @@ public class GameState {
             tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
         }
 
-        // Yeah, here's where the bodges start again...
+        // Yeah, here's where the bodges start again... This is handling the case of tile 15, where there's a road
+        // without the middle of the tile being a road. This is a special case and differs from all other road tiles.
         if (tile.getType() == 15) {
             int roadArea = Integer.MAX_VALUE;
 
@@ -301,51 +301,6 @@ public class GameState {
         // by the move. These need to be subtracted by 1, since the user has to consider the additional potential row
         // and column.
         board.get(move[0] - 1).set(move[1] - 1, tile) ;
-    }
-
-    /**
-     * Assembles the deck according to the game's instructions and then shuffles it.
-     */
-    private void assembleDeck() {
-        addTilesToDeck(0, 3, false);
-        addTilesToDeck(1, 3, false);
-        addTilesToDeck(2, 3, false);
-        addTilesToDeck(3, 3, false);
-        addTilesToDeck(4, 5, false);
-        addTilesToDeck(5, 3, false);
-        addTilesToDeck(6, 2, false);
-        addTilesToDeck(7, 8, false);
-        addTilesToDeck(8, 9, false);
-        addTilesToDeck(9, 4, false);
-        addTilesToDeck(10, 1, false);
-        addTilesToDeck(11, 2, false);
-        addTilesToDeck(12, 4, false);
-        addTilesToDeck(13, 1, false);
-        addTilesToDeck(13, 2, true);
-        addTilesToDeck(14, 3, false);
-        addTilesToDeck(14, 2, true);
-        addTilesToDeck(15, 3, false);
-        addTilesToDeck(15, 2, true);
-        addTilesToDeck(16, 1, false);
-        addTilesToDeck(16, 2, true);
-        addTilesToDeck(17, 3, false);
-        addTilesToDeck(17, 1, true);
-        addTilesToDeck(18, 1, true);
-
-        // shuffle the deck
-        Collections.shuffle(deck);
-    }
-
-    /**
-     * Simply adds a given number of a given type's tiles to the deck.
-     * @param type The type of tile to be added.
-     * @param amount The number of tiles of the given type to be added.
-     * @param pennant True if the tile includes a pennant.
-     */
-    private void addTilesToDeck(int type, int amount, boolean pennant) {
-        for (int i = 0; i < amount; i++) {
-            this.deck.add(new Tile((byte) type, pennant));
-        }
     }
 
     /**
@@ -782,10 +737,6 @@ public class GameState {
         }
     }
 
-    public int deckSize() {
-        return deck.size();
-    }
-
     public void assignPointsAtEndOfGame() {
         for (int i = 0; i < areaTypes.size(); i++) {
             // If the area is a field, then we need to evaluate it.
@@ -867,32 +818,23 @@ public class GameState {
         }
     }
 
-    public void addToDeck(Tile tile) {
-        deck.add(tile);
-        Collections.shuffle(deck);
-    }
-
     public short[] getScore() {
         return scores;
     }
 
-    public List<Tile> getDeck() {
-        return deck;
-    }
-
-    public boolean removeFromDeck(Tile tile) {
-        return deck.remove(tile);
-    }
-
     public boolean isTerminal() {
-        return deckSize() == 0;
+        return deckSize == 1;
     }
 
     public byte getPlayer() {
-        if (deckSize() % 2 == 0) {
+        if (deckSize % 2 == 0) {
             return 1;
         } else {
             return 2;
         }
+    }
+
+    public int getDeckSize() {
+        return deckSize;
     }
 }

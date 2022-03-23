@@ -113,7 +113,7 @@ public class Node {
     }
 
     public boolean isTerminal() {
-        return state.deckSize() == 0;
+        return state.getDeckSize() == 1;
     }
 
     public Node getRandomChild() {
@@ -121,7 +121,7 @@ public class Node {
             return children.get(random.nextInt(children.size()));
         } else {
             ////logger.error("No child available when querying for children!");
-            return null;
+            return this;
         }
     }
 

@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -16,14 +17,14 @@ public class UCTPlayer extends Player {
     }
 
     @Override
-    byte[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile) throws Exception {
+    byte[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile, List<Tile> deck) throws Exception {
         GameState state = new GameState(originalState);
         Node root = new Node(state, (byte) 0, playerID, null, tile, (byte) 0);
 
         for (int i = 0; i < trainingIterations; i++) {
-            Node node = treePolicy(root, stateSpace);
+            Node node = treePolicy(root, stateSpace, deck);
 
-            int payoff = defaultPolicy(node, stateSpace);
+            int payoff = defaultPolicy(node, stateSpace, deck);
 
             backup(node, payoff);
         }
@@ -52,13 +53,13 @@ public class UCTPlayer extends Player {
         return move;
     }
 
-    private Node treePolicy(Node root, GameStateSpace stateSpace) throws Exception {
+    private Node treePolicy(Node root, GameStateSpace stateSpace, List<Tile> deck) throws Exception {
         Node node = root;
 
         do {
             if (!node.hasChildren()) {
                 do {
-                    node = expand(node, stateSpace);
+                    node = expand(node, stateSpace, deck);
                 } while (node.getType() != 0 && !node.isTerminal());
 
                 return node;
@@ -74,17 +75,20 @@ public class UCTPlayer extends Player {
         return node;
     }
 
-    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace) {
+    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace, List<Tile> deck_) {
         GameState state = new GameState(leafNode.getState());
+
+        List<Tile> deck = Engine.copyDeck(deck_);
 
         while (!state.isTerminal()) {
 
-            Tile tile = state.drawTile();
+            Tile tile = Engine.drawTile(deck);
 
             List<ActionRotationStateTriple> actions = stateSpace.succ(state, tile);
 
             if (actions.isEmpty()) {
-                state.addToDeck(tile);
+                deck.add(tile);
+                Collections.shuffle(deck);
                 continue;
             }
 
@@ -132,6 +136,7 @@ public class UCTPlayer extends Player {
         Node bestChild = null;
 
         if (!parent.hasChildren()) {
+            return parent;
             //logger.error("bestChild can't be called for a node without children. Deck size: {}", parent.getState().getDeck().size());
         }
 
@@ -187,8 +192,7 @@ public class UCTPlayer extends Player {
         return chanceNodes;
     }
 
-    private List<Node> getPlacementNodes(Node parent, GameStateSpace stateSpace) {
-        List<Tile> deck = parent.getState().getDeck();
+    private List<Node> getPlacementNodes(Node parent, GameStateSpace stateSpace, List<Tile> deck) {
         List<Node> placementNodes = new ArrayList<>();
         List<Integer> consideredTiles = new ArrayList<>();
 
@@ -205,8 +209,6 @@ public class UCTPlayer extends Player {
 
                 newState.updateBoard(parent.getMove(), newTile);
 
-                newState.getDeck().remove(tile);
-
                 Node placementNode = new Node(newState, (byte) 0, otherPlayer(parent.getPlayer()), new byte[]{-1, -1}, tile, (byte) 0);
                 placementNodes.add(placementNode);
             }
@@ -215,7 +217,7 @@ public class UCTPlayer extends Player {
         return placementNodes;
     }
 
-    private Node expand(Node node, GameStateSpace stateSpace) {
+    private Node expand(Node node, GameStateSpace stateSpace, List<Tile> deck) {
         List<Node> children = new ArrayList<>();
 
         if (node.getType() == 0) {
@@ -223,7 +225,7 @@ public class UCTPlayer extends Player {
         } else if (node.getType() == 1) {
             children = getChanceNodes(node, stateSpace);
         } else if (node.getType() == 2) {
-            children = getPlacementNodes(node, stateSpace);
+            children = getPlacementNodes(node, stateSpace, deck);
         } else {
             System.out.println("** Error in expand!!!");
         }

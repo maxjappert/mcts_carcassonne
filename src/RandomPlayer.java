@@ -15,11 +15,11 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * For now this will be a random walk.
-     * @return
+     * Decides on a random possible next move. Rotation included.
+     * @return The coordinates of where the tile will be placed.
      */
     @Override
-    public byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) {
+    public byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile, List<Tile> deck) {
 
         //GameState state = new GameState(originalState);
 

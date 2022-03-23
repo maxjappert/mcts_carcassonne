@@ -1,6 +1,8 @@
 //import org.slf4j.//logger;
 //import org.slf4j.//loggerFactory;
 
+import java.util.List;
+
 abstract class Player {
 
     //static final //logger //logger = //loggerFactory.get//logger("Player//logger");
@@ -17,5 +19,5 @@ abstract class Player {
         this.playerID = playerID;
     }
 
-    abstract byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception;
+    abstract byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile, List<Tile> deck) throws Exception;
 }

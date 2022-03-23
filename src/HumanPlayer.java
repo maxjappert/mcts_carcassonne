@@ -12,7 +12,7 @@ public class HumanPlayer extends Player {
         super((byte) playerID);
     }
 
-    byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile) throws Exception {
+    byte[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile, List<Tile> deck) throws Exception {
         System.out.println("This is the tile you've drawn:");
 
         Scanner sc = new Scanner(System.in);

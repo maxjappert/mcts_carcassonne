@@ -11,7 +11,7 @@ public class GameStateSpace {
     }
 
     public boolean isGoal(GameState state) {
-        return state.deckSize() == 0;
+        return state.getDeckSize() == 0;
     }
 
     public List<ActionRotationStateTriple> succ(GameState state, Tile tile) {
