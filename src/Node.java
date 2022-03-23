@@ -74,9 +74,10 @@ public class Node {
         return meeplePlacement;
     }
 
-    public void addChild(Node child) throws Exception {
+    public void addChild(Node child) {
         if (children.contains(child)) {
-            throw new Exception();
+            System.out.println("Duplicate child added.");
+            return;
         }
 
         children.add(child);
@@ -121,6 +122,12 @@ public class Node {
         } else {
             ////logger.error("No child available when querying for children!");
             return null;
+        }
+    }
+
+    public void addChildren(List<Node> newChildren) {
+        for (Node child : newChildren) {
+            addChild(child);
         }
     }
 

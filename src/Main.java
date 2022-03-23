@@ -23,8 +23,9 @@ public class Main {
 
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
+        //remainingDeck
 
-        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 250);
+        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 200);
         Player player2 = new RandomPlayer(2);
 
         while (!stateSpace.isGoal(state)) {
