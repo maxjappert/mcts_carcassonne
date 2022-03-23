@@ -46,10 +46,7 @@ public class UCTPlayer extends Player {
 
             if (meeplePlacement > -1) {
                 tile.placeMeeple((byte) meeplePlacement, playerID, originalState);
-                System.out.println("** Meeple placed");
             }
-        } else {
-            System.out.println("** Chance node null");
         }
 
         return move;
@@ -60,7 +57,11 @@ public class UCTPlayer extends Player {
 
         do {
             if (!node.hasChildren()) {
-                return expand(node, stateSpace);
+                do {
+                    node = expand(node, stateSpace);
+                } while (node.getType() != 0 && !node.isTerminal());
+
+                return node;
             } else {
                 if (node.getType() == 2) {
                     node = node.getRandomChild();
@@ -214,40 +215,26 @@ public class UCTPlayer extends Player {
         return placementNodes;
     }
 
-    private Node expand(Node placementNode, GameStateSpace stateSpace) throws Exception {
-        List<Node> meepleNodes = getMeepleNodes(placementNode, stateSpace);
+    private Node expand(Node node, GameStateSpace stateSpace) {
+        List<Node> children = new ArrayList<>();
 
-        for (int i = 0; i < meepleNodes.size(); i++) {
-            Node meepleNode = meepleNodes.get(i);
-            placementNode.addChild(meepleNode);
+        if (node.getType() == 0) {
+            children = getMeepleNodes(node, stateSpace);
+        } else if (node.getType() == 1) {
+            children = getChanceNodes(node, stateSpace);
+        } else if (node.getType() == 2) {
+            children = getPlacementNodes(node, stateSpace);
+        } else {
+            System.out.println("** Error in expand!!!");
         }
 
-        Random random = new Random();
-
-        Node meepleNode = meepleNodes.get(random.nextInt(meepleNodes.size()));
-
-        List<Node> chanceNodes = getChanceNodes(meepleNode, stateSpace);
-
-        for (int j = 0; j < chanceNodes.size(); j++) {
-            Node chanceNode = chanceNodes.get(j);
-            meepleNode.addChild(chanceNode);
+        if (children.isEmpty()) {
+            return node;
         }
 
-        Node chanceNode = chanceNodes.get(random.nextInt(chanceNodes.size()));
+        node.addChildren(children);
 
-        List<Node> placementNodes = getPlacementNodes(chanceNode, stateSpace);
-
-        for (int k = 0; k < placementNodes.size(); k++) {
-            Node newPlacementNode = placementNodes.get(k);
-            chanceNode.addChild(newPlacementNode);
-        }
-
-        if (placementNodes.isEmpty()) {
-            return placementNode;
-        }
-
-        // return a random following placement node.
-        return placementNodes.get(random.nextInt(placementNodes.size()));
+        return node.getRandomChild();
     }
 
 //    private Node expand(Node placementNode, GameStateSpace stateSpace) throws Exception {

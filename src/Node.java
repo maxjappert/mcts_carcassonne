@@ -75,6 +75,11 @@ public class Node {
     }
 
     public void addChild(Node child) {
+//        if (!(child.getType() == type + 1 || (child.getType() == 0 && type == 2))) {
+//            new Exception().printStackTrace();
+//            return;
+//        }
+
         if (children.contains(child)) {
             System.out.println("Duplicate child added.");
             return;

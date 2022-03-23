@@ -141,6 +141,11 @@ public class GameStateSpace {
 
     private boolean checkIfLegalMeeplePlacement(Tile tile, int point, byte[] move, GameState state) {
 
+        // Can't place meeples on intersections.
+        if (point == 12 && tile.getMiddle() == 3) {
+            return false;
+        }
+
         // Use the copy constructors to create deep copies of the state and the tile in order to operate on them
         // without changing the actual state and tile.
         GameState potentialState = new GameState(state);
