@@ -13,9 +13,9 @@ public class Main {
             short[] roundScore = play();
             score[0] += roundScore[0];
             score[1] += roundScore[1];
-        }
 
-        System.out.printf("Score: %d:%d", score[0], score[1]);
+            System.out.printf("Score after round %d: %d:%d", i+1, score[0], score[1]);
+        }
     }
 
     public static short[] play() throws Exception {

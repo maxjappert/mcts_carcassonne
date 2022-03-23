@@ -47,7 +47,6 @@ public class Node {
      * Copy constructor.
      */
     public Node(Node node, byte type) {
-        //this.state = new GameState(node.state);
         this.state = node.state;
         this.parent = node;
         this.qValue = 0;
@@ -75,13 +74,9 @@ public class Node {
     }
 
     public void addChild(Node child) {
-//        if (!(child.getType() == type + 1 || (child.getType() == 0 && type == 2))) {
-//            new Exception().printStackTrace();
-//            return;
-//        }
 
         if (children.contains(child)) {
-            System.out.println("Duplicate child added.");
+            System.out.println("** Duplicate child added.");
             return;
         }
 
