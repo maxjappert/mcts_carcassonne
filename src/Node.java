@@ -15,6 +15,7 @@ public class Node {
     private final byte[] move;
     private byte meeplePlacement;
     private final byte rotation;
+    long id = new Random().nextLong();
 
     /**
      * 0: Placement Node

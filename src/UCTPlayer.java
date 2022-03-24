@@ -1,5 +1,7 @@
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.layout.HierarchicalLayout;
+import org.graphstream.ui.view.Viewer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,14 +34,7 @@ public class UCTPlayer extends Player {
             backup(node, payoff);
         }
 
-        Graph graph = new SingleGraph("Test");
-
-        graph.addNode("A");
-        graph.addNode("B");
-        graph.addEdge("AB", "A", "B");
-
-        System.setProperty("org.graphstream.ui", "swing");
-        graph.display();
+        //visualizeGraph(root);
 
         // Exploration term set to 0, since when executing we only want to consider the exploitation term.
         Node meepleNode = bestChild(root, 0);
@@ -64,6 +59,43 @@ public class UCTPlayer extends Player {
 
         return move;
     }
+
+//    private void visualizeGraph(Node root) {
+//        Graph graph = new SingleGraph("Test");
+//
+//        graph.setStrict(false);
+//        graph.setAutoCreate( true );
+//
+////        graph.addNode("A");
+////        graph.addNode("B");
+////        graph.addEdge("AB", "A", "B");
+////
+//        System.setProperty("org.graphstream.ui", "swing");
+////        graph.display();
+//
+//        expandVisualisation(root, graph);
+//
+//        Viewer view = graph.display(false);
+//        HierarchicalLayout hl = new HierarchicalLayout();
+//        view.enableAutoLayout(hl);
+//        //view.disableAutoLayout();
+//    }
+
+    //private void expandVisualisation(Node root, Graph graph) {
+//        List<Node> children = root.getChildren();
+//
+//        if (children.isEmpty()) {
+//            return;
+//        }
+//
+//        for (Node child : children) {
+//            graph.addEdge("" + root.id + child.id, Long.toString(root.id), Long.toString(child.id));
+//        }
+//
+//        for (Node child : children) {
+//            expandVisualisation(child, graph);
+//        }
+//    }
 
     private Node treePolicy(Node root, GameStateSpace stateSpace, List<Tile> deck) throws Exception {
         Node node = root;
