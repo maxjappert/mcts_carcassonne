@@ -11,8 +11,9 @@ public class Engine {
         GameState state = stateSpace.init();
         //remainingDeck
 
-        Player player1 = new UCTPlayer((int) 1, 0.5f, (int) 100);
-        Player player2 = new UCTPlayer((int)2, 0.5f, (int) 2000);
+        Player player1 = new UCTPlayer( 1, 2f, 500);
+        //Player player2 = new UCTPlayer(2, 0.5f, 50);
+        Player player2 = new HumanPlayer(2);
 
         List<Tile> deck = assembleDeck();
 
@@ -113,7 +114,7 @@ public class Engine {
     }
 
     public static List<Tile> copyDeck(List<Tile> deck) {
-        List<Tile> newDeck = new ArrayList<>();
+        List<Tile> newDeck = new ArrayList<>(deck.size());
 
         for (Tile tile : deck) {
             newDeck.add(new Tile(tile));

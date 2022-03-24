@@ -16,11 +16,13 @@ public class UCTPlayer extends Player {
     }
 
     @Override
-    int[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile, List<Tile> deck) throws Exception {
+    int[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile, List<Tile> originalDeck) throws Exception {
         GameState state = new GameState(originalState);
-        Node root = new Node(state, (int) 0, playerID, null, tile, (int) 0);
+        Node root = new Node(state, 0, playerID, null, tile, (int) 0);
 
         for (int i = 0; i < trainingIterations; i++) {
+            List<Tile> deck = Engine.copyDeck(originalDeck);
+
             Node node = treePolicy(root, stateSpace, deck);
 
             int payoff = defaultPolicy(node, stateSpace, deck, 0.5f);
@@ -52,6 +54,17 @@ public class UCTPlayer extends Player {
         }
 
         return move;
+    }
+
+    private int getTreeSize(Node root) {
+        int treeSize = 0;
+
+        for (Node node : root.getChildren()) {
+            treeSize++;
+            treeSize += getTreeSize(node);
+        }
+
+        return treeSize;
     }
 
 //    private void visualizeGraph(Node root) {
@@ -94,16 +107,22 @@ public class UCTPlayer extends Player {
     private Node treePolicy(Node root, GameStateSpace stateSpace, List<Tile> deck) throws Exception {
         Node node = root;
 
+        Random random = new Random();
+
         do {
             if (!node.hasChildren()) {
                 do {
                     node = expand(node, stateSpace, deck);
                 } while (node.getType() != 0 && !node.isTerminal());
 
+                if (!deck.isEmpty()) {
+                    deck.remove(random.nextInt(deck.size()));
+                }
                 return node;
             } else {
                 if (node.getType() == 2) {
                     node = node.getRandomChild();
+                    deck.remove(random.nextInt(deck.size()));
                 } else {
                     node = bestChild(node, explorationTerm);
                 }
@@ -117,17 +136,15 @@ public class UCTPlayer extends Player {
      * Random playout.
      * @param leafNode Starting point.
      * @param stateSpace The state space.
-     * @param deck_ The deck at the starting point.
+     * @param deck The deck at the starting point.
      * @param meeplePlacementProbability Probability of placing a meeple at a given round.
      * @return The payoff at the end of the playout.
      */
-    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace, List<Tile> deck_, float meeplePlacementProbability) {
+    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace, List<Tile> deck, float meeplePlacementProbability) {
         GameState state = new GameState(leafNode.getState());
 
-        List<Tile> deck = Engine.copyDeck(deck_);
-
         Random random = new Random();
-        while (!state.isTerminal()) {
+        while (deck.size() > 0) {
 
             Tile tile = Engine.drawTile(deck);
 
@@ -261,7 +278,7 @@ public class UCTPlayer extends Player {
 
                 newState.updateBoard(parent.getMove(), newTile);
 
-                Node placementNode = new Node(newState, (int) 0, otherPlayer(parent.getPlayer()), new int[]{-1, -1}, tile, (int) 0);
+                Node placementNode = new Node(newState, (int) 0, otherPlayer(parent.getPlayer()), new int[]{-1, -1}, new Tile(tile), (int) 0);
                 placementNodes.add(placementNode);
             }
         }
@@ -290,8 +307,8 @@ public class UCTPlayer extends Player {
 
         return node.getRandomChild();
     }
-
-//    private Node expand(Node placementNode, GameStateSpace stateSpace) throws Exception {
+//
+//    private Node expand(Node placementNode, GameStateSpace stateSpace, List<Tile> deck) throws Exception {
 //        List<Node> meepleNodes = getMeepleNodes(placementNode, stateSpace);
 //        List<Node> placementNodes = new ArrayList<>();
 //
@@ -303,7 +320,7 @@ public class UCTPlayer extends Player {
 //            for (int j = 0; j < chanceNodes.size(); j++) {
 //                Node chanceNode = chanceNodes.get(j);
 //                meepleNode.addChild(chanceNode);
-//                placementNodes = getPlacementNodes(chanceNode, stateSpace);
+//                placementNodes = getPlacementNodes(chanceNode, stateSpace, deck);
 //
 //                for (int k = 0; k < placementNodes.size(); k++) {
 //                    Node newPlacementNode = placementNodes.get(k);

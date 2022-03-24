@@ -15,7 +15,7 @@ public class Node {
     private final int[] move;
     private int meeplePlacement;
     private final int rotation;
-    long id = new Random().nextLong();
+    //long id = new Random().nextLong();
 
     /**
      * 0: Placement Node
