@@ -121,7 +121,7 @@ public class Node {
             return children.get(random.nextInt(children.size()));
         } else {
             ////logger.error("No child available when querying for children!");
-            return this;
+            return null;
         }
     }
 

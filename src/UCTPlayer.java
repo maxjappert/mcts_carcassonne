@@ -1,9 +1,3 @@
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.layout.HierarchicalLayout;
-import org.graphstream.ui.view.Viewer;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +23,7 @@ public class UCTPlayer extends Player {
         for (int i = 0; i < trainingIterations; i++) {
             Node node = treePolicy(root, stateSpace, deck);
 
-            int payoff = defaultPolicy(node, stateSpace, deck);
+            int payoff = defaultPolicy(node, stateSpace, deck, 0.5f);
 
             backup(node, payoff);
         }
@@ -119,16 +113,25 @@ public class UCTPlayer extends Player {
         return node;
     }
 
-    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace, List<Tile> deck_) {
+    /**
+     * Random playout.
+     * @param leafNode Starting point.
+     * @param stateSpace The state space.
+     * @param deck_ The deck at the starting point.
+     * @param meeplePlacementProbability Probability of placing a meeple at a given round.
+     * @return The payoff at the end of the playout.
+     */
+    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace, List<Tile> deck_, float meeplePlacementProbability) {
         GameState state = new GameState(leafNode.getState());
 
         List<Tile> deck = Engine.copyDeck(deck_);
 
+        Random random = new Random();
         while (!state.isTerminal()) {
 
             Tile tile = Engine.drawTile(deck);
 
-            List<ActionRotationStateTriple> actions = stateSpace.succ(state, tile);
+            List<ActionRotationPair> actions = stateSpace.succ(state, tile);
 
             if (actions.isEmpty()) {
                 deck.add(tile);
@@ -136,28 +139,33 @@ public class UCTPlayer extends Player {
                 continue;
             }
 
-            ActionRotationStateTriple action = actions.get(new Random().nextInt(actions.size()));
+            ActionRotationPair action = actions.get(random.nextInt(actions.size()));
 
             for (int i = 0; i < action.getRotation(); i++) {
                 tile.rotate();
             }
 
-            List<Byte> legalMeeples = stateSpace.legalMeeples(state, tile, action.getAction());
+            if (random.nextFloat() < meeplePlacementProbability) {
+                List<Byte> legalMeeples = stateSpace.legalMeeples(state, tile, action.getAction());
 
-            if (!legalMeeples.isEmpty()) {
-                int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
+                if (!legalMeeples.isEmpty()) {
+                    int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
 
-                if (meeplePlacement > -1) {
-                    tile.placeMeeple((byte) meeplePlacement, state.getPlayer(), state);
+                    if (meeplePlacement > -1) {
+                        tile.placeMeeple((byte) meeplePlacement, state.getPlayer(), state);
+                    }
                 }
             }
 
             state.updateBoard(action.getAction(), tile);
+
             state.checkForScoreAfterRound();
         }
 
+        long time1 = System.nanoTime();
         state.assignPointsAtEndOfGame();
-
+        long time2 = System.nanoTime();
+        System.out.printf("Training needed %f seconds.\n", (double) (time2 - time1) / Math.pow(10, 9));
         return state.getScore()[playerID - 1];
     }
 
@@ -190,7 +198,7 @@ public class UCTPlayer extends Player {
                 return child;
             }
 
-            double uct = ((double) child.getQValue() / child.getVisits()) + c * ((2 * Math.log(parent.getVisits())) / child.getVisits());
+            double uct = ((double) child.getQValue() / child.getVisits()) + 2 * c * ((2 * Math.log(parent.getVisits())) / child.getVisits());
 
             if (uct > highestValue) {
                 highestValue = uct;
@@ -202,10 +210,10 @@ public class UCTPlayer extends Player {
     }
 
     private List<Node> getMeepleNodes(Node parent, GameStateSpace stateSpace) {
-        List<ActionRotationStateTriple> actions = stateSpace.succ(parent.getState(), parent.getDrawnTile());
+        List<ActionRotationPair> actions = stateSpace.succ(parent.getState(), parent.getDrawnTile());
         List<Node> meepleNodes = new ArrayList<>();
 
-        for (ActionRotationStateTriple action : actions) {
+        for (ActionRotationPair action : actions) {
 
             Node meepleNode = new Node(parent.getState(), (byte) 1, parent.getState().getPlayer(), action.getAction(), parent.getDrawnTile(), action.getRotation());
 

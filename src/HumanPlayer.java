@@ -49,13 +49,13 @@ public class HumanPlayer extends Player {
 
             boolean legalMove = false;
 
-            List<ActionRotationStateTriple> legalSuccessors = stateSpace.succ(state, tile);
+            List<ActionRotationPair> legalSuccessors = stateSpace.succ(state, tile);
 
             if (legalSuccessors.isEmpty()) {
                 return new byte[]{-1, -1};
             }
 
-            for (ActionRotationStateTriple successor : legalSuccessors) {
+            for (ActionRotationPair successor : legalSuccessors) {
                 if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
                     legalMove = true;
                     break;

@@ -13,16 +13,10 @@ public class Tile {
     private final boolean pennant;
 
     /**
-     *  Starting from the bottom edge, counterclockwise.
-     *
-     *  0: grass
-     *  1: city
-     *  2: road
-     */
-    private byte[] sides;
-
-    /**
      * Starting from bottom right.
+     * 0: grass
+     * 1: city
+     * 2: road
      */
     private byte[] points;
 
@@ -86,97 +80,78 @@ public class Tile {
 
         switch (type) {
             case 0 -> {
-                sides = new byte[]{0, 2, 1, 2};
                 points = new byte[]{0, 0, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
             }
             case 1 -> {
-                sides = new byte[]{2, 0, 1, 2};
                 points = new byte[]{0, 2, 0, 0, 0, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
             }
             case 2 -> {
-                sides = new byte[]{2, 2, 1, 0};
                 points = new byte[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 0, 0};
                 middle = 2;
             }
             case 3 -> {
-                sides = new byte[]{2, 2, 1, 2};
                 points = new byte[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 3;
             }
             case 4 -> {
-                sides = new byte[]{0, 0, 1, 0};
                 points = new byte[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
             }
             case 5 -> {
-                sides = new byte[]{1, 0, 1, 0};
                 points = new byte[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
             }
             case 6 -> {
-                sides = new byte[]{0, 0, 1, 1};
                 points = new byte[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 0;
             }
             case 7 -> {
-                sides = new byte[]{0, 2, 0, 2};
                 points = new byte[]{0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
             }
             case 8 -> {
-                sides = new byte[]{2, 0, 0, 2};
                 points = new byte[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
             }
             case 9 -> {
-                sides = new byte[]{2, 2, 0, 2};
                 points = new byte[]{0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 3;
             }
             case 10 -> {
-                sides = new byte[]{2, 2, 2, 2};
                 points = new byte[]{0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0};
                 middle = 3;
             }
             case 11 -> {
-                sides = new byte[]{2, 0, 0, 0};
                 points = new byte[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
             }
             case 12 -> {
-                sides = new byte[]{0, 0, 0, 0};
                 points = new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
             }
             case 13 -> {
-                sides = new byte[]{0, 1, 0, 1};
                 points = new byte[]{0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1};
                 middle = 1;
             }
             case 14 -> {
-                sides = new byte[]{0, 0, 1, 1};
                 points = new byte[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 15 -> {
-                sides = new byte[]{2, 2, 1, 1};
                 points = new byte[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 16 -> {
-                sides = new byte[]{2, 1, 1, 1};
                 points = new byte[]{0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 17 -> {
-                sides = new byte[]{0, 1, 1, 1};
                 points = new byte[]{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 18 -> {
-                sides = new byte[]{1, 1, 1, 1};
                 points = new byte[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
@@ -188,7 +163,6 @@ public class Tile {
      * @param tile The tile for which a deep copy should be created.
      */
     public Tile(Tile tile) {
-        this.sides = Arrays.copyOf(tile.getSides(), tile.getSides().length);
         this.points = Arrays.copyOf(tile.getPoints(), 12);
         this.areas = Arrays.copyOf(tile.getAreas(), 12);
         this.meeple = Arrays.copyOf(tile.getMeeple(), 2);
@@ -234,11 +208,11 @@ public class Tile {
 
         boolean road = false;
         char c = '£';
-        if(sides[2] == 0) {
+        if(points[7] == 0) {
             c = '.';
-        } else if (sides[2] == 1) {
+        } else if (points[7] == 1) {
             c = '#';
-        } else if (sides[2] == 2) {
+        } else if (points[7] == 2) {
             output[0][2] = '|';
             output[1][2] = '|';
             road = true;
@@ -257,11 +231,11 @@ public class Tile {
         }
 
         road = false;
-        if(sides[0] == 0) {
+        if(points[1] == 0) {
             c = '.';
-        } else if (sides[0] == 1) {
+        } else if (points[1] == 1) {
             c = '#';
-        } else if (sides[0] == 2) {
+        } else if (points[1] == 2) {
             output[4][2] = '|';
             output[3][2] = '|';
             road = true;
@@ -281,11 +255,11 @@ public class Tile {
 
         // Then the edges on the sides
         road = false;
-        if(sides[1] == 0) {
+        if(points[4] == 0) {
             c = '.';
-        } else if (sides[1] == 1) {
+        } else if (points[4] == 1) {
             c = '#';
-        } else if (sides[1] == 2) {
+        } else if (points[4] == 2) {
             output[2][4] = '-';
             output[2][3] = '-';
             road = true;
@@ -306,11 +280,11 @@ public class Tile {
         }
 
         road = false;
-        if(sides[3] == 0) {
+        if(points[10] == 0) {
             c = '.';
-        } else if (sides[3] == 1) {
+        } else if (points[10] == 1) {
             c = '#';
-        } else if (sides[3] == 2) {
+        } else if (points[10] == 2) {
             output[2][0] = '-';
             output[2][1] = '-';
             road = true;
@@ -358,16 +332,16 @@ public class Tile {
 
         // Inelegant workaround to avoid the identical representation of tiles 6 and 14.
         if (type == 6) {
-            if (sides[0] == 1 && sides[1] == 1) {
+            if (points[1] == 1 && points[4] == 1) {
                 output[3][3] = '.';
                 output[4][4] = '.';
-            } else if (sides[1] == 1 && sides[2] == 1) {
+            } else if (points[4] == 1 && points[7] == 1) {
                 output[1][3] = '.';
                 output[0][4] = '.';
-            } else if (sides[2] == 1 && sides[3] == 1) {
+            } else if (points[7] == 1 && points[10] == 1) {
                 output[1][1] = '.';
                 output[0][0] = '.';
-            } else if (sides[3] == 1 && sides[0] == 1) {
+            } else if (points[10] == 1 && points[1] == 1) {
                 output[3][1] = '.';
                 output[4][0] = '.';
             }
@@ -410,6 +384,9 @@ public class Tile {
         return output;
     }
 
+    /**
+     * Takes the print format and prints it to console.
+     */
     public void printTile() {
         char[][] printFormat = getPrintFormatOfTile();
         StringBuilder tileString = new StringBuilder();
@@ -443,14 +420,6 @@ public class Tile {
 
         byte temp1;
         byte temp2;
-
-        temp1 = sides[1];
-        sides[1] = sides[0];
-        temp2 = sides[2];
-        sides[2] = temp1;
-        temp1 = sides[3];
-        sides[3] = temp2;
-        sides[0] = temp1;
 
         if (meeple [0] >= 0 && meeple[0] < 3) {
             meeple[0] += 1;
@@ -497,13 +466,6 @@ public class Tile {
         areas[2] = temp6;
     }
 
-    /**
-     * @return The types of sides the tile has, starting from the bottom edge running counterclockwise.
-     */
-    public byte[] getSides() {
-        return sides;
-    }
-
     public byte getMiddle() {
         return middle;
     }
@@ -522,11 +484,6 @@ public class Tile {
     public short[] getAreas() {
         return areas;
     }
-
-    public byte getSide(int index) {
-        return sides[index];
-    }
-
 
     public int getPoint(int point) {
         if (point == 12) {

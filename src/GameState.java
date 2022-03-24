@@ -224,13 +224,13 @@ public class GameState {
             int roadArea = Integer.MAX_VALUE;
 
             for (int i = 0; i < 4; i++) {
-                if (tile.getSide(i) == 2 && tile.getArea(i*3 + 1) < roadArea) {
+                if (tile.getPoint(i*3 + 1) == 2 && tile.getArea(i*3 + 1) < roadArea) {
                     roadArea = tile.getArea(i*3 + 1);
                 }
             }
 
             for (int i = 0; i < 4; i++) {
-                if (tile.getSide(i) == 2) {
+                if (tile.getPoint(i*3 + 1) == 2) {
                     tile.setArea(i*3 + 1, roadArea);
                 }
             }
@@ -300,7 +300,7 @@ public class GameState {
         // In the case that the board dimensions remain the same, we simply place the tile at the coordinates given
         // by the move. These need to be subtracted by 1, since the user has to consider the additional potential row
         // and column.
-        board.get(move[0] - 1).set(move[1] - 1, tile) ;
+        board.get(move[0] - 1).set(move[1] - 1, tile);
     }
 
     /**
@@ -308,6 +308,7 @@ public class GameState {
      * a 2D-char-array using the individual ASCII-representations of the relevant tiles.
      */
     public void displayBoard() {
+
         int[] boardDimensions = getBoardDimensions();
 
         char[][] boardFormat = new char[boardDimensions[0] * 5 + 1 + 10][boardDimensions[1] * 10 + 1 + 20];

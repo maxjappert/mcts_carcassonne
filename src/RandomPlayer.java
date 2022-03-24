@@ -23,14 +23,14 @@ public class RandomPlayer extends Player {
 
         //GameState state = new GameState(originalState);
 
-        List<ActionRotationStateTriple> ars = stateSpace.succ(state, tile);
+        List<ActionRotationPair> ars = stateSpace.succ(state, tile);
 
         // In this case no move is possible and a new tile has to be drawn.
         if (ars.isEmpty()) {
             return new byte[]{-1, -1};
         }
 
-        ActionRotationStateTriple move = ars.get(random.nextInt(ars.size()));
+        ActionRotationPair move = ars.get(random.nextInt(ars.size()));
 
         for (int i = 0; i < move.getRotation(); i++) {
             tile.rotate();

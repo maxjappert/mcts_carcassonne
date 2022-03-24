@@ -14,8 +14,8 @@ public class GameStateSpace {
         return state.getDeckSize() == 0;
     }
 
-    public List<ActionRotationStateTriple> succ(GameState state, Tile tile) {
-        List<ActionRotationStateTriple> successors = new ArrayList<>();
+    public List<ActionRotationPair> succ(GameState state, Tile tile) {
+        List<ActionRotationPair> successors = new ArrayList<>();
 
         Tile drawnTile = new Tile(tile);
 
@@ -28,9 +28,7 @@ public class GameStateSpace {
                 byte[] move = new byte[]{i, j};
                 for (int rotation = 0; rotation < 4; rotation++) {
                     if (isLegalMove(move, drawnTile, state)) {
-                        GameState updatedState = new GameState(state);
-                        updatedState.updateBoard(move, drawnTile);
-                        ActionRotationStateTriple arst = new ActionRotationStateTriple(move, rotation, updatedState);
+                        ActionRotationPair arst = new ActionRotationPair(move, rotation);
                         successors.add(arst);
 
                         ////logger.info("[{}, {}] with rotation {} is a legal move.", move[0], move[1], rotation);
@@ -115,19 +113,19 @@ public class GameStateSpace {
         }
 
         try {
-            if (connected[0] && state.getTile(new int[]{move[0], move[1] - 1}).getSides()[2] != tile.getSides()[0]) {
+            if (connected[0] && state.getTile(new int[]{move[0], move[1] - 1}).getPoint(7) != tile.getPoint(1)) {
                 return false;
             }
 
-            if (connected[1] && state.getTile(new int[]{move[0] - 1, move[1]}).getSides()[3] != tile.getSides()[1]) {
+            if (connected[1] && state.getTile(new int[]{move[0] - 1, move[1]}).getPoint(10) != tile.getPoint(4)) {
                 return false;
             }
 
-            if (connected[2] && state.getTile(new int[]{move[0] - 2, move[1] - 1}).getSides()[0] != tile.getSides()[2]) {
+            if (connected[2] && state.getTile(new int[]{move[0] - 2, move[1] - 1}).getPoint(1) != tile.getPoint(7)) {
                 return false;
             }
 
-            if (connected[3] && state.getTile(new int[]{move[0] - 1, move[1] - 2}).getSides()[1] != tile.getSides()[3]) {
+            if (connected[3] && state.getTile(new int[]{move[0] - 1, move[1] - 2}).getPoint(4) != tile.getPoint(10)) {
                 return false;
             }
         } catch (NullPointerException e) {

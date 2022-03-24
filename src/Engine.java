@@ -11,8 +11,8 @@ public class Engine {
         GameState state = stateSpace.init();
         //remainingDeck
 
-        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 50);
-        Player player2 = new UCTPlayer((byte)2, 0.5f, (short) 200);
+        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 100);
+        Player player2 = new UCTPlayer((byte)2, 0.5f, (short) 5000);
 
         List<Tile> deck = assembleDeck();
 
