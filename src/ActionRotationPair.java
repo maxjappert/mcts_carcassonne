@@ -1,17 +1,17 @@
 class ActionRotationPair {
-    private final byte[] action;
-    private final byte rotation;
+    private final int[] action;
+    private final int rotation;
 
-    ActionRotationPair(byte[] action, int rotation) {
+    ActionRotationPair(int[] action, int rotation) {
         this.action = action;
-        this.rotation = (byte) rotation;
+        this.rotation = (int) rotation;
     }
 
-    public byte[] getAction() {
+    public int[] getAction() {
         return action;
     }
 
-    public byte getRotation() {
+    public int getRotation() {
         return rotation;
     }
 }

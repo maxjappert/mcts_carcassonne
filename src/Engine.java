@@ -4,15 +4,15 @@ import java.util.List;
 
 public class Engine {
 
-    public short[] play() throws Exception {
+    public int[] play() throws Exception {
         //logger.info("play() started.");
 
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
         //remainingDeck
 
-        Player player1 = new UCTPlayer((byte) 1, 0.5f, (short) 100);
-        Player player2 = new UCTPlayer((byte)2, 0.5f, (short) 5000);
+        Player player1 = new UCTPlayer((int) 1, 0.5f, (int) 100);
+        Player player2 = new UCTPlayer((int)2, 0.5f, (int) 2000);
 
         List<Tile> deck = assembleDeck();
 
@@ -22,7 +22,7 @@ public class Engine {
             Tile drawnTile = drawTile(deck);
             drawnTile.printTile();
 
-            byte[] move = new byte[]{-1, -1};
+            int[] move = new int[]{-1, -1};
 
             while (move[0] == -1) {
                 if (deck.size() % 2 == 0) {
@@ -67,7 +67,7 @@ public class Engine {
      */
     private void addTilesToDeck(List<Tile> deck, int type, int amount, boolean pennant) {
         for (int i = 0; i < amount; i++) {
-            deck.add(new Tile((byte) type, pennant));
+            deck.add(new Tile((int) type, pennant));
         }
     }
 

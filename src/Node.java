@@ -5,16 +5,16 @@ import java.util.*;
 
 public class Node {
     private final GameState state;
-    private short qValue;
-    private short visits;
+    private int qValue;
+    private int visits;
     private Node parent;
     private final List<Node> children;
     private final Tile drawnTile;
-    private final byte player;
+    private final int player;
     private final Random random;
-    private final byte[] move;
-    private byte meeplePlacement;
-    private final byte rotation;
+    private final int[] move;
+    private int meeplePlacement;
+    private final int rotation;
     long id = new Random().nextLong();
 
     /**
@@ -22,11 +22,11 @@ public class Node {
      * 1: Meeple Node
      * 2: Chance Node
      */
-    private final byte type;
+    private final int type;
 
     ////logger //logger = //loggerFactory.get//logger("Node//logger");
 
-    public Node(GameState state, byte type, byte player, byte[] move, Tile tile, byte rotation) {
+    public Node(GameState state, int type, int player, int[] move, Tile tile, int rotation) {
 
         this.state = state;
         this.parent = null;
@@ -46,7 +46,7 @@ public class Node {
     /**
      * Copy constructor.
      */
-    public Node(Node node, byte type) {
+    public Node(Node node, int type) {
         this.state = node.state;
         this.parent = node;
         this.qValue = 0;
@@ -61,15 +61,15 @@ public class Node {
         this.type = type;
     }
 
-    public void addMeeple(byte placement) {
+    public void addMeeple(int placement) {
         meeplePlacement = placement;
     }
 
-    public byte getRotation() {
+    public int getRotation() {
         return rotation;
     }
 
-    public byte getMeeplePlacement() {
+    public int getMeeplePlacement() {
         return meeplePlacement;
     }
 
@@ -88,11 +88,11 @@ public class Node {
         this.parent = parent;
     }
 
-    public byte[] getMove() {
+    public int[] getMove() {
         return move;
     }
 
-    public byte getPlayer() {
+    public int getPlayer() {
         return player;
     }
 
@@ -104,7 +104,7 @@ public class Node {
         return children;
     }
 
-    public short getQValue() {
+    public int getQValue() {
         return qValue;
     }
 
@@ -139,7 +139,7 @@ public class Node {
         visits++;
 
         if (visits > 30000) {
-            ////logger.error("Short doesn't suffice as a datatype for the visits!");
+            ////logger.error("int doesn't suffice as a datatype for the visits!");
         }
     }
 
@@ -147,7 +147,7 @@ public class Node {
         qValue += payoff;
 
         if (qValue > 30000) {
-            ////logger.error("Short doesn't suffice as a datatype for the q value!");
+            ////logger.error("int doesn't suffice as a datatype for the q value!");
         }
 
     }
@@ -156,7 +156,7 @@ public class Node {
         return parent;
     }
 
-    public short getVisits() {
+    public int getVisits() {
         return visits;
     }
 
@@ -164,7 +164,7 @@ public class Node {
         return drawnTile;
     }
 
-    public byte getType() {
+    public int getType() {
         return type;
     }
 }

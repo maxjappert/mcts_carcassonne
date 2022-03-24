@@ -18,21 +18,21 @@ public class Tile {
      * 1: city
      * 2: road
      */
-    private byte[] points;
+    private int[] points;
 
     /**
      * To which connected areas to the points belong to?
      */
-    private short[] areas;
+    private int[] areas;
 
     /**
      * Describes a possible meeple on the tile. Index 0 denotes the side on which the meeple was placed and index 1
      * denotes the ID of the player whom the meeple belongs to. If there's no meeple on the tile, then both values
      * are -1.
      */
-    private byte[] meeple;
+    private int[] meeple;
 
-    private final byte type;
+    private final int type;
 
     /**
      * 0: grass
@@ -41,11 +41,11 @@ public class Tile {
      * 3: intersection
      * 4: monastery
      */
-    private byte middle;
+    private int middle;
 
-    private short middleArea;
+    private int middleArea;
 
-    private byte rotation;
+    private int rotation;
 
     /**
      * The possible types are the following:
@@ -69,90 +69,90 @@ public class Tile {
      * 17: 3/4 city without road (4)
      * 18: city (1)
      */
-    public Tile(byte type, boolean pennant) {
+    public Tile(int type, boolean pennant) {
         this.pennant = pennant;
         this.type = type;
         this.rotation = 0;
 
-        areas = new short[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+        areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-        meeple = new byte[]{-1, -1};
+        meeple = new int[]{-1, -1};
 
         switch (type) {
             case 0 -> {
-                points = new byte[]{0, 0, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
+                points = new int[]{0, 0, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
             }
             case 1 -> {
-                points = new byte[]{0, 2, 0, 0, 0, 0, 1, 1, 1, 0, 2, 0};
+                points = new int[]{0, 2, 0, 0, 0, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
             }
             case 2 -> {
-                points = new byte[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 0, 0};
+                points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 0, 0};
                 middle = 2;
             }
             case 3 -> {
-                points = new byte[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
+                points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 3;
             }
             case 4 -> {
-                points = new byte[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
+                points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
             }
             case 5 -> {
-                points = new byte[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0};
+                points = new int[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
             }
             case 6 -> {
-                points = new byte[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
+                points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 0;
             }
             case 7 -> {
-                points = new byte[]{0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
+                points = new int[]{0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
             }
             case 8 -> {
-                points = new byte[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0};
+                points = new int[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
             }
             case 9 -> {
-                points = new byte[]{0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
+                points = new int[]{0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 3;
             }
             case 10 -> {
-                points = new byte[]{0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0};
+                points = new int[]{0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0};
                 middle = 3;
             }
             case 11 -> {
-                points = new byte[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                points = new int[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
             }
             case 12 -> {
-                points = new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                points = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
             }
             case 13 -> {
-                points = new byte[]{0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1};
+                points = new int[]{0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1};
                 middle = 1;
             }
             case 14 -> {
-                points = new byte[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
+                points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 15 -> {
-                points = new byte[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 1, 1, 1};
+                points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 16 -> {
-                points = new byte[]{0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                points = new int[]{0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 17 -> {
-                points = new byte[]{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                points = new int[]{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
             case 18 -> {
-                points = new byte[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+                points = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
             }
         }
@@ -418,8 +418,8 @@ public class Tile {
             rotation++;
         }
 
-        byte temp1;
-        byte temp2;
+        int temp1;
+        int temp2;
 
         if (meeple [0] >= 0 && meeple[0] < 3) {
             meeple[0] += 1;
@@ -429,7 +429,7 @@ public class Tile {
 
         // Now we rotate the points.
 
-        byte temp3;
+        int temp3;
 
         temp1 = points[9];
         temp2 = points[10];
@@ -447,9 +447,9 @@ public class Tile {
 
         // Now we rotate the areas.
 
-        short temp4;
-        short temp5;
-        short temp6;
+        int temp4;
+        int temp5;
+        int temp6;
 
         temp4 = areas[9];
         temp5 = areas[10];
@@ -466,22 +466,22 @@ public class Tile {
         areas[2] = temp6;
     }
 
-    public byte getMiddle() {
+    public int getMiddle() {
         return middle;
     }
 
-    public void placeMeeple(byte side, byte playerID, GameState state) {
+    public void placeMeeple(int side, int playerID, GameState state) {
         if (state.getNumMeeples(playerID) > 0) {
             state.removeMeeple(playerID);
-            meeple = new byte[]{side, playerID};
+            meeple = new int[]{side, playerID};
         }
     }
 
-    public byte[] getMeeple() {
+    public int[] getMeeple() {
         return meeple;
     }
 
-    public short[] getAreas() {
+    public int[] getAreas() {
         return areas;
     }
 
@@ -504,27 +504,27 @@ public class Tile {
     public void setArea(int point, int area) {
 
         if (point == 12) {
-            middleArea = (short) area;
+            middleArea = (int) area;
         } else {
-            areas[point] = (short) area;
+            areas[point] = (int) area;
         }
     }
 
     public void resetAreas() {
         middleArea = -1;
-        areas = new short[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+        areas = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     }
 
-    public byte[] getPoints() {
+    public int[] getPoints() {
         return points;
     }
 
-    public short getMiddleArea() {
+    public int getMiddleArea() {
         return middleArea;
     }
 
     public void setMiddleArea(int area) {
-        middleArea = (short) area;
+        middleArea = (int) area;
     }
 
     public boolean hasPennant() {
@@ -540,7 +540,7 @@ public class Tile {
     }
 
     public void removeMeeple() {
-        meeple = new byte[]{-1, -1};
+        meeple = new int[]{-1, -1};
     }
 
     public int getRotation() {

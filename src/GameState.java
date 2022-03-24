@@ -7,11 +7,11 @@ public class GameState {
     //private final List<Tile> deck;
     private final List<List<Tile>> board;
 
-    private final List<Short> areaTypes;
-    private final List<Short> completedCities;
+    private final List<Integer> areaTypes;
+    private final List<Integer> completedCities;
 
-    private short[] scores;
-    private byte[] numMeeples;
+    private int[] scores;
+    private int[] numMeeples;
 
     private int deckSize;
 
@@ -23,15 +23,15 @@ public class GameState {
     public GameState() {
         //deck = new ArrayList<>();
         board = new ArrayList<>();
-        numMeeples = new byte[]{7, 7};
+        numMeeples = new int[]{7, 7};
 
         deckSize = 71;
 
         board.add(new ArrayList<>());
 
-        scores = new short[]{0, 0};
+        scores = new int[]{0, 0};
 
-        Tile startingTile = new Tile((byte) 0, false);
+        Tile startingTile = new Tile((int) 0, false);
 
         startingTile.setArea(0, 0);
         startingTile.setArea(1, 0);
@@ -50,10 +50,10 @@ public class GameState {
         board.get(0).add(startingTile);
 
         areaTypes = new ArrayList<>();
-        areaTypes.add((short) 0);
-        areaTypes.add((short) 2);
-        areaTypes.add((short) 1);
-        areaTypes.add((short) 0);
+        areaTypes.add((int) 0);
+        areaTypes.add((int) 2);
+        areaTypes.add((int) 1);
+        areaTypes.add((int) 0);
 
         completedCities = new ArrayList<>();
     }
@@ -96,7 +96,7 @@ public class GameState {
      * @param move The coordinates of where the tile should be placed.
      * @param tile The tile which should be placed.
      */
-    public void updateBoard(byte[] move, Tile tile) {
+    public void updateBoard(int[] move, Tile tile) {
 
         deckSize--;
 
@@ -421,28 +421,28 @@ public class GameState {
      * @param tile The tile at the given coordinates.
      * @return The coordinates of the given tile as an int array of length 2.
      */
-    public byte[] getCoordinates(Tile tile) {
-        for (byte i = 0; i < board.size(); i++) {
-            for (byte j = 0; j < board.get(0).size(); j++) {
+    public int[] getCoordinates(Tile tile) {
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.get(0).size(); j++) {
                 if (board.get(i).get(j) != null && board.get(i).get(j).equals(tile)) {
-                    return new byte[]{i, j};
+                    return new int[]{i, j};
                 }
             }
         }
 
         ////logger.error("Tile not found in getCoordinates(...)");
-        return new byte[0];
+        return new int[0];
     }
 
     /**
      * @param move The coordinates of which the neighbours are to be determined.
      * @return All neighbouring tiles which are connected along the given type. If type == -1, then all neighbours are returned.
      */
-    public Map<Integer, Tile> getNeighboursByType(byte[] move, boolean monasteryNeighbours) {
+    public Map<Integer, Tile> getNeighboursByType(int[] move, boolean monasteryNeighbours) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
         // Create a deep copy of the move array
-        byte[] tileCoords = Arrays.copyOf(move, move.length);
+        int[] tileCoords = Arrays.copyOf(move, move.length);
 
         // We only need to subtract 1 if the coordinates reference the placement space which considers a first row
         // which doesn't exist in the board space. If we want to check for the monastery neighbours, we check in the
@@ -534,7 +534,7 @@ public class GameState {
 
     private int assignNewArea(int type) {
         int areaCode = areaTypes.size();
-        areaTypes.add((short) type);
+        areaTypes.add((int) type);
         return areaCode;
     }
 
@@ -599,7 +599,7 @@ public class GameState {
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
                             //System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
-                            completedCities.add((short) tile.getArea(tile.getMeeple()[0]));
+                            completedCities.add((int) tile.getArea(tile.getMeeple()[0]));
                             tile.removeMeeple();
                             return;
                         }
@@ -819,7 +819,7 @@ public class GameState {
         }
     }
 
-    public short[] getScore() {
+    public int[] getScore() {
         return scores;
     }
 
@@ -827,7 +827,7 @@ public class GameState {
         return deckSize == 1;
     }
 
-    public byte getPlayer() {
+    public int getPlayer() {
         if (deckSize % 2 == 0) {
             return 1;
         } else {
