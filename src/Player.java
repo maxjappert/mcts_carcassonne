@@ -13,9 +13,6 @@ abstract class Player {
      */
     protected int playerID;
     protected Player(int playerID) {
-        if (playerID != 1 && playerID != 2) {
-            //logger.error("Player initialised with invalid ID");
-        }
         this.playerID = playerID;
     }
 

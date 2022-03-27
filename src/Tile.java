@@ -470,11 +470,8 @@ public class Tile {
         return middle;
     }
 
-    public void placeMeeple(int side, int playerID, GameState state) {
-        if (state.getNumMeeples(playerID) > 0) {
-            state.removeMeeple(playerID);
-            meeple = new int[]{side, playerID};
-        }
+    public void placeMeeple(int side, int playerID) {
+        meeple = new int[]{side, playerID};
     }
 
     public int[] getMeeple() {

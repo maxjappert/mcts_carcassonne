@@ -16,8 +16,6 @@ public class GameState {
 
     private int deckSize;
 
-    //static final //logger //logger = //loggerFactory.get//logger("GameState//logger");
-
     /**
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
      */
@@ -60,6 +58,13 @@ public class GameState {
         completedCities = new ArrayList<>();
     }
 
+    public void placeMeeple(int side, int playerID, Tile tile) {
+        if (getNumMeeples(playerID) > 0) {
+            removeMeeple(playerID);
+            tile.placeMeeple(side, playerID);
+        }
+    }
+
     /**
      * Copy constructor.
      * @param state The GameState object for which a deep copy should be created.
@@ -90,12 +95,9 @@ public class GameState {
         }
     }
 
-    public void decreaseDeckSize() {
-        deckSize--;
-    }
-
     /**
-     * Places the tile which the player drew from the deck onto the board.
+     * Places the tile which the player drew from the deck onto the board. This method is a collection of bodges, but
+     * it works.
      * @param move The coordinates of where the tile should be placed.
      * @param tile The tile which should be placed.
      */
@@ -106,7 +108,7 @@ public class GameState {
         tile.resetAreas();
 
         if (tile.getMiddle() == 4) {
-            tile.setArea(12, 4);
+            tile.setArea(12, assignNewArea(4));
         }
 
         Map<Integer, Tile> neighbours = getNeighboursByType(move, false);
@@ -433,7 +435,6 @@ public class GameState {
             }
         }
 
-        ////logger.error("Tile not found in getCoordinates(...)");
         return new int[0];
     }
 

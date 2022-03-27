@@ -79,10 +79,10 @@ public class HumanPlayer extends Player {
 
                     assert (point >= 0 && point <= 12);
 
-                    boolean legalMeeple = stateSpace.legalMeeples(state, tile, move).contains(point);
+                    boolean legalMeeple = stateSpace.legalMeeples(state, tile, move, playerID).contains(point);
 
                     if (legalMeeple) {
-                        tile.placeMeeple((int) point, playerID, state);
+                        state.placeMeeple(point, playerID, tile);
                         //logger.info("Player {} places meeple on point {}. {} meeples remaining", tile.getMeeple()[1], tile.getMeeple()[0], state.getNumMeeples(playerID));
 
                     } else {
@@ -90,8 +90,6 @@ public class HumanPlayer extends Player {
                         continue;
                     }
                 }
-
-                //logger.info("End of decideOnNextMove(...)");
 
                 return move;
             }

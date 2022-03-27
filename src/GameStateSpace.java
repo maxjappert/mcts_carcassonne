@@ -47,16 +47,16 @@ public class GameStateSpace {
      * @param tile The tile in question.
      * @return Subset of {0, ..., 12}, denoting the sides on which meeples can be placed.
      */
-    public List<Integer> legalMeeples(GameState state, Tile tile, int[] move) {
+    public List<Integer> legalMeeples(GameState state, Tile tile, int[] move, int player) {
         List<Integer> placements = new ArrayList<>();
 
-        if (state.getNumMeeples(state.getPlayer()) < 1) {
+        if (state.getNumMeeples(player) == 0) {
             return placements;
         }
 
-        for (int point = 0; point < 13; point++) {
+        for (int point = 0; point <= 12; point++) {
             if (checkIfLegalMeeplePlacement(tile, point, move, state)) {
-                placements.add((int) point);
+                placements.add(point);
             }
         }
         
