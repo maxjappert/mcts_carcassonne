@@ -1,24 +1,23 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Engine {
 
-    public int[] play() throws Exception {
-        //logger.info("play() started.");
+    public int[] play(Player player1, Player player2) throws Exception {
 
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
-        //remainingDeck
-
-        Player player1 = new UCTPlayer( 1, 2f, 500);
-        //Player player2 = new UCTPlayer(2, 0.5f, 50);
-        Player player2 = new HumanPlayer(2);
 
         List<Tile> deck = assembleDeck();
 
         while (!stateSpace.isGoal(state)) {
+            System.out.println("Current score: " + Arrays.toString(state.getScore()));
+
             state.displayBoard();
+
+            System.out.println(deck.size() + " tiles remaining.");
 
             Tile drawnTile = drawTile(deck);
             drawnTile.printTile();
@@ -35,7 +34,7 @@ public class Engine {
                 // In the rare case that the drawn tile cannot legally be placed, the tile is added back to the deck
                 // and a new tile is drawn.
                 if (move[0] == -1) {
-                    //logger.info("Player {} draws tile with no possible legal moves. The tile is therefore redrawn.", ((state.deckSize() % 2) + 1));
+                    System.out.printf("Player %d draws tile with no possible legal moves. The tile is therefore redrawn.\n\n", ((deck.size() % 2) + 1));
                     deck.add(drawnTile);
                     Collections.shuffle(deck);
                     drawnTile = drawTile(deck);
@@ -55,8 +54,6 @@ public class Engine {
         System.out.println("Player 1 has " + state.getScore()[0] + " points.");
         System.out.println("Player 2 has " + state.getScore()[1] + " points.");
 
-        //logger.info("play() finished.");
-
         return state.getScore();
     }
 
@@ -68,7 +65,7 @@ public class Engine {
      */
     private void addTilesToDeck(List<Tile> deck, int type, int amount, boolean pennant) {
         for (int i = 0; i < amount; i++) {
-            deck.add(new Tile((int) type, pennant));
+            deck.add(new Tile(type, pennant));
         }
     }
 

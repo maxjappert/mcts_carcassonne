@@ -7,8 +7,9 @@ public class GameState {
     //private final List<Tile> deck;
     private final List<List<Tile>> board;
 
-    private final List<Integer> areaTypes;
+    private final Map<Integer, Integer> areaTypes;
     private final List<Integer> completedCities;
+    private int areaCounter;
 
     private int[] scores;
     private int[] numMeeples;
@@ -49,11 +50,12 @@ public class GameState {
         // The starting tile as defined in the game's manual.
         board.get(0).add(startingTile);
 
-        areaTypes = new ArrayList<>();
-        areaTypes.add((int) 0);
-        areaTypes.add((int) 2);
-        areaTypes.add((int) 1);
-        areaTypes.add((int) 0);
+        areaTypes = new HashMap<>();
+        areaTypes.put((int) 0, 0);
+        areaTypes.put((int) 1, 2);
+        areaTypes.put((int) 2, 1);
+        areaTypes.put((int) 3, 0);
+        areaCounter = 4;
 
         completedCities = new ArrayList<>();
     }
@@ -66,8 +68,9 @@ public class GameState {
         this.board = new ArrayList<>();
 
         this.deckSize = state.deckSize;
+        this.areaCounter = state.areaCounter;
 
-        this.areaTypes = new ArrayList<>(List.copyOf(state.areaTypes));
+        this.areaTypes = new HashMap<>(Map.copyOf(state.areaTypes));
 
         this.completedCities = new ArrayList<>(List.copyOf(state.completedCities));
 
@@ -533,9 +536,8 @@ public class GameState {
     }
 
     private int assignNewArea(int type) {
-        int areaCode = areaTypes.size();
-        areaTypes.add((int) type);
-        return areaCode;
+        areaTypes.put(areaCounter, type);
+        return areaCounter++;
     }
 
     /**
@@ -553,6 +555,8 @@ public class GameState {
                 }
             }
         }
+
+        areaTypes.remove(replacedArea);
     }
 
     public List<Tile> getTilesOfArea(int area) {
@@ -739,7 +743,7 @@ public class GameState {
     }
 
     public void assignPointsAtEndOfGame() {
-        for (int i = 0; i < areaTypes.size(); i++) {
+        for (int i : areaTypes.keySet()) {
             // If the area is a field, then we need to evaluate it.
             if (areaTypes.get(i) == 0) {
                 List<Tile> tilesOfArea = getTilesOfArea(i);

@@ -12,7 +12,7 @@ public class Main {
 
         for (int i = 0; i < 10; i++) {
             System.out.println("Round " + (i+1));
-            int[] roundScore = engine.play();
+            int[] roundScore = engine.play(new UCTPlayer(1, 2f, 100), new RandomPlayer(2));
             score[0] += roundScore[0];
             score[1] += roundScore[1];
 
