@@ -1,0 +1,6 @@
+50 training iterations, c = 0.2: [53, 37]
+
+100 training iterations, c = 0.2: [49, 38]
+
+500 training iterations, c = 0.2: [59, 41]
+

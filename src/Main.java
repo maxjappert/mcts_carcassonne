@@ -12,7 +12,7 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        playGame(new UCTPlayer(1, 2f, 100), new RandomPlayer(2));
+        createReport();
     }
 
     /**

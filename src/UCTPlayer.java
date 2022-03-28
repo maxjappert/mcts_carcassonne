@@ -41,6 +41,10 @@ public class UCTPlayer extends Player {
 
         int[] move = meepleNode.getMove();
 
+        if (move == null) {
+            move = decideOnNextMove(originalState, stateSpace, tile, originalDeck);
+        }
+
         tile.rotateBy(meepleNode.getRotation());
 
         Node chanceNode = bestChild(meepleNode, 0);
