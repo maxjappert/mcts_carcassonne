@@ -42,7 +42,7 @@ public class UCTPlayer extends Player {
         int[] move = meepleNode.getMove();
 
         if (move == null) {
-            move = decideOnNextMove(originalState, stateSpace, tile, originalDeck);
+            return new int[]{-1, -1};
         }
 
         tile.rotateBy(meepleNode.getRotation());
@@ -71,7 +71,15 @@ public class UCTPlayer extends Player {
         return treeSize;
     }
 
-//    private void visualizeGraph(Node root) {
+    public float getExplorationTerm() {
+        return explorationTerm;
+    }
+
+    public int getTrainingIterations() {
+        return trainingIterations;
+    }
+
+    //    private void visualizeGraph(Node root) {
 //        Graph graph = new SingleGraph("Test");
 //
 //        graph.setStrict(false);

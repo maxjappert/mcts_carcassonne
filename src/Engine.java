@@ -12,6 +12,14 @@ public class Engine {
 
         List<Tile> deck = assembleDeck();
 
+        if (player1 instanceof UCTPlayer) {
+            System.out.println("Player 1: c = " + ((UCTPlayer) player1).getExplorationTerm() + ", " + ((UCTPlayer) player1).getTrainingIterations() + " training iterations.");
+        }
+
+        if (player2 instanceof UCTPlayer) {
+            System.out.println("Player 2: c = " + ((UCTPlayer) player2).getExplorationTerm() + ", " + ((UCTPlayer) player2).getTrainingIterations() + " training iterations.");
+        }
+
         while (!stateSpace.isGoal(state)) {
             System.out.println("Current score: " + Arrays.toString(state.getScore()));
 

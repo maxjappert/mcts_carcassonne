@@ -13,6 +13,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         createReport();
+        //playGame(new RandomPlayer(1), new UCTPlayer(2, 2f, 200));
     }
 
     /**
@@ -42,9 +43,9 @@ public class Main {
 
         Engine engine = new Engine();
 
-        int[] ti = new int[]{50, 100, 500, 1000, 2000, 5000};
+        int[] ti = new int[]{50, 100, 1000};
 
-        for (float c = 0.2f; c < 15; c += 0.2f) {
+        for (float c = 0.5f; c < 15; c += 0.5f) {
             for (int trainingIterations : ti) {
                 int[] score = new int[]{0, 0};
                 for (int i = 0; i < 10; i++) {
