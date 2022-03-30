@@ -8,11 +8,11 @@ public class HumanPlayer extends Player {
 
 //    static final //logger //logger = //loggerFactory.get//logger("HumanPlayer//logger");
 
-    public HumanPlayer(int playerID) {
-        super(playerID);
+    public HumanPlayer(GameStateSpace stateSpace, int playerID) {
+        super(stateSpace, playerID);
     }
 
-    int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile, List<Tile> deck) throws Exception {
+    Coordinates decideOnNextMove(GameState state, Tile tile, List<Tile> deck) throws Exception {
         System.out.println("This is the tile you've drawn:");
 
         Scanner sc = new Scanner(System.in);
@@ -28,7 +28,7 @@ public class HumanPlayer extends Player {
                 continue;
             }
 
-            int[] move;
+            Coordinates move;
 
             // Tries to convert the input string into coordinates. If the NumberFormatException is thrown, the loop starts
             // from the beginning and the user gets another chance to input coordinates. 97 is subtracted from the first
@@ -39,7 +39,7 @@ public class HumanPlayer extends Player {
                 int co1 = (int) (input.charAt(0) - 97);
                 int co2 = (int) (Integer.parseInt(input.substring(1)) - 1);
 
-                move = new int[]{co1, co2};
+                move = new Coordinates(co1, co2);
 
             } catch (NumberFormatException nfe) {
                 System.out.println("You haven't provided valid coordinates as input. For example the top right corner" +
@@ -49,14 +49,14 @@ public class HumanPlayer extends Player {
 
             boolean legalMove = false;
 
-            List<ActionRotationPair> legalSuccessors = stateSpace.succ(state, tile);
+            List<Move> legalSuccessors = stateSpace.succ(state, tile);
 
             if (legalSuccessors.isEmpty()) {
-                return new int[]{-1, -1};
+                return new Coordinates(-1, -1);
             }
 
-            for (ActionRotationPair successor : legalSuccessors) {
-                if (successor.getAction()[0] == move[0] && successor.getAction()[1] == move[1]) {
+            for (Move successor : legalSuccessors) {
+                if (successor.getCoords().x == move.x && successor.getCoords().y == move.y) {
                     legalMove = true;
                     break;
                 }

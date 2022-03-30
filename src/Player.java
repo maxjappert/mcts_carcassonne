@@ -12,9 +12,11 @@ abstract class Player {
      * of Carcassonne, the ID should either be 1 or 2.
      */
     protected int playerID;
-    protected Player(int playerID) {
+    protected GameStateSpace stateSpace;
+    protected Player(GameStateSpace stateSpace, int playerID) {
         this.playerID = playerID;
+        this.stateSpace = stateSpace;
     }
 
-    abstract int[] decideOnNextMove(GameState state, GameStateSpace stateSpace, Tile tile, List<Tile> deck) throws Exception;
+    abstract Coordinates decideOnNextMove(GameState state, Tile tile, List<Tile> deck) throws Exception;
 }

@@ -5,9 +5,17 @@ import java.util.List;
 
 public class Engine {
 
-    public int[] play(Player player1, Player player2) throws Exception {
+    Player player1;
+    Player player2;
 
+    public Engine(Player player1, Player player2) {
+        this.player1 = player1;
+        this.player2 = player2;
+    }
+
+    public int[] play() throws Exception {
         GameStateSpace stateSpace = new GameStateSpace();
+
         GameState state = stateSpace.init();
 
         List<Tile> deck = assembleDeck();
@@ -30,18 +38,18 @@ public class Engine {
             Tile drawnTile = drawTile(deck);
             drawnTile.printTile();
 
-            int[] move = new int[]{-1, -1};
+            Coordinates move = new Coordinates(-1, -1);
 
-            while (move[0] == -1) {
+            while (move.x == -1) {
                 if (deck.size() % 2 == 0) {
-                    move = player1.decideOnNextMove(state, stateSpace, drawnTile, deck);
+                    move = player1.decideOnNextMove(state, drawnTile, deck);
                 } else {
-                    move = player2.decideOnNextMove(state, stateSpace, drawnTile, deck);
+                    move = player2.decideOnNextMove(state, drawnTile, deck);
                 }
 
                 // In the rare case that the drawn tile cannot legally be placed, the tile is added back to the deck
                 // and a new tile is drawn.
-                if (move[0] == -1) {
+                if (move.x == -1) {
                     System.out.printf("Player %d draws tile with no possible legal moves. The tile is therefore redrawn.\n\n", ((deck.size() % 2) + 1));
                     deck.add(drawnTile);
                     Collections.shuffle(deck);

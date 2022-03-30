@@ -8,15 +8,15 @@ public class UCTPlayer extends Player {
     private final int trainingIterations;
 
 
-    protected UCTPlayer(int playerID, float explorationTerm, int trainingIterations) {
-        super(playerID);
+    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations) {
+        super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
         this.trainingIterations = trainingIterations;
     }
 
     @Override
-    int[] decideOnNextMove(GameState originalState, GameStateSpace stateSpace, Tile tile, List<Tile> originalDeck) throws Exception {
+    Coordinates decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck) throws Exception {
         GameState state = new GameState(originalState);
         Node root = new Node(state, 0, playerID, null, tile,  0);
 
@@ -36,13 +36,13 @@ public class UCTPlayer extends Player {
         Node meepleNode = bestChild(root, 0);
 
         if (meepleNode == null) {
-            return new int[]{-1, -1};
+            return new Coordinates(-1, -1);
         }
 
-        int[] move = meepleNode.getMove();
+        Coordinates move = meepleNode.getMove();
 
         if (move == null) {
-            return new int[]{-1, -1};
+            return new Coordinates(-1, -1);
         }
 
         tile.rotateBy(meepleNode.getRotation());
@@ -160,7 +160,7 @@ public class UCTPlayer extends Player {
 
             Tile tile = Engine.drawTile(deck);
 
-            List<ActionRotationPair> actions = stateSpace.succ(state, tile);
+            List<Move> actions = stateSpace.succ(state, tile);
 
             if (actions.isEmpty()) {
                 deck.add(tile);
@@ -168,14 +168,14 @@ public class UCTPlayer extends Player {
                 continue;
             }
 
-            ActionRotationPair action = actions.get(random.nextInt(actions.size()));
+            Move action = actions.get(random.nextInt(actions.size()));
 
             for (int i = 0; i < action.getRotation(); i++) {
                 tile.rotate();
             }
 
             if (random.nextFloat() < meeplePlacementProbability) {
-                List<Integer> legalMeeples = stateSpace.legalMeeples(state, tile, action.getAction(), playerID);
+                List<Integer> legalMeeples = stateSpace.legalMeeples(state, tile, action.getCoords(), playerID);
 
                 if (!legalMeeples.isEmpty()) {
                     int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
@@ -186,7 +186,7 @@ public class UCTPlayer extends Player {
                 }
             }
 
-            state.updateBoard(action.getAction(), tile);
+            state.updateBoard(action.getCoords(), tile);
 
             state.checkForScoreAfterRound();
         }
@@ -239,12 +239,12 @@ public class UCTPlayer extends Player {
     }
 
     private List<Node> getMeepleNodes(Node parent, GameStateSpace stateSpace) {
-        List<ActionRotationPair> actions = stateSpace.succ(parent.getState(), parent.getDrawnTile());
+        List<Move> actions = stateSpace.succ(parent.getState(), parent.getDrawnTile());
         List<Node> meepleNodes = new ArrayList<>();
 
-        for (ActionRotationPair action : actions) {
+        for (Move action : actions) {
 
-            Node meepleNode = new Node(parent.getState(),  1, parent.getState().getPlayer(), action.getAction(), parent.getDrawnTile(), action.getRotation());
+            Node meepleNode = new Node(parent.getState(),  1, parent.getState().getPlayer(), action.getCoords(), parent.getDrawnTile(), action.getRotation());
 
             meepleNodes.add(meepleNode);
             //parent.addChild(meepleNode);
@@ -289,7 +289,7 @@ public class UCTPlayer extends Player {
 
                 newState.updateBoard(parent.getMove(), newTile);
 
-                Node placementNode = new Node(newState, 0, otherPlayer(parent.getPlayer()), new int[]{-1, -1}, new Tile(tile),  0);
+                Node placementNode = new Node(newState, 0, otherPlayer(parent.getPlayer()), new Coordinates(-1, -1), new Tile(tile),  0);
                 placementNodes.add(placementNode);
             }
         }

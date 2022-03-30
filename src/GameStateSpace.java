@@ -14,8 +14,8 @@ public class GameStateSpace {
         return state.getDeckSize() == 0;
     }
 
-    public List<ActionRotationPair> succ(GameState state, Tile tile) {
-        List<ActionRotationPair> successors = new ArrayList<>();
+    public List<Move> succ(GameState state, Tile tile) {
+        List<Move> successors = new ArrayList<>();
 
         Tile drawnTile = new Tile(tile);
 
@@ -25,13 +25,13 @@ public class GameStateSpace {
 
         for (int i = 0; i < boardDimensions[0]; i++) {
             for (int j = 0; j < boardDimensions[1]; j++) {
-                int[] move = new int[]{i, j};
+                Coordinates move = new Coordinates(i, j);
                 for (int rotation = 0; rotation < 4; rotation++) {
                     if (isLegalMove(move, drawnTile, state)) {
-                        ActionRotationPair arst = new ActionRotationPair(move, rotation);
+                        Move arst = new Move(move, rotation);
                         successors.add(arst);
 
-                        ////logger.info("[{}, {}] with rotation {} is a legal move.", move[0], move[1], rotation);
+                        ////logger.info("[{}, {}] with rotation {} is a legal move.", coords.x, coords.y, rotation);
                     }
                     drawnTile.rotate();
                 }
@@ -47,7 +47,7 @@ public class GameStateSpace {
      * @param tile The tile in question.
      * @return Subset of {0, ..., 12}, denoting the sides on which meeples can be placed.
      */
-    public List<Integer> legalMeeples(GameState state, Tile tile, int[] move, int player) {
+    public List<Integer> legalMeeples(GameState state, Tile tile, Coordinates move, int player) {
         List<Integer> placements = new ArrayList<>();
 
         if (state.getNumMeeples(player) == 0) {
@@ -59,73 +59,73 @@ public class GameStateSpace {
                 placements.add(point);
             }
         }
-        
+
         return placements;
     }
 
     /**
      * Checks if a move is legal.
-     * @param move The place to put the tile.
+     * @param coords The place to put the tile.
      * @param tile The tile which should be placed.
      * @param state The current game state.
      * @return True if the move is legal.
      */
-    private boolean isLegalMove(int[] move, Tile tile, GameState state) {
+    private boolean isLegalMove(Coordinates coords, Tile tile, GameState state) {
 
-        if (move[0] > 0 && move[0] <= state.getBoardDimensions()[0] && move[1] > 0 && move[1] <= state.getBoardDimensions()[1]) {
-            if (state.getTile(new int[]{move[0]-1, move[1]-1}) != null) {
+        if (coords.x > 0 && coords.x <= state.getBoardDimensions()[0] && coords.y > 0 && coords.y <= state.getBoardDimensions()[1]) {
+            if (state.getTile(new Coordinates(coords.x-1, coords.y-1)) != null) {
                 return false;
             }
         }
 
         // If the new tile is placed such that a new row and a new column of the board are created, then it necessarily
         // follows that the tile doesn't connect to any tile on the board and therefore the move must be illegal.
-        if (move[0] >= state.getBoardDimensions()[0] + 1 && move[1] >= state.getBoardDimensions()[1] + 1) {
+        if (coords.x >= state.getBoardDimensions()[0] + 1 && coords.y >= state.getBoardDimensions()[1] + 1) {
             return false;
         }
 
         boolean[] connected = new boolean[]{true, true, true, true};
 
-        if (move[0] == 0) {
+        if (coords.x == 0) {
             connected = new boolean[]{true, false, false, false};
-        } else if (move[1] == 0) {
+        } else if (coords.y == 0) {
             connected = new boolean[]{false, true, false, false};
-        } else if (move[0] == state.getBoardDimensions()[0] + 1) {
+        } else if (coords.x == state.getBoardDimensions()[0] + 1) {
             connected = new boolean[]{false, false, true, false};
-        } else if (move[1] == state.getBoardDimensions()[1] + 1) {
+        } else if (coords.y == state.getBoardDimensions()[1] + 1) {
             connected = new boolean[]{false, false, false, true};
         } else {
-            if (state.getTile(new int[]{move[0], move[1] - 1}) == null) {
+            if (state.getTile(new Coordinates(coords.x, coords.y - 1)) == null) {
                 connected[0] = false;
             }
 
-            if (state.getTile(new int[]{move[0] - 1, move[1]}) == null) {
+            if (state.getTile(new Coordinates(coords.x - 1, coords.y)) == null) {
                 connected[1] = false;
             }
 
-            if (state.getTile(new int[]{move[0] - 2, move[1] - 1}) == null) {
+            if (state.getTile(new Coordinates(coords.x - 2, coords.y - 1)) == null) {
                 connected[2] = false;
             }
 
-            if (state.getTile(new int[]{move[0] - 1, move[1] - 2}) == null) {
+            if (state.getTile(new Coordinates(coords.x - 1, coords.y - 2)) == null) {
                 connected[3] = false;
             }
         }
 
         try {
-            if (connected[0] && state.getTile(new int[]{move[0], move[1] - 1}).getPoint(7) != tile.getPoint(1)) {
+            if (connected[0] && state.getTile(new Coordinates(coords.x, coords.y - 1)).getPoint(7) != tile.getPoint(1)) {
                 return false;
             }
 
-            if (connected[1] && state.getTile(new int[]{move[0] - 1, move[1]}).getPoint(10) != tile.getPoint(4)) {
+            if (connected[1] && state.getTile(new Coordinates(coords.x - 1, coords.y)).getPoint(10) != tile.getPoint(4)) {
                 return false;
             }
 
-            if (connected[2] && state.getTile(new int[]{move[0] - 2, move[1] - 1}).getPoint(1) != tile.getPoint(7)) {
+            if (connected[2] && state.getTile(new Coordinates(coords.x - 2, coords.y - 1)).getPoint(1) != tile.getPoint(7)) {
                 return false;
             }
 
-            if (connected[3] && state.getTile(new int[]{move[0] - 1, move[1] - 2}).getPoint(4) != tile.getPoint(10)) {
+            if (connected[3] && state.getTile(new Coordinates(coords.x - 1, coords.y - 2)).getPoint(4) != tile.getPoint(10)) {
                 return false;
             }
         } catch (NullPointerException e) {
@@ -137,7 +137,7 @@ public class GameStateSpace {
         return connected[0] || connected[1] || connected[2] || connected[3];
     }
 
-    private boolean checkIfLegalMeeplePlacement(Tile tile, int point, int[] move, GameState state) {
+    private boolean checkIfLegalMeeplePlacement(Tile tile, int point, Coordinates coords, GameState state) {
 
         // Can't place meeples on intersections.
         if (point == 12 && tile.getMiddle() == 3) {
@@ -149,7 +149,7 @@ public class GameStateSpace {
         GameState potentialState = new GameState(state);
         Tile potentialTile = new Tile(tile);
 
-        potentialState.updateBoard(move, potentialTile);
+        potentialState.updateBoard(coords, potentialTile);
 
         List<Tile> tilesInArea;
 

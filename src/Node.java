@@ -12,7 +12,7 @@ public class Node {
     private final Tile drawnTile;
     private final int player;
     private final Random random;
-    private final int[] move;
+    private final Coordinates move;
     private int meeplePlacement;
     private final int rotation;
     //long id = new Random().nextLong();
@@ -26,7 +26,7 @@ public class Node {
 
     ////logger //logger = //loggerFactory.get//logger("Node//logger");
 
-    public Node(GameState state, int type, int player, int[] move, Tile tile, int rotation) {
+    public Node(GameState state, int type, int player, Coordinates move, Tile tile, int rotation) {
 
         this.state = state;
         this.parent = null;
@@ -88,7 +88,7 @@ public class Node {
         this.parent = parent;
     }
 
-    public int[] getMove() {
+    public Coordinates getMove() {
         return move;
     }
 

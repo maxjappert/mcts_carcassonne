@@ -98,10 +98,10 @@ public class GameState {
     /**
      * Places the tile which the player drew from the deck onto the board. This method is a collection of bodges, but
      * it works.
-     * @param move The coordinates of where the tile should be placed.
+     * @param coords The coordinates of where the tile should be placed.
      * @param tile The tile which should be placed.
      */
-    public void updateBoard(int[] move, Tile tile) {
+    public void updateBoard(Coordinates coords, Tile tile) {
 
         deckSize--;
 
@@ -111,7 +111,7 @@ public class GameState {
             tile.setArea(12, assignNewArea(4));
         }
 
-        Map<Integer, Tile> neighbours = getNeighboursByType(move, false);
+        Map<Integer, Tile> neighbours = getNeighboursByType(coords, false);
 
         for (int side : neighbours.keySet()) {
             int point1 = side * 3;
@@ -244,14 +244,14 @@ public class GameState {
         //--------------------------
 
         // This is the case where the tile generates a new top row.
-        if (move[0] == 0) {
+        if (coords.x == 0) {
             board.add(0, new ArrayList<>());
-            for (int i = 0; i < move[1] - 1; i++) {
+            for (int i = 0; i < coords.y - 1; i++) {
                 board.get(0).add(null);
             }
             board.get(0).add(tile);
 
-            for (int i = move[1]; i < getBoardDimensions()[1]; i++) {
+            for (int i = coords.y; i < getBoardDimensions()[1]; i++) {
                 board.get(0).add(null);
             }
 
@@ -259,10 +259,10 @@ public class GameState {
         }
 
         // This is the case where the tile generates a new first column.
-        if (move[1] == 0) {
+        if (coords.y == 0) {
             for (int i = 0; i < board.size(); i++) {
                 List<Tile> row = board.get(i);
-                if (i == move[0] - 1) {
+                if (i == coords.x - 1) {
                     row.add(0, tile);
                 } else {
                     row.add(0, null);
@@ -273,11 +273,11 @@ public class GameState {
         }
 
         // This is the case where the tile generates a new bottom row.
-        if (move[0] == board.size() + 1) {
+        if (coords.x == board.size() + 1) {
             List<Tile> newRow = new ArrayList<>();
 
             for (int i = 0; i < getBoardDimensions()[1]; i++) {
-                if (move[1] - 1 == i) {
+                if (coords.y - 1 == i) {
                     newRow.add(tile);
                 } else {
                     newRow.add(null);
@@ -289,10 +289,10 @@ public class GameState {
         }
 
         // This is the case where the tile generates a new last column
-        if (move[1] == getBoardDimensions()[1] + 1) {
+        if (coords.y == getBoardDimensions()[1] + 1) {
             for (int i = 0; i < getBoardDimensions()[0]; i++) {
 
-                if (move[0] - 1 == i) {
+                if (coords.x - 1 == i) {
                     board.get(i).add(tile);
                 } else {
                     board.get(i).add(null);
@@ -305,7 +305,7 @@ public class GameState {
         // In the case that the board dimensions remain the same, we simply place the tile at the coordinates given
         // by the move. These need to be subtracted by 1, since the user has to consider the additional potential row
         // and column.
-        board.get(move[0] - 1).set(move[1] - 1, tile);
+        board.get(coords.x - 1).set(coords.y - 1, tile);
     }
 
     /**
@@ -409,13 +409,13 @@ public class GameState {
      * @param coordinates The coordinates of the tile.
      * @return The tile at the given coordinates on the board.
      */
-    public Tile getTile(int[] coordinates) {
+    public Tile getTile(Coordinates coordinates) {
 
         Tile tile = null;
 
-        if (coordinates[0] >= 0 && coordinates[0] < getBoardDimensions()[0]
-        && coordinates[1] >= 0 && coordinates[1] < getBoardDimensions()[1]) {
-            tile = board.get(coordinates[0]).get(coordinates[1]);
+        if (coordinates.x >= 0 && coordinates.x < getBoardDimensions()[0]
+        && coordinates.y >= 0 && coordinates.y < getBoardDimensions()[1]) {
+            tile = board.get(coordinates.x).get(coordinates.y);
         }
 
         return tile;
@@ -426,68 +426,67 @@ public class GameState {
      * @param tile The tile at the given coordinates.
      * @return The coordinates of the given tile as an int array of length 2.
      */
-    public int[] getCoordinates(Tile tile) {
+    public Coordinates getCoordinates(Tile tile) {
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.get(0).size(); j++) {
                 if (board.get(i).get(j) != null && board.get(i).get(j).equals(tile)) {
-                    return new int[]{i, j};
+                    return new Coordinates(i, j);
                 }
             }
         }
 
-        return new int[0];
+        return null;
     }
 
     /**
      * @param move The coordinates of which the neighbours are to be determined.
      * @return All neighbouring tiles which are connected along the given type. If type == -1, then all neighbours are returned.
      */
-    public Map<Integer, Tile> getNeighboursByType(int[] move, boolean monasteryNeighbours) {
+    public Map<Integer, Tile> getNeighboursByType(Coordinates move, boolean monasteryNeighbours) {
         Map<Integer, Tile> neighbourMap = new HashMap<>();
 
-        // Create a deep copy of the move array
-        int[] tileCoords = Arrays.copyOf(move, move.length);
+        Coordinates tileCoords = new Coordinates(move.x, move.y);
 
         // We only need to subtract 1 if the coordinates reference the placement space which considers a first row
         // which doesn't exist in the board space. If we want to check for the monastery neighbours, we check in the
         // board space.
         if (!monasteryNeighbours) {
-            tileCoords[0] -= 1;
-            tileCoords[1] -= 1;
+            tileCoords.x -= 1;
+            tileCoords.y -= 1;
         }
 
-        if (getTile(new int[]{tileCoords[0] - 1, tileCoords[1]}) != null) {
-                neighbourMap.put(2, board.get(tileCoords[0] - 1).get(tileCoords[1]));
+        if (getTile(new Coordinates(tileCoords.x - 1, tileCoords.y)) != null) {
+                neighbourMap.put(2, board.get(tileCoords.x - 1).get(tileCoords.y));
         }
 
-        if (getTile(new int[]{tileCoords[0], tileCoords[1] - 1}) != null) {
-                neighbourMap.put(3, board.get(tileCoords[0]).get(tileCoords[1] - 1));
+        if (getTile(new Coordinates(tileCoords.x, tileCoords.y - 1)) != null) {
+                neighbourMap.put(3, board.get(tileCoords.x).get(tileCoords.y - 1));
         }
 
-        if (getTile(new int[]{tileCoords[0], tileCoords[1] + 1}) != null) {
-                neighbourMap.put(1, board.get(tileCoords[0]).get(tileCoords[1] + 1));
+        if (getTile(new Coordinates(tileCoords.x, tileCoords.y + 1)) != null) {
+                neighbourMap.put(1, board.get(tileCoords.x).get(tileCoords.y + 1));
         }
 
-        if (getTile(new int[]{tileCoords[0] + 1, tileCoords[1]}) != null) {
-                neighbourMap.put(0, board.get(tileCoords[0] + 1).get(tileCoords[1]));
+        if (getTile(new Coordinates(tileCoords.x + 1, tileCoords.y)) != null) {
+                neighbourMap.put(0, board.get(tileCoords.x + 1).get(tileCoords.y));
         }
 
         //-----------------------------------------------------
 
-        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] - 1, tileCoords[1] - 1}) != null) {
-            neighbourMap.put(4, board.get(tileCoords[0] - 1).get(tileCoords[1] - 1));
+        if (monasteryNeighbours && getTile(new Coordinates(tileCoords.x - 1, tileCoords.y - 1)) != null) {
+            neighbourMap.put(4, board.get(tileCoords.x - 1).get(tileCoords.y - 1));
         }
 
-        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] + 1, tileCoords[1] - 1}) != null) {
-            neighbourMap.put(5, board.get(tileCoords[0] + 1).get(tileCoords[1] - 1));
+        if (monasteryNeighbours && getTile(new Coordinates(tileCoords.x + 1, tileCoords.y - 1)) != null) {
+            neighbourMap.put(5, board.get(tileCoords.x + 1).get(tileCoords.y - 1));
         }
 
-        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] + 1, tileCoords[1] + 1}) != null) {
-            neighbourMap.put(6, board.get(tileCoords[0] + 1).get(tileCoords[1] + 1));
+        if (monasteryNeighbours && getTile(new Coordinates(tileCoords.x + 1, tileCoords.y + 1)) != null) {
+            neighbourMap.put(6, board.get(tileCoords.x + 1).get(tileCoords.y + 1));
         }
 
-        if (monasteryNeighbours && getTile(new int[]{tileCoords[0] - 1, tileCoords[1] + 1}) != null) {
-            neighbourMap.put(7, board.get(tileCoords[0] - 1).get(tileCoords[1] + 1));
+        if (monasteryNeighbours && getTile(new Coordinates(tileCoords.x - 1, tileCoords.y + 1)) != null) {
+            neighbourMap.put(7, board.get(tileCoords.x - 1).get(tileCoords.y + 1));
         }
 
         return neighbourMap;
