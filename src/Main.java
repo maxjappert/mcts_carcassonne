@@ -43,14 +43,17 @@ public class Main {
 
         Engine engine = new Engine();
 
-        int[] ti = new int[]{50, 100, 1000};
+        int[] ti = new int[]{50, 100, 500, 1000, 5000};
 
-        for (float c = 0.5f; c < 15; c += 0.5f) {
+        printWriter.println("Playing against a random opponent:");
+        printWriter.flush();
+
+        for (float c = 0f; c < 15; c += 0.5f) {
             for (int trainingIterations : ti) {
                 int[] score = new int[]{0, 0};
                 for (int i = 0; i < 10; i++) {
                     System.out.println("Round " + (i+1));
-                    int[] roundScore = engine.play(new UCTPlayer(1, c, trainingIterations), new UCTPlayer(2, 4f, 20));
+                    int[] roundScore = engine.play(new UCTPlayer(1, c, trainingIterations), new RandomPlayer(2));
                     score[0] += roundScore[0];
                     score[1] += roundScore[1];
                 }

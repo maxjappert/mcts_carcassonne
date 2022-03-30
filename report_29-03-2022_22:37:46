@@ -1,0 +1,37 @@
+Playing against a random opponent:
+50 training iterations, c = 0.0: [26, 23]
+
+100 training iterations, c = 0.0: [34, 32]
+
+500 training iterations, c = 0.0: [30, 30]
+
+1000 training iterations, c = 0.0: [35, 25]
+
+5000 training iterations, c = 0.0: [27, 25]
+
+50 training iterations, c = 0.5: [55, 41]
+
+100 training iterations, c = 0.5: [53, 37]
+
+500 training iterations, c = 0.5: [72, 36]
+
+1000 training iterations, c = 0.5: [74, 49]
+
+5000 training iterations, c = 0.5: [88, 46]
+
+50 training iterations, c = 1.0: [48, 34]
+
+100 training iterations, c = 1.0: [56, 38]
+
+500 training iterations, c = 1.0: [75, 46]
+
+1000 training iterations, c = 1.0: [71, 44]
+
+5000 training iterations, c = 1.0: [72, 44]
+
+50 training iterations, c = 1.5: [44, 36]
+
+100 training iterations, c = 1.5: [52, 35]
+
+500 training iterations, c = 1.5: [63, 45]
+
