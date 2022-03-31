@@ -4,7 +4,7 @@ class Move {
 
     Move(Coordinates coords, int rotation) {
         this.coords = coords;
-        this.rotation = (int) rotation;
+        this.rotation = rotation;
     }
 
     public Coordinates getCoords() {

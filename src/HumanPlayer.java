@@ -49,7 +49,7 @@ public class HumanPlayer extends Player {
 
             boolean legalMove = false;
 
-            List<Move> legalSuccessors = stateSpace.succ(state, tile);
+            List<Move> legalSuccessors = stateSpace.placementSucc(state, tile);
 
             if (legalSuccessors.isEmpty()) {
                 return new Coordinates(-1, -1);
@@ -79,7 +79,7 @@ public class HumanPlayer extends Player {
 
                     assert (point >= 0 && point <= 12);
 
-                    boolean legalMeeple = stateSpace.legalMeeples(state, tile, move, playerID).contains(point);
+                    boolean legalMeeple = stateSpace.meepleSucc(state, tile, move, playerID).contains(point);
 
                     if (legalMeeple) {
                         state.placeMeeple(point, playerID, tile);

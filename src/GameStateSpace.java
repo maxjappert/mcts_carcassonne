@@ -14,7 +14,7 @@ public class GameStateSpace {
         return state.getDeckSize() == 0;
     }
 
-    public List<Move> succ(GameState state, Tile tile) {
+    public List<Move> placementSucc(GameState state, Tile tile) {
         List<Move> successors = new ArrayList<>();
 
         Tile drawnTile = new Tile(tile);
@@ -47,7 +47,7 @@ public class GameStateSpace {
      * @param tile The tile in question.
      * @return Subset of {0, ..., 12}, denoting the sides on which meeples can be placed.
      */
-    public List<Integer> legalMeeples(GameState state, Tile tile, Coordinates move, int player) {
+    public List<Integer> meepleSucc(GameState state, Tile tile, Coordinates move, int player) {
         List<Integer> placements = new ArrayList<>();
 
         if (state.getNumMeeples(player) == 0) {

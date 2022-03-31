@@ -23,9 +23,9 @@ public class UCTPlayer extends Player {
         for (int i = 0; i < trainingIterations; i++) {
             List<Tile> deck = Engine.copyDeck(originalDeck);
 
-            Node node = treePolicy(root, stateSpace, deck);
+            Node node = treePolicy(root, deck);
 
-            int payoff = defaultPolicy(node, stateSpace, deck, 0.5f);
+            int payoff = defaultPolicy(node, deck, 0.5f);
 
             backup(node, payoff);
         }
@@ -116,7 +116,7 @@ public class UCTPlayer extends Player {
 //        }
 //    }
 
-    private Node treePolicy(Node root, GameStateSpace stateSpace, List<Tile> deck) throws Exception {
+    private Node treePolicy(Node root, List<Tile> deck) throws Exception {
         Node node = root;
 
         Random random = new Random();
@@ -124,7 +124,7 @@ public class UCTPlayer extends Player {
         do {
             if (!node.hasChildren()) {
                 do {
-                    node = expand(node, stateSpace, deck);
+                    node = expand(node, deck);
                 } while (node.getType() != 0 && !node.isTerminal());
 
                 if (!deck.isEmpty()) {
@@ -147,12 +147,11 @@ public class UCTPlayer extends Player {
     /**
      * Random playout.
      * @param leafNode Starting point.
-     * @param stateSpace The state space.
      * @param deck The deck at the starting point.
      * @param meeplePlacementProbability Probability of placing a meeple at a given round.
      * @return The payoff at the end of the playout.
      */
-    private int defaultPolicy(Node leafNode, GameStateSpace stateSpace, List<Tile> deck, float meeplePlacementProbability) {
+    private int defaultPolicy(Node leafNode, List<Tile> deck, float meeplePlacementProbability) {
         GameState state = new GameState(leafNode.getState());
 
         Random random = new Random();
@@ -160,7 +159,7 @@ public class UCTPlayer extends Player {
 
             Tile tile = Engine.drawTile(deck);
 
-            List<Move> actions = stateSpace.succ(state, tile);
+            List<Move> actions = stateSpace.placementSucc(state, tile);
 
             if (actions.isEmpty()) {
                 deck.add(tile);
@@ -175,7 +174,7 @@ public class UCTPlayer extends Player {
             }
 
             if (random.nextFloat() < meeplePlacementProbability) {
-                List<Integer> legalMeeples = stateSpace.legalMeeples(state, tile, action.getCoords(), playerID);
+                List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
 
                 if (!legalMeeples.isEmpty()) {
                     int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
@@ -238,8 +237,8 @@ public class UCTPlayer extends Player {
         return bestChild;
     }
 
-    private List<Node> getMeepleNodes(Node parent, GameStateSpace stateSpace) {
-        List<Move> actions = stateSpace.succ(parent.getState(), parent.getDrawnTile());
+    private List<Node> getMeepleNodes(Node parent) {
+        List<Move> actions = stateSpace.placementSucc(parent.getState(), parent.getDrawnTile());
         List<Node> meepleNodes = new ArrayList<>();
 
         for (Move action : actions) {
@@ -253,8 +252,8 @@ public class UCTPlayer extends Player {
         return meepleNodes;
     }
 
-    private List<Node> getChanceNodes(Node parent, GameStateSpace stateSpace) {
-        List<Integer> legalMeeplePlacements = stateSpace.legalMeeples(parent.getState(), parent.getDrawnTile(), parent.getMove(), playerID);
+    private List<Node> getChanceNodes(Node parent) {
+        List<Integer> legalMeeplePlacements = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getMove(), playerID);
         List<Node> chanceNodes = new ArrayList<>();
 
         if (parent.getState().getNumMeeples(parent.getPlayer()) > 0) {
@@ -297,13 +296,13 @@ public class UCTPlayer extends Player {
         return placementNodes;
     }
 
-    private Node expand(Node node, GameStateSpace stateSpace, List<Tile> deck) {
+    private Node expand(Node node, List<Tile> deck) {
         List<Node> children = new ArrayList<>();
 
         if (node.getType() == 0) {
-            children = getMeepleNodes(node, stateSpace);
+            children = getMeepleNodes(node);
         } else if (node.getType() == 1) {
-            children = getChanceNodes(node, stateSpace);
+            children = getChanceNodes(node);
         } else if (node.getType() == 2) {
             children = getPlacementNodes(node, deck);
         } else {

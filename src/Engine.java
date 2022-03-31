@@ -40,6 +40,17 @@ public class Engine {
 
             Coordinates move = new Coordinates(-1, -1);
 
+            // Players should be given a list of possible moves and should pick one of those moves.
+
+//            List<Move> moves = stateSpace.placementSucc(state, drawnTile);
+//            List<List<Integer>> meeplePlacements = new ArrayList<>();
+//
+//            for (Move move_ : moves) {
+//                Tile tileCopy = new Tile(drawnTile);
+//                tileCopy.rotateBy(move_.getRotation());
+//                meeplePlacements.add(stateSpace.meepleSucc(state, tileCopy, move_.getCoords(), ))
+//            }
+
             while (move.x == -1) {
                 if (deck.size() % 2 == 0) {
                     move = player1.decideOnNextMove(state, drawnTile, deck);

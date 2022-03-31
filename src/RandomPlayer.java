@@ -23,7 +23,7 @@ public class RandomPlayer extends Player {
 
         //GameState state = new GameState(originalState);
 
-        List<Move> ars = stateSpace.succ(state, tile);
+        List<Move> ars = stateSpace.placementSucc(state, tile);
 
         // In this case no move is possible and a new tile has to be drawn.
         if (ars.isEmpty()) {
@@ -42,7 +42,7 @@ public class RandomPlayer extends Player {
 
         // Here the placement of the meeple is decided
 
-        List<Integer> meeplePlacements = stateSpace.legalMeeples(state, tile, coords, playerID);
+        List<Integer> meeplePlacements = stateSpace.meepleSucc(state, tile, coords, playerID);
 
         if (random.nextBoolean() && !meeplePlacements.isEmpty() && state.getNumMeeples(playerID) > 0) {
             //logger.info("Player {} places meeple on point {}, which is of type {} and belongs to area {}. {} meeples remaining.", tile.getMeeple()[1], tile.getMeeple()[0], tile.getPoint(tile.getMeeple()[0]), tile.getArea(tile.getMeeple()[0]), state.getNumMeeples(playerID));
