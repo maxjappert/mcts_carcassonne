@@ -471,7 +471,9 @@ public class Tile {
     }
 
     public void placeMeeple(int side, int playerID) {
-        meeple = new int[]{side, playerID};
+        if (side != -1) {
+            meeple = new int[]{side, playerID};
+        }
     }
 
     public int[] getMeeple() {

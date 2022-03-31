@@ -6,4 +6,8 @@ public class Coordinates {
         this.x = x;
         this.y = y;
     }
+
+    public boolean isEqualTo(Coordinates coords) {
+        return x == coords.x && y == coords.y;
+    }
 }

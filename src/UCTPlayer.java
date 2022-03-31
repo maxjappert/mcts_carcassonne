@@ -1,3 +1,5 @@
+import org.apache.commons.math3.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,9 +18,13 @@ public class UCTPlayer extends Player {
     }
 
     @Override
-    Coordinates decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck) throws Exception {
+    Pair<Integer, Integer> decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) throws Exception {
         GameState state = new GameState(originalState);
-        Node root = new Node(state, 0, playerID, null, tile,  0);
+        Node root = new Node(state, 0, playerID, new Move(null, 0), tile);
+
+        for (Move move : legalMoves) {
+            root.addChild(new Node(state, 1, playerID, move, tile));
+        }
 
         for (int i = 0; i < trainingIterations; i++) {
             List<Tile> deck = Engine.copyDeck(originalDeck);
@@ -35,29 +41,19 @@ public class UCTPlayer extends Player {
         // Exploration term set to 0, since when executing we only want to consider the exploitation term.
         Node meepleNode = bestChild(root, 0);
 
-        if (meepleNode == null) {
-            return new Coordinates(-1, -1);
+        int moveChoice;
+        if (legalMoves.contains(meepleNode.getMove())) {
+            moveChoice = legalMoves.indexOf(meepleNode.getMove());
+        } else {
+            System.out.println("Error in choice system of UCTPlayer!!!");
+            moveChoice = -1;
         }
-
-        Coordinates move = meepleNode.getMove();
-
-        if (move == null) {
-            return new Coordinates(-1, -1);
-        }
-
-        tile.rotateBy(meepleNode.getRotation());
 
         Node chanceNode = bestChild(meepleNode, 0);
 
-        if (chanceNode != null) {
-            int meeplePlacement = chanceNode.getMeeplePlacement();
+        int meeplePlacement = chanceNode.getMeeplePlacement();
 
-            if (meeplePlacement > -1) {
-                originalState.placeMeeple( meeplePlacement, playerID, tile);
-            }
-        }
-
-        return move;
+        return new Pair<>(moveChoice, meeplePlacement);
     }
 
     private int getTreeSize(Node root) {
@@ -243,7 +239,7 @@ public class UCTPlayer extends Player {
 
         for (Move action : actions) {
 
-            Node meepleNode = new Node(parent.getState(),  1, parent.getState().getPlayer(), action.getCoords(), parent.getDrawnTile(), action.getRotation());
+            Node meepleNode = new Node(parent.getState(),  1, parent.getState().getPlayer(), action, parent.getDrawnTile());
 
             meepleNodes.add(meepleNode);
             //parent.addChild(meepleNode);
@@ -253,7 +249,7 @@ public class UCTPlayer extends Player {
     }
 
     private List<Node> getChanceNodes(Node parent) {
-        List<Integer> legalMeeplePlacements = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getMove(), playerID);
+        List<Integer> legalMeeplePlacements = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getCoords(), playerID);
         List<Node> chanceNodes = new ArrayList<>();
 
         if (parent.getState().getNumMeeples(parent.getPlayer()) > 0) {
@@ -286,9 +282,9 @@ public class UCTPlayer extends Player {
                 newTile.rotateBy(parent.getRotation());
                 newState.placeMeeple(parent.getMeeplePlacement(), parent.getPlayer(), newTile);
 
-                newState.updateBoard(parent.getMove(), newTile);
+                newState.updateBoard(parent.getCoords(), newTile);
 
-                Node placementNode = new Node(newState, 0, otherPlayer(parent.getPlayer()), new Coordinates(-1, -1), new Tile(tile),  0);
+                Node placementNode = new Node(newState, 0, otherPlayer(parent.getPlayer()), new Move(new Coordinates(-1, -1), 0), new Tile(tile));
                 placementNodes.add(placementNode);
             }
         }

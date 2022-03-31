@@ -14,4 +14,8 @@ class Move {
     public int getRotation() {
         return rotation;
     }
+
+    public boolean isEqualTo(Move move) {
+        return coords.isEqualTo(move.coords) && rotation == move.getRotation();
+    }
 }

@@ -1,3 +1,5 @@
+import org.apache.commons.math3.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,29 +40,22 @@ public class Engine {
             Tile drawnTile = drawTile(deck);
             drawnTile.printTile();
 
-            Coordinates move = new Coordinates(-1, -1);
-
             // Players should be given a list of possible moves and should pick one of those moves.
 
-//            List<Move> moves = stateSpace.placementSucc(state, drawnTile);
-//            List<List<Integer>> meeplePlacements = new ArrayList<>();
-//
-//            for (Move move_ : moves) {
-//                Tile tileCopy = new Tile(drawnTile);
-//                tileCopy.rotateBy(move_.getRotation());
-//                meeplePlacements.add(stateSpace.meepleSucc(state, tileCopy, move_.getCoords(), ))
-//            }
+            int player = deck.size() % 2 == 0 ? 1 : 2;
+            List<Move> moves = new ArrayList<>();
 
-            while (move.x == -1) {
-                if (deck.size() % 2 == 0) {
-                    move = player1.decideOnNextMove(state, drawnTile, deck);
-                } else {
-                    move = player2.decideOnNextMove(state, drawnTile, deck);
+            while (moves.isEmpty()) {
+                moves = stateSpace.placementSucc(state, drawnTile);
+
+                for (Move move : moves) {
+                    Tile tileCopy = new Tile(drawnTile);
+                    tileCopy.rotateBy(move.getRotation());
                 }
 
                 // In the rare case that the drawn tile cannot legally be placed, the tile is added back to the deck
                 // and a new tile is drawn.
-                if (move.x == -1) {
+                if (moves.isEmpty()) {
                     System.out.printf("Player %d draws tile with no possible legal moves. The tile is therefore redrawn.\n\n", ((deck.size() % 2) + 1));
                     deck.add(drawnTile);
                     Collections.shuffle(deck);
@@ -69,7 +64,25 @@ public class Engine {
                 }
             }
 
-            state.updateBoard(move, drawnTile);
+            Pair<Integer, Integer> choice;
+
+            if (deck.size() % 2 == 0) {
+                choice = player1.decideOnNextMove(state, drawnTile, deck, moves);
+            } else {
+                choice = player2.decideOnNextMove(state, drawnTile, deck, moves);
+            }
+
+            Move move = moves.get(choice.getFirst());
+            int meeplePlacement = choice.getSecond();
+
+            drawnTile.rotateBy(move.getRotation());
+            if (stateSpace.meepleSucc(state, drawnTile, move.getCoords(), player).contains(meeplePlacement)) {
+                drawnTile.placeMeeple(choice.getSecond(), player);
+            } else {
+                System.out.printf("Meeple placement at point %d not allowed.\n\n", meeplePlacement);
+            }
+
+            state.updateBoard(move.getCoords(), drawnTile);
 
             state.checkForScoreAfterRound();
         }
