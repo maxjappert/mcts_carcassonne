@@ -150,6 +150,8 @@ public class UCTPlayer extends Player {
     private int defaultPolicy(Node leafNode, List<Tile> deck, float meeplePlacementProbability) {
         GameState state = new GameState(leafNode.getState());
 
+        // TODO: Player is not allowed to directly change the game state!
+
         Random random = new Random();
         while (deck.size() > 0) {
 

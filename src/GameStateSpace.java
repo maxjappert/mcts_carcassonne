@@ -49,6 +49,7 @@ public class GameStateSpace {
      */
     public List<Integer> meepleSucc(GameState state, Tile tile, Coordinates move, int player) {
         List<Integer> placements = new ArrayList<>();
+        placements.add(-1);
 
         if (state.getNumMeeples(player) == 0) {
             return placements;

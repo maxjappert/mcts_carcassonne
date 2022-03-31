@@ -219,8 +219,14 @@ public class GameState {
             }
         }
         
-        if (indexOfMiddleArea != -1) {
-            tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
+//        if (indexOfMiddleArea != -1) {
+//            tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
+//        }
+
+        for (int i = 0; i < 12; i++) {
+            if (tile.getPoint(i) == tile.getMiddle()) {
+                tile.setMiddleArea(tile.getArea(i));
+            }
         }
 
         // Yeah, here's where the bodges start again... This is handling the case of tile 15, where there's a road
@@ -525,7 +531,6 @@ public class GameState {
             oppositePoint = 3;
         } else {
             oppositePoint = -1;
-            ////logger.error("Error in function getOppositePoint(...)");
         }
 
         return oppositePoint;

@@ -66,7 +66,7 @@ public class Engine {
 
             Pair<Integer, Integer> choice;
 
-            if (deck.size() % 2 == 0) {
+            if (player == 1) {
                 choice = player1.decideOnNextMove(state, drawnTile, deck, moves);
             } else {
                 choice = player2.decideOnNextMove(state, drawnTile, deck, moves);
@@ -76,7 +76,14 @@ public class Engine {
             int meeplePlacement = choice.getSecond();
 
             drawnTile.rotateBy(move.getRotation());
-            if (stateSpace.meepleSucc(state, drawnTile, move.getCoords(), player).contains(meeplePlacement)) {
+
+            List<Integer> meepleSuccessors = stateSpace.meepleSucc(state, drawnTile, move.getCoords(), player);
+
+            System.out.println(state.getNeighboursByType(move.getCoords(), false).size() + " neighbours.");
+
+            System.out.println(meepleSuccessors.toString());
+
+            if (meepleSuccessors.contains(meeplePlacement)) {
                 drawnTile.placeMeeple(choice.getSecond(), player);
             } else {
                 System.out.printf("Meeple placement at point %d not allowed.\n\n", meeplePlacement);

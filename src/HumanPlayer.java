@@ -22,7 +22,7 @@ public class HumanPlayer extends Player {
         Tile tile = new Tile(originalTile);
 
         Move move;
-        int meeplePlacement;
+        int meeplePlacement = -1;
 
         while (true) {
             System.out.print("Press r to rotate or enter the coordinates of where you'd like to place the tile (e.g. 'a1'):");
@@ -58,8 +58,8 @@ public class HumanPlayer extends Player {
                 input = sc.next().toLowerCase();
 
                 meeplePlacement = Integer.parseInt(input);
-                break;
             }
+            break;
         }
 
         for (Move legalMove : legalMoves) {

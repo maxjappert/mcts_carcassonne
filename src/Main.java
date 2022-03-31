@@ -23,6 +23,8 @@ public class Main {
         GameStateSpace stateSpace = new GameStateSpace();
         Engine engine = new Engine(new RandomPlayer(stateSpace, 1), new UCTPlayer(stateSpace, 2, 2f, 200));
 
+        //Engine engine = new Engine(new HumanPlayer(stateSpace, 1), new HumanPlayer(stateSpace,2));
+
         int[] score = new int[]{0, 0};
 
         int[] roundScore = engine.play();
