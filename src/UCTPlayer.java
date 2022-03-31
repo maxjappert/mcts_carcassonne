@@ -8,13 +8,26 @@ import java.util.Random;
 public class UCTPlayer extends Player {
     private final float explorationTerm;
     private final int trainingIterations;
+    private final Random random;
+    private final float meeplePlacementProbability;
 
 
-    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations) {
+    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations, long randomPlayoutSeed, float meeplePlacementProbability) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
         this.trainingIterations = trainingIterations;
+        if (randomPlayoutSeed == -1) {
+            this.random = new Random();
+        } else {
+            this.random = new Random(randomPlayoutSeed);
+        }
+
+        if (meeplePlacementProbability > 1 || meeplePlacementProbability < 0) {
+            this.meeplePlacementProbability = 0.5f;
+        } else {
+            this.meeplePlacementProbability = meeplePlacementProbability;
+        }
     }
 
     @Override
@@ -31,7 +44,7 @@ public class UCTPlayer extends Player {
 
             Node node = treePolicy(root, deck);
 
-            int payoff = defaultPolicy(node, deck, 0.5f);
+            int payoff = defaultPolicy(node, deck);
 
             backup(node, payoff);
         }
@@ -144,19 +157,13 @@ public class UCTPlayer extends Player {
      * Random playout.
      * @param leafNode Starting point.
      * @param deck The deck at the starting point.
-     * @param meeplePlacementProbability Probability of placing a meeple at a given round.
      * @return The payoff at the end of the playout.
      */
-    private int defaultPolicy(Node leafNode, List<Tile> deck, float meeplePlacementProbability) {
+    private int defaultPolicy(Node leafNode, List<Tile> deck) {
         GameState state = new GameState(leafNode.getState());
 
-        // TODO: Player is not allowed to directly change the game state!
-
-        Random random = new Random();
         while (deck.size() > 0) {
-
             Tile tile = Engine.drawTile(deck);
-
             List<Move> actions = stateSpace.placementSucc(state, tile);
 
             if (actions.isEmpty()) {
@@ -166,7 +173,6 @@ public class UCTPlayer extends Player {
             }
 
             Move action = actions.get(random.nextInt(actions.size()));
-
             for (int i = 0; i < action.getRotation(); i++) {
                 tile.rotate();
             }

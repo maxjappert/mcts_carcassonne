@@ -11,9 +11,13 @@ public class RandomPlayer extends Player {
     //static final //logger //logger = //loggerFactory.get//logger("AIPlayer//logger");
     Random random;
 
-    public RandomPlayer(GameStateSpace stateSpace, int playerID) {
+    public RandomPlayer(GameStateSpace stateSpace, int playerID, long randomSeed) {
         super(stateSpace, playerID);
-        random = new Random();
+        if (randomSeed == -1) {
+            random = new Random();
+        } else {
+            random = new Random(randomSeed);
+        }
     }
 
     /**

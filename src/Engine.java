@@ -1,26 +1,31 @@
 import org.apache.commons.math3.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Engine {
 
     Player player1;
     Player player2;
+    long randomSeed;
 
-    public Engine(Player player1, Player player2) {
+    public Engine(Player player1, Player player2, long randomSeed) {
         this.player1 = player1;
         this.player2 = player2;
+        this.randomSeed = randomSeed;
     }
 
     public int[] play() throws Exception {
         GameStateSpace stateSpace = new GameStateSpace();
-
         GameState state = stateSpace.init();
+        Random random;
 
-        List<Tile> deck = assembleDeck();
+        if (randomSeed == -1) {
+            random = new Random();
+        } else {
+            random = new Random(randomSeed);
+        }
+
+        List<Tile> deck = assembleDeck(random);
 
         if (player1 instanceof UCTPlayer) {
             System.out.println("Player 1: c = " + ((UCTPlayer) player1).getExplorationTerm() + ", " + ((UCTPlayer) player1).getTrainingIterations() + " training iterations.");
@@ -48,17 +53,12 @@ public class Engine {
             while (moves.isEmpty()) {
                 moves = stateSpace.placementSucc(state, drawnTile);
 
-                for (Move move : moves) {
-                    Tile tileCopy = new Tile(drawnTile);
-                    tileCopy.rotateBy(move.getRotation());
-                }
-
                 // In the rare case that the drawn tile cannot legally be placed, the tile is added back to the deck
                 // and a new tile is drawn.
                 if (moves.isEmpty()) {
                     System.out.printf("Player %d draws tile with no possible legal moves. The tile is therefore redrawn.\n\n", ((deck.size() % 2) + 1));
                     deck.add(drawnTile);
-                    Collections.shuffle(deck);
+                    Collections.shuffle(deck, random);
                     drawnTile = drawTile(deck);
                     drawnTile.printTile();
                 }
@@ -119,7 +119,7 @@ public class Engine {
     /**
      * Assembles the deck according to the game's instructions and then shuffles it.
      */
-    private List<Tile> assembleDeck() {
+    private List<Tile> assembleDeck(Random random) {
         List<Tile> deck = new ArrayList<>();
 
         addTilesToDeck(deck,0, 3, false);
@@ -148,7 +148,7 @@ public class Engine {
         addTilesToDeck(deck,18, 1, true);
 
         // shuffle the deck
-        Collections.shuffle(deck);
+        Collections.shuffle(deck, random);
 
         return deck;
     }

@@ -4,75 +4,105 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class Main {
 
+    static String instructions = """
+            The following arguments must be passed to the program:
+            0:  Either "human", "random" or "uct" for player 1.
+            1:  Player 1 random seed (either for random player or for the random playout for the UCT player).
+            2:  Either "human", "random" or "uct" for player 2.
+            3:  Player 2 random seed.
+            4:  Deck random seed for assembling and shuffling the deck.
+            5:  Player 1 exploration term (if applicable).
+            6:  Player 1 meeple placement probability (if applicable).
+            7:  Player 1 training iterations (if applicable)
+            8:  Player 2 exploration term (if applicable).
+            9:  Player 2 meeple placement probability (if applicable).
+            10: Player 2 training iterations (if applicable)
+            """;
 
     public static void main(String[] args) throws Exception {
-        //createReport();
-        playGame();
+
+        if (args[0].equalsIgnoreCase("-h") || args[0].equalsIgnoreCase("-help")) {
+            System.out.println(instructions);
+            return;
+        }
+
+        GameStateSpace stateSpace = new GameStateSpace();
+
+        Player player1;
+        Player player2;
+        long deckRandomSeed;
+
+        try {
+            player1 = assignPlayer(args[0].toLowerCase(), 1, stateSpace, Long.parseLong(args[1]), Float.parseFloat(args[5]), Float.parseFloat(args[6]), Integer.parseInt(args[7]));
+            player2 = assignPlayer(args[2].toLowerCase(), 2, stateSpace, Long.parseLong(args[3]), Float.parseFloat(args[8]), Float.parseFloat(args[9]), Integer.parseInt(args[10]));
+            deckRandomSeed = Long.parseLong(args[4]);
+        } catch (NumberFormatException nfe) {
+            System.out.println("Invalid numbers.");
+            return;
+        }
+
+        Engine engine = new Engine(player1, player2, deckRandomSeed);
+
+        engine.play();
     }
 
-    /**
-     * The player parameters can either be of type UCTPlayer, HumanPlayer or RandomPlayer.
-     */
-    private static void playGame() throws Exception {
-        GameStateSpace stateSpace = new GameStateSpace();
-        Engine engine = new Engine(new RandomPlayer(stateSpace, 1), new UCTPlayer(stateSpace, 2, 2f, 200));
+    private static Player assignPlayer(String type, int playerID, GameStateSpace stateSpace, long randomSeed, float explorationTerm,
+                                       float randomPlayoutMeeplePlacementProbability, int trainingIterations) {
+        return switch (type) {
+            case "human" -> new HumanPlayer(stateSpace, playerID);
+            case "uct" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability);
+            case "random" -> new RandomPlayer(stateSpace, playerID, randomSeed);
+            default -> null;
+        };
 
-        //Engine engine = new Engine(new HumanPlayer(stateSpace, 1), new HumanPlayer(stateSpace,2));
-
-        int[] score = new int[]{0, 0};
-
-        int[] roundScore = engine.play();
-        score[0] += roundScore[0];
-        score[1] += roundScore[1];
-
-        System.out.printf("Score: [ %d : %d ]\n\n", score[0], score[1]);
     }
 
     /**
      * Tests different hyperparameters.
      */
-    public static void createReport() throws Exception {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-
-        FileWriter fileWriter = new FileWriter("report_" + dtf.format(now));
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-
-        int[] ti = new int[]{50, 100, 500, 1000, 5000};
-
-        printWriter.println("Playing against a random opponent:");
-        printWriter.flush();
-
-        GameStateSpace stateSpace = new GameStateSpace();
-
-        for (float c = 0f; c < 15; c += 0.5f) {
-            for (int trainingIterations : ti) {
-                Engine engine = new Engine(new UCTPlayer(stateSpace, 1, c, trainingIterations), new RandomPlayer(stateSpace, 2));
-                int[] score = new int[]{0, 0};
-                for (int i = 0; i < 10; i++) {
-                    System.out.println("Round " + (i+1));
-                    int[] roundScore = engine.play();
-                    score[0] += roundScore[0];
-                    score[1] += roundScore[1];
-                }
-
-                score[0] = score[0] / 10;
-                score[1] = score[1] / 10;
-
-                String line = trainingIterations + " training iterations, c = " + c + ": " + Arrays.toString(score) + "\n";
-                printWriter.println(line);
-                printWriter.flush();
-            }
-        }
-
-        printWriter.close();
-        }
+//    public static void createReport() throws Exception {
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH:mm:ss");
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        FileWriter fileWriter = new FileWriter("report_" + dtf.format(now));
+//        PrintWriter printWriter = new PrintWriter(fileWriter);
+//
+//        int[] ti = new int[]{50, 100, 500, 1000, 5000};
+//
+//        printWriter.println("Playing against a random opponent:");
+//        printWriter.flush();
+//
+//        GameStateSpace stateSpace = new GameStateSpace();
+//
+//        for (float c = 0f; c < 15; c += 0.5f) {
+//            for (int trainingIterations : ti) {
+//                Engine engine = new Engine(new UCTPlayer(stateSpace, 1, c, trainingIterations), new RandomPlayer(stateSpace, 2));
+//                int[] score = new int[]{0, 0};
+//                for (int i = 0; i < 10; i++) {
+//                    System.out.println("Round " + (i+1));
+//                    int[] roundScore = engine.play();
+//                    score[0] += roundScore[0];
+//                    score[1] += roundScore[1];
+//                }
+//
+//                score[0] = score[0] / 10;
+//                score[1] = score[1] / 10;
+//
+//                String line = trainingIterations + " training iterations, c = " + c + ": " + Arrays.toString(score) + "\n";
+//                printWriter.println(line);
+//                printWriter.flush();
+//            }
+//        }
+//
+//        printWriter.close();
+//        }
 
 }
 
