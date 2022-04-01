@@ -1,14 +1,3 @@
-//import org.slf4j.//logger;
-//import org.slf4j.//loggerFactory;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-
 public class Main {
 
     static String instructions = """
@@ -68,9 +57,6 @@ public class Main {
 
     }
 
-    /**
-     * Tests different hyperparameters.
-     */
 //    public static void createReport() throws Exception {
 //        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH:mm:ss");
 //        LocalDateTime now = LocalDateTime.now();

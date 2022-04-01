@@ -134,19 +134,10 @@ public class Node {
 
     public void updateVisits() {
         visits++;
-
-        if (visits > 30000) {
-            ////logger.error("int doesn't suffice as a datatype for the visits!");
-        }
     }
 
     public void updateQValue(int payoff) {
         qValue += payoff;
-
-        if (qValue > 30000) {
-            ////logger.error("int doesn't suffice as a datatype for the q value!");
-        }
-
     }
 
     public Node getParent() {

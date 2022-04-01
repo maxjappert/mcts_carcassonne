@@ -1,15 +1,6 @@
-//import org.slf4j.//logger;
-//import org.slf4j.//loggerFactory;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class Tile {
-    //static final //logger //logger = //loggerFactory.get//logger("Tile//logger");
-
     private final boolean pennant;
 
     /**
@@ -193,7 +184,6 @@ public class Tile {
      * '1' -> meeple of player 1
      * '2' -> meeple of player 2
      * @return A 2D-char-array which when printed represents the given visually in an ASCII-format.
-     * @throws Exception Is thrown if for some reason an invalid type number is used.
      */
     public char[][] getPrintFormatOfTile() {
         char[][] output = new char[5][5];
@@ -216,8 +206,6 @@ public class Tile {
             output[0][2] = '|';
             output[1][2] = '|';
             road = true;
-        } else {
-            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -239,8 +227,6 @@ public class Tile {
             output[4][2] = '|';
             output[3][2] = '|';
             road = true;
-        } else {
-            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -263,8 +249,6 @@ public class Tile {
             output[2][4] = '-';
             output[2][3] = '-';
             road = true;
-        } else {
-            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -288,8 +272,6 @@ public class Tile {
             output[2][0] = '-';
             output[2][1] = '-';
             road = true;
-        } else {
-            //logger.error("Wrong tile code passed.");
         }
 
         if(!road) {
@@ -318,8 +300,6 @@ public class Tile {
             c = 'x';
         } else if (middle == 4) {
             c = '@';
-        } else {
-            //logger.error("Wrong input for the middle of the tile.");
         }
 
         for(int i = 0; i < 5; i++) {
@@ -503,9 +483,9 @@ public class Tile {
     public void setArea(int point, int area) {
 
         if (point == 12) {
-            middleArea = (int) area;
+            middleArea = area;
         } else {
-            areas[point] = (int) area;
+            areas[point] = area;
         }
     }
 

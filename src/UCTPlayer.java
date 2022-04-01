@@ -34,7 +34,7 @@ public class UCTPlayer extends Player {
     }
 
     @Override
-    Pair<Integer, Integer> decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) throws Exception {
+    Pair<Integer, Integer> decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) {
         GameState state = new GameState(originalState);
         Node root = new Node(state, 0, playerID, new Move(null, 0), tile);
 
@@ -128,7 +128,7 @@ public class UCTPlayer extends Player {
 //        }
 //    }
 
-    private Node treePolicy(Node root, List<Tile> deck) throws Exception {
+    private Node treePolicy(Node root, List<Tile> deck) {
         Node node = root;
 
         do {
@@ -195,10 +195,7 @@ public class UCTPlayer extends Player {
             state.checkForScoreAfterRound();
         }
 
-//        long time1 = System.nanoTime();
         state.assignPointsAtEndOfGame();
-//        long time2 = System.nanoTime();
-//        System.out.printf("Training needed %f seconds.\n", (double) (time2 - time1) / Math.pow(10, 9));
         return state.getScore()[playerID - 1];
     }
 
