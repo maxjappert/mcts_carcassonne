@@ -114,7 +114,7 @@ public class Engine {
 
             state.updateBoard(move.getCoords(), drawnTile);
 
-            state.checkForScoreAfterRound();
+            state.checkForScoreAfterRound(true);
         }
 
         state.displayBoard();

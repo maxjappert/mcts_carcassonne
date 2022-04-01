@@ -217,6 +217,7 @@ public class GameState {
         for (int i = 0; i < 12; i++) {
             if (tile.getPoint(i) == tile.getMiddle()) {
                 tile.setMiddleArea(tile.getArea(i));
+                break;
             }
         }
 
@@ -572,7 +573,7 @@ public class GameState {
         return tiles;
     }
 
-    public void checkForScoreAfterRound() {
+    public void checkForScoreAfterRound(boolean verbose) {
         for (List<Tile> row : board) {
             for (Tile tile : row) {
                 if (tile != null && tile.hasMeeple()) {
@@ -585,7 +586,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += 9;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            //System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
+                            if (verbose) System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
                             tile.removeMeeple();
                             return;
                         }
@@ -598,7 +599,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += points;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            //System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
+                            if (verbose) System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             completedCities.add(tile.getArea(tile.getMeeple()[0]));
                             tile.removeMeeple();
                             return;
@@ -612,7 +613,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += points;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            //System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
+                            if (verbose) System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             tile.removeMeeple();
                             return;
                         }

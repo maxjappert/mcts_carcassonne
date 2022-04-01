@@ -190,7 +190,7 @@ public class UCTPlayer extends Player {
 
             state.updateBoard(action.getCoords(), tile);
 
-            state.checkForScoreAfterRound();
+            state.checkForScoreAfterRound(false);
         }
 
         state.assignPointsAtEndOfGame();
