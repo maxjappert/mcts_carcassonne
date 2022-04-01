@@ -28,4 +28,6 @@ abstract class Player {
      * @return A pair consisting of an index to the legalMoves list and an index of a possible meeple on the tile.
      */
     abstract Pair<Integer, Integer> decideOnNextMove(GameState state, Tile tile, List<Tile> deck, List<Move> legalMoves) throws Exception;
+
+    abstract String getTypeAsString();
 }

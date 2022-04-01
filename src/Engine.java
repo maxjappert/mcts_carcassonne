@@ -14,7 +14,7 @@ public class Engine {
         this.randomSeed = randomSeed;
     }
 
-    public int[] play() throws Exception {
+    public void play() throws Exception {
         GameStateSpace stateSpace = new GameStateSpace();
         GameState state = stateSpace.init();
         Random random;
@@ -27,13 +27,38 @@ public class Engine {
 
         List<Tile> deck = assembleDeck(random);
 
+        StringBuilder info = new StringBuilder(String.format("""
+                The game is played with the following parameters:
+                
+                Deck Seed : %d
+                Player 1:   %s
+                """, randomSeed, player1.getTypeAsString()));
+
         if (player1 instanceof UCTPlayer) {
-            System.out.println("Player 1: c = " + ((UCTPlayer) player1).getExplorationTerm() + ", " + ((UCTPlayer) player1).getTrainingIterations() + " training iterations.");
+            info.append("Player 1:   c = " + ((UCTPlayer) player1).getExplorationTerm() + ", " + ((UCTPlayer) player1)
+                    .getTrainingIterations() + " training iterations, with " + ((UCTPlayer) player1).getPlayoutSeed()
+                    + " as a playout seed and a meeple placement probability of " + ((UCTPlayer) player1)
+                    .getPlayoutMeeplePlacementProbability() * 100 + "%.\n");
         }
 
-        if (player2 instanceof UCTPlayer) {
-            System.out.println("Player 2: c = " + ((UCTPlayer) player2).getExplorationTerm() + ", " + ((UCTPlayer) player2).getTrainingIterations() + " training iterations.");
+        if (player1 instanceof RandomPlayer) {
+            info.append("Player 1 random seed: " + ((RandomPlayer) player1).getSeed() + "\n");
         }
+
+        info.append("Player 2:   " + player2.getTypeAsString() + "\n");
+
+        if (player2 instanceof UCTPlayer) {
+            info.append("Player 2:   c = " + ((UCTPlayer) player2).getExplorationTerm() + ", " + ((UCTPlayer) player2)
+                    .getTrainingIterations() + " training iterations, with " + ((UCTPlayer) player2).getPlayoutSeed()
+                    + " as a playout seed and a meeple placement probability of " + ((UCTPlayer) player2)
+                    .getPlayoutMeeplePlacementProbability() * 100 + "%.\n");
+        }
+
+        if (player2 instanceof RandomPlayer) {
+            info.append("Player 2 random seed: " + ((RandomPlayer) player2).getSeed());
+        }
+
+        System.out.println(info);
 
         while (!stateSpace.isGoal(state)) {
             System.out.println("Current score: " + Arrays.toString(state.getScore()));
@@ -101,7 +126,7 @@ public class Engine {
         System.out.println("Player 1 has " + state.getScore()[0] + " points.");
         System.out.println("Player 2 has " + state.getScore()[1] + " points.");
 
-        return state.getScore();
+        state.getScore();
     }
 
     /**

@@ -10,6 +10,7 @@ public class UCTPlayer extends Player {
     private final int trainingIterations;
     private final Random random;
     private final float meeplePlacementProbability;
+    private final long playoutSeed;
 
 
     protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations, long randomPlayoutSeed, float meeplePlacementProbability) {
@@ -22,6 +23,8 @@ public class UCTPlayer extends Player {
         } else {
             this.random = new Random(randomPlayoutSeed);
         }
+
+        this.playoutSeed = randomPlayoutSeed;
 
         if (meeplePlacementProbability > 1 || meeplePlacementProbability < 0) {
             this.meeplePlacementProbability = 0.5f;
@@ -128,8 +131,6 @@ public class UCTPlayer extends Player {
     private Node treePolicy(Node root, List<Tile> deck) throws Exception {
         Node node = root;
 
-        Random random = new Random();
-
         do {
             if (!node.hasChildren()) {
                 do {
@@ -142,7 +143,7 @@ public class UCTPlayer extends Player {
                 return node;
             } else {
                 if (node.getType() == 2) {
-                    node = node.getRandomChild();
+                    node = node.getRandomChild(random);
                     deck.remove(random.nextInt(deck.size()));
                 } else {
                     node = bestChild(node, explorationTerm);
@@ -181,7 +182,7 @@ public class UCTPlayer extends Player {
                 List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
 
                 if (!legalMeeples.isEmpty()) {
-                    int meeplePlacement = legalMeeples.get(new Random().nextInt(legalMeeples.size()));
+                    int meeplePlacement = legalMeeples.get(random.nextInt(legalMeeples.size()));
 
                     if (meeplePlacement > -1) {
                         state.placeMeeple( meeplePlacement, state.getPlayer(), tile);
@@ -319,10 +320,22 @@ public class UCTPlayer extends Player {
 
         node.addChildren(children);
 
-        return node.getRandomChild();
+        return node.getRandomChild(random);
     }
 
     private int otherPlayer(int player) {
         return  (player == 1 ? 2 : 1);
+    }
+
+    public String getTypeAsString() {
+        return "UCT Player";
+    }
+
+    public long getPlayoutSeed() {
+        return playoutSeed;
+    }
+
+    public float getPlayoutMeeplePlacementProbability() {
+        return meeplePlacementProbability;
     }
 }

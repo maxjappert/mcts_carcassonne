@@ -11,8 +11,8 @@ public class Node {
     private final List<Node> children;
     private final Tile drawnTile;
     private final int player;
-    private final Random random;
-    private Move move;
+    //private final Random random;
+    private final Move move;
     private int meeplePlacement;
     //long id = new Random().nextLong();
 
@@ -22,8 +22,6 @@ public class Node {
      * 2: Chance Node
      */
     private final int type;
-
-    ////logger //logger = //loggerFactory.get//logger("Node//logger");
 
     public Node(GameState state, int type, int player, Move move, Tile tile) {
 
@@ -35,7 +33,6 @@ public class Node {
         qValue = 0;
         visits = 0;
         children = new ArrayList<>();
-        random = new Random();
 
         this.move = move;
         this.meeplePlacement = -1;
@@ -52,7 +49,6 @@ public class Node {
         this.children = new ArrayList<>();
         this.drawnTile = node.drawnTile;
         this.player = node.player;
-        this.random = node.random;
         this.move = node.move;
         this.meeplePlacement = node.meeplePlacement;
         this.type = type;
@@ -117,7 +113,7 @@ public class Node {
         return state.getDeckSize() == 1;
     }
 
-    public Node getRandomChild() {
+    public Node getRandomChild(Random random) {
         if (!children.isEmpty()) {
             return children.get(random.nextInt(children.size()));
         } else {

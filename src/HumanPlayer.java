@@ -8,13 +8,11 @@ import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 
-//    static final //logger //logger = //loggerFactory.get//logger("HumanPlayer//logger");
-
     public HumanPlayer(GameStateSpace stateSpace, int playerID) {
         super(stateSpace, playerID);
     }
 
-    Pair<Integer, Integer> decideOnNextMove(GameState state, Tile originalTile, List<Tile> deck, List<Move> legalMoves) throws Exception {
+    Pair<Integer, Integer> decideOnNextMove(GameState state, Tile originalTile, List<Tile> deck, List<Move> legalMoves) {
         System.out.println("This is the tile you've drawn:");
 
         Scanner sc = new Scanner(System.in);
@@ -71,5 +69,9 @@ public class HumanPlayer extends Player {
         System.out.println("Illegal move.");
 
         return decideOnNextMove(state, originalTile, deck, legalMoves);
+    }
+
+    public String getTypeAsString() {
+        return "Human Player";
     }
 }

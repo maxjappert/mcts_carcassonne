@@ -27,25 +27,29 @@ public class Main {
             """;
 
     public static void main(String[] args) throws Exception {
-
-        if (args[0].equalsIgnoreCase("-h") || args[0].equalsIgnoreCase("-help")) {
-            System.out.println(instructions);
-            return;
-        }
-
         GameStateSpace stateSpace = new GameStateSpace();
-
         Player player1;
         Player player2;
         long deckRandomSeed;
 
-        try {
-            player1 = assignPlayer(args[0].toLowerCase(), 1, stateSpace, Long.parseLong(args[1]), Float.parseFloat(args[5]), Float.parseFloat(args[6]), Integer.parseInt(args[7]));
-            player2 = assignPlayer(args[2].toLowerCase(), 2, stateSpace, Long.parseLong(args[3]), Float.parseFloat(args[8]), Float.parseFloat(args[9]), Integer.parseInt(args[10]));
-            deckRandomSeed = Long.parseLong(args[4]);
-        } catch (NumberFormatException nfe) {
-            System.out.println("Invalid numbers.");
-            return;
+        if (args.length == 0) {
+            player1 = new UCTPlayer(stateSpace, 1, 2f, 10, 4, 0.5f);
+            //player1 = new RandomPlayer(stateSpace, 1, 4);
+            player2 = new RandomPlayer(stateSpace, 2, 3);
+            deckRandomSeed = 6;
+        } else {
+            if (args[0].equalsIgnoreCase("-h") || args[0].equalsIgnoreCase("-help")) {
+                System.out.println(instructions);
+                return;
+            }
+            try {
+                player1 = assignPlayer(args[0].toLowerCase(), 1, stateSpace, Long.parseLong(args[1]), Float.parseFloat(args[5]), Float.parseFloat(args[6]), Integer.parseInt(args[7]));
+                player2 = assignPlayer(args[2].toLowerCase(), 2, stateSpace, Long.parseLong(args[3]), Float.parseFloat(args[8]), Float.parseFloat(args[9]), Integer.parseInt(args[10]));
+                deckRandomSeed = Long.parseLong(args[4]);
+            } catch (NumberFormatException nfe) {
+                System.out.println("Invalid numbers.");
+                return;
+            }
         }
 
         Engine engine = new Engine(player1, player2, deckRandomSeed);

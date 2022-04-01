@@ -9,7 +9,8 @@ import java.util.Random;
 public class RandomPlayer extends Player {
 
     //static final //logger //logger = //loggerFactory.get//logger("AIPlayer//logger");
-    Random random;
+    private final Random random;
+    private final long seed;
 
     public RandomPlayer(GameStateSpace stateSpace, int playerID, long randomSeed) {
         super(stateSpace, playerID);
@@ -18,6 +19,8 @@ public class RandomPlayer extends Player {
         } else {
             random = new Random(randomSeed);
         }
+
+        this.seed = randomSeed;
     }
 
     /**
@@ -26,8 +29,14 @@ public class RandomPlayer extends Player {
      */
     @Override
     public Pair<Integer, Integer> decideOnNextMove(GameState state, Tile tile, List<Tile> deck, List<Move> legalMoves) {
-        Random random = new Random();
-
         return new Pair<>(random.nextInt(legalMoves.size()), random.nextInt(13));
+    }
+
+    public String getTypeAsString() {
+        return "Random Player";
+    }
+
+    public long getSeed() {
+        return seed;
     }
 }
