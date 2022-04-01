@@ -1,8 +1,3 @@
-//import org.slf4j.//logger;
-//import org.slf4j.//loggerFactory;
-
-import org.apache.commons.math3.util.Pair;
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,7 +7,7 @@ public class HumanPlayer extends Player {
         super(stateSpace, playerID);
     }
 
-    Pair<Integer, Integer> decideOnNextMove(GameState state, Tile originalTile, List<Tile> deck, List<Move> legalMoves) {
+    Pair decideOnNextMove(GameState state, Tile originalTile, List<Tile> deck, List<Move> legalMoves) {
         System.out.println("This is the tile you've drawn:");
 
         Scanner sc = new Scanner(System.in);
@@ -62,7 +57,7 @@ public class HumanPlayer extends Player {
 
         for (Move legalMove : legalMoves) {
             if (legalMove.isEqualTo(move)) {
-                return new Pair<>(legalMoves.indexOf(legalMove), meeplePlacement);
+                return new Pair(legalMoves.indexOf(legalMove), meeplePlacement);
             }
         }
 

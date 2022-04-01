@@ -1,8 +1,3 @@
-//import org.slf4j.//logger;
-//import org.slf4j.//loggerFactory;
-
-import org.apache.commons.math3.util.Pair;
-
 import java.util.List;
 
 abstract class Player {
@@ -27,7 +22,7 @@ abstract class Player {
      * @param legalMoves A list of all possible moves.
      * @return A pair consisting of an index to the legalMoves list and an index of a possible meeple on the tile.
      */
-    abstract Pair<Integer, Integer> decideOnNextMove(GameState state, Tile tile, List<Tile> deck, List<Move> legalMoves) throws Exception;
+    abstract Pair decideOnNextMove(GameState state, Tile tile, List<Tile> deck, List<Move> legalMoves) throws Exception;
 
     abstract String getTypeAsString();
 }

@@ -4,15 +4,14 @@
 import java.util.*;
 
 public class GameState {
-    //private final List<Tile> deck;
     private final List<List<Tile>> board;
 
     private final Map<Integer, Integer> areaTypes;
     private final List<Integer> completedCities;
     private int areaCounter;
 
-    private int[] scores;
-    private int[] numMeeples;
+    private final int[] scores;
+    private final int[] numMeeples;
 
     private int deckSize;
 
@@ -20,7 +19,6 @@ public class GameState {
      * Initialises a game object. Thereby the deck is assembled according to the game's instructions.
      */
     public GameState() {
-        //deck = new ArrayList<>();
         board = new ArrayList<>();
         numMeeples = new int[]{7, 7};
 
@@ -30,7 +28,7 @@ public class GameState {
 
         scores = new int[]{0, 0};
 
-        Tile startingTile = new Tile((int) 0, false);
+        Tile startingTile = new Tile(0, false);
 
         startingTile.setArea(0, 0);
         startingTile.setArea(1, 0);
@@ -49,10 +47,10 @@ public class GameState {
         board.get(0).add(startingTile);
 
         areaTypes = new HashMap<>();
-        areaTypes.put((int) 0, 0);
-        areaTypes.put((int) 1, 2);
-        areaTypes.put((int) 2, 1);
-        areaTypes.put((int) 3, 0);
+        areaTypes.put(0, 0);
+        areaTypes.put(1, 2);
+        areaTypes.put(2, 1);
+        areaTypes.put(3, 0);
         areaCounter = 4;
 
         completedCities = new ArrayList<>();
@@ -137,8 +135,6 @@ public class GameState {
             indices.add(runner);
         }
 
-        int indexOfMiddleArea = -1;
-
         for (int point = 0; point < 11; point++) {
             // Assign areas to all points which don't have an area yet.
 
@@ -152,7 +148,6 @@ public class GameState {
 
                 if (tile.getPoint(point+1) == tile.getMiddle()) {
                     indices.add(runner);
-                    indexOfMiddleArea = point+1;
                 }
             }
         }
@@ -218,10 +213,6 @@ public class GameState {
                 tile.setArea(point, areas.get(i));
             }
         }
-        
-//        if (indexOfMiddleArea != -1) {
-//            tile.setMiddleArea(tile.getArea(indexOfMiddleArea));
-//        }
 
         for (int i = 0; i < 12; i++) {
             if (tile.getPoint(i) == tile.getMiddle()) {
@@ -608,7 +599,7 @@ public class GameState {
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
                             //System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
-                            completedCities.add((int) tile.getArea(tile.getMeeple()[0]));
+                            completedCities.add(tile.getArea(tile.getMeeple()[0]));
                             tile.removeMeeple();
                             return;
                         }
@@ -638,17 +629,6 @@ public class GameState {
 
     public int getNumMeeples(int player) {
         return numMeeples[player-1];
-    }
-
-    public Player getPlayer(int nr, Player player1, Player player2) {
-        if (nr == 1) {
-            return player1;
-        } else if (nr == 2) {
-            return player2;
-        } else {
-            ////logger.error("Error in getPlayer(...)");
-            return null;
-        }
     }
 
     private Set<Integer> getTilesWithOneSidedCity() {
@@ -731,8 +711,6 @@ public class GameState {
 
                 if (numRoadsOfGivenType == 2) {
                     endPoints = 2;
-                } else if (numRoadsOfGivenType > 2) {
-                    ////logger.error("Weird stuff happening in checkForRoadCompletion(...)");
                 }
             }
         }
@@ -765,34 +743,25 @@ public class GameState {
                 }
 
                 for (int playerNr : getAreaOwners(i)) {
-                    //Player player = getPlayer(playerNr, player1, player2);
-
-                    //player.currentPoints += numAdjacentCities * 3;
-
                     scores[playerNr - 1] += numAdjacentCities * 3;
                 }
             }
 
             if (areaTypes.get(i) == 1 || areaTypes.get(i) == 2) {
                 for (int playerNr : getAreaOwners(i)) {
-                    //Player player = getPlayer(playerNr, player1, player2);
 
                     List<Tile> tilesOfArea = getTilesOfArea(i);
 
-                    //player.currentPoints += tilesOfArea.size();
                     scores[playerNr - 1] += tilesOfArea.size();
                 }
             }
 
             if (areaTypes.get(i) == 4) {
                 for (int playerNr : getAreaOwners(i)) {
-                    //Player player = getPlayer(playerNr, player1, player2);
-
                     for (List<Tile> row : board) {
                         for (Tile tile : row) {
                             if (tile.getArea(12) == 4) {
                                 Map<Integer, Tile> monasteryTiles = getNeighboursByType(getCoordinates(tile), true);
-                                //player.currentPoints += monasteryTiles.size();
                                 scores[playerNr - 1] += monasteryTiles.size();
                                 break;
                             }
@@ -830,10 +799,6 @@ public class GameState {
 
     public int[] getScore() {
         return scores;
-    }
-
-    public boolean isTerminal() {
-        return deckSize == 1;
     }
 
     public int getPlayer() {

@@ -1,5 +1,3 @@
-import org.apache.commons.math3.util.Pair;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +32,7 @@ public class UCTPlayer extends Player {
     }
 
     @Override
-    Pair<Integer, Integer> decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) {
+    Pair decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) {
         GameState state = new GameState(originalState);
         Node root = new Node(state, 0, playerID, new Move(null, 0), tile);
 
@@ -69,7 +67,7 @@ public class UCTPlayer extends Player {
 
         int meeplePlacement = chanceNode.getMeeplePlacement();
 
-        return new Pair<>(moveChoice, meeplePlacement);
+        return new Pair(moveChoice, meeplePlacement);
     }
 
     private int getTreeSize(Node root) {
@@ -169,7 +167,7 @@ public class UCTPlayer extends Player {
 
             if (actions.isEmpty()) {
                 deck.add(tile);
-                Collections.shuffle(deck);
+                Collections.shuffle(deck, random);
                 continue;
             }
 
@@ -185,7 +183,7 @@ public class UCTPlayer extends Player {
                     int meeplePlacement = legalMeeples.get(random.nextInt(legalMeeples.size()));
 
                     if (meeplePlacement > -1) {
-                        state.placeMeeple( meeplePlacement, state.getPlayer(), tile);
+                        state.placeMeeple(meeplePlacement, state.getPlayer(), tile);
                     }
                 }
             }
@@ -219,7 +217,6 @@ public class UCTPlayer extends Player {
 
         if (!parent.hasChildren()) {
             return parent;
-            //logger.error("bestChild can't be called for a node without children. Deck size: {}", parent.getState().getDeck().size());
         }
 
         for (Node child : parent.getChildren()) {
@@ -245,10 +242,9 @@ public class UCTPlayer extends Player {
 
         for (Move action : actions) {
 
-            Node meepleNode = new Node(parent.getState(),  1, parent.getState().getPlayer(), action, parent.getDrawnTile());
+            Node meepleNode = new Node(parent.getState(), 1, parent.getState().getPlayer(), action, parent.getDrawnTile());
 
             meepleNodes.add(meepleNode);
-            //parent.addChild(meepleNode);
         }
 
         return meepleNodes;
@@ -262,13 +258,11 @@ public class UCTPlayer extends Player {
             for (int legalMeeple : legalMeeplePlacements) {
                 Node chanceNode = new Node(parent, 2);
 
-                chanceNode.addMeeple( legalMeeple);
+                chanceNode.addMeeple(legalMeeple);
 
                 chanceNodes.add(chanceNode);
             }
         }
-
-        chanceNodes.add(new Node(parent, 2));
 
         return chanceNodes;
     }

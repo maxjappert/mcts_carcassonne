@@ -1,6 +1,8 @@
 //import org.slf4j.//logger;
 //import org.slf4j.//loggerFactory;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class Node {
@@ -11,7 +13,6 @@ public class Node {
     private final List<Node> children;
     private final Tile drawnTile;
     private final int player;
-    //private final Random random;
     private final Move move;
     private int meeplePlacement;
     //long id = new Random().nextLong();
@@ -115,9 +116,9 @@ public class Node {
 
     public Node getRandomChild(Random random) {
         if (!children.isEmpty()) {
-            return children.get(random.nextInt(children.size()));
+            int index = random.nextInt(children.size());
+            return children.get(index);
         } else {
-            ////logger.error("No child available when querying for children!");
             return null;
         }
     }

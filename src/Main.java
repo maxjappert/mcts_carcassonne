@@ -22,7 +22,7 @@ public class Main {
         long deckRandomSeed;
 
         if (args.length == 0) {
-            player1 = new UCTPlayer(stateSpace, 1, 2f, 10, 4, 0.5f);
+            player1 = new UCTPlayer(stateSpace, 1, 2f, 50, 4, 0.5f);
             //player1 = new RandomPlayer(stateSpace, 1, 4);
             player2 = new RandomPlayer(stateSpace, 2, 3);
             deckRandomSeed = 6;

@@ -1,5 +1,3 @@
-import org.apache.commons.math3.util.Pair;
-
 import java.util.*;
 
 public class Engine {
@@ -89,7 +87,7 @@ public class Engine {
                 }
             }
 
-            Pair<Integer, Integer> choice;
+            Pair choice;
 
             if (player == 1) {
                 choice = player1.decideOnNextMove(state, drawnTile, deck, moves);
