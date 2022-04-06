@@ -205,6 +205,15 @@ public class UCTPlayer extends Player {
         }
     }
 
+    private void backupNegamax(Node node, int payoff) {
+        while (node != null) {
+            node.updateVisits();
+            node.updateQValue(payoff);
+            payoff = -payoff;
+            node = node.getParent();
+        }
+    }
+
     /**
      * Returns the child with the highest UCT value.
      * @param parent The node whose children should be evaluated.
@@ -213,12 +222,13 @@ public class UCTPlayer extends Player {
      */
     private Node bestChild(Node parent, double c) {
         double highestValue = Double.MIN_VALUE;
-        Node bestChild = null;
+        Node bestChild = null;//parent.getRandomChild(random);
 
         if (!parent.hasChildren()) {
             return parent;
         }
 
+        boolean flag = false;
         for (Node child : parent.getChildren()) {
 
             if (child.getVisits() == 0 && c != 0) {
@@ -230,10 +240,17 @@ public class UCTPlayer extends Player {
             if (uct > highestValue) {
                 highestValue = uct;
                 bestChild = child;
+                flag = true;
             }
         }
 
-        return bestChild;
+        if (!flag) System.out.println("** Random next move selected because child had 0 visits.");
+
+        if (bestChild != null) {
+            return bestChild;
+        } else {
+            return parent.getRandomChild(random);
+        }
     }
 
     private List<Node> getMeepleNodes(Node parent) {
