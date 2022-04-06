@@ -22,8 +22,8 @@ public class Main {
         long deckRandomSeed;
 
         if (args.length == 0) {
-            player1 = new UCTPlayer(stateSpace, 1, 2f, 100, -1, 0.5f);
-            //player1 = new RandomPlayer(stateSpace, 1, 4);
+            player1 = new UCTPlayer(stateSpace, 1, 2f, 50, -1, 0.5f);
+            //player1 = new MinimaxPlayer(stateSpace, 1);
             player2 = new RandomPlayer(stateSpace, 2, -1);
             deckRandomSeed = -1;
         } else {

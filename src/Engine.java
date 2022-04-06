@@ -64,6 +64,7 @@ public class Engine {
             state.displayBoard();
 
             System.out.println(deck.size() + " tiles remaining.");
+            System.out.println("Player " + state.getPlayer() + "'s turn:");
 
             Tile drawnTile = drawTile(deck);
             drawnTile.printTile();

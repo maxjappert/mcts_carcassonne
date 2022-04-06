@@ -802,7 +802,7 @@ public class GameState {
     }
 
     public int getPlayer() {
-        if (deckSize % 2 == 0) {
+        if (deckSize % 2 == 1) {
             return 1;
         } else {
             return 2;
