@@ -6,14 +6,48 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class Node {
+
+    /**
+     *  The state which this node represents.
+     */
     private final GameState state;
+
+    /**
+     *  The total accumulated payoff achieved while passing through this node during the tree policy..
+     */
     private int qValue;
+
+    /**
+     *  The number of times this node was visited during the tree policy.
+     */
     private int visits;
+
+    /**
+     *  A reference to the parent node. null if this is a root node.
+     */
     private Node parent;
+
+    /**
+     *  A list of references to the children of this node. Empty list if this is unexpanded.
+     */
     private final List<Node> children;
+
+    /**
+     *  The drawn tile for which a move needs to be decided.
+     */
     private final Tile drawnTile;
+
+    // TODO: delete this!
     private final int player;
+
+    /**
+     *  The move which this node represents. null if this is a placement node.
+     */
     private final Move move;
+
+    /**
+     *  The meeple placement which this node represents. null if this is not a chance node.
+     */
     private int meeplePlacement;
     //long id = new Random().nextLong();
 

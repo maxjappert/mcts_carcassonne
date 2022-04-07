@@ -1,11 +1,36 @@
 import java.util.*;
 
 public class UCTPlayer extends Player {
+
+    /**
+     *  Denotes the importance of exploration during the tree policy. Corresponds to the c variable in the UCT formula.
+     */
     private float explorationTerm;
+
+    /**
+     *  The number of training iterations for building the tree for choosing the next move.
+     */
     private final int trainingIterations;
+
+    /**
+     *  The random object for performing the random playout (default policy).
+     */
     private final Random random;
+
+    /**
+     *  The probability of considering a meeple placement during the playout (default policy).
+     */
     private final float meeplePlacementProbability;
+
+    /**
+     *  The random seed for deciding on moves randomly as part of the playout (default policy).
+     */
     private final long playoutSeed;
+
+    /**
+     *  The gradient of how the exploration term changes over time, i.e., the number added to the exploration term
+     *  per move.
+     */
     private final float explorationTermDelta;
 
 

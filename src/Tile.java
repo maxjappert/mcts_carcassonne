@@ -36,6 +36,9 @@ public class Tile {
 
     private int middleArea;
 
+    /**
+     *  The rotation in {0, 1, 2, 3} denoting the factor of 90 degrees this was rotated from its initialised state.
+     */
     private int rotation;
 
     /**
