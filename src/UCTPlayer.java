@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class UCTPlayer extends Player {
     private final float explorationTerm;
@@ -45,7 +42,8 @@ public class UCTPlayer extends Player {
 
             Node node = treePolicy(root, deck);
 
-            int payoff = defaultPolicy(node, deck);
+            int payoff = defaultPolicy(node.getState(), deck);
+            //int payoff = minimax(state, deck, 0, state.getPlayer() == playerID, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
             backup(node, payoff);
         }
@@ -64,6 +62,7 @@ public class UCTPlayer extends Player {
         }
 
         Node chanceNode = bestChild(meepleNode, 0);
+        //Node chanceNode = mostVisitedChild(meepleNode);
 
         int meeplePlacement = chanceNode.getMeeplePlacement();
 
@@ -154,12 +153,12 @@ public class UCTPlayer extends Player {
 
     /**
      * Random playout.
-     * @param leafNode Starting point.
+     * @param originalState Starting point.
      * @param deck The deck at the starting point.
      * @return The payoff at the end of the playout.
      */
-    private int defaultPolicy(Node leafNode, List<Tile> deck) {
-        GameState state = new GameState(leafNode.getState());
+    private int defaultPolicy(GameState originalState, List<Tile> deck) {
+        GameState state = new GameState(originalState);
 
         while (deck.size() > 0) {
             Tile tile = Engine.drawTile(deck);
@@ -205,6 +204,31 @@ public class UCTPlayer extends Player {
         }
     }
 
+    private void backupNegamax(Node node, int payoff) {
+        while (node != null) {
+            node.updateVisits();
+            node.updateQValue(payoff);
+            payoff = -payoff;
+            node = node.getParent();
+        }
+    }
+
+    /**
+     * Using the most visited child node to choose the next action minimises the payoff for some reason.
+     * Choosing random actions is better.
+     * @param parent
+     * @return
+     */
+    private Node mostVisitedChild(Node parent) {
+        if (!parent.hasChildren()) {
+            return parent;
+        }
+
+        List<Node> childrenCopy  = new ArrayList<>(List.copyOf(parent.getChildren()));
+        childrenCopy.sort((n1, n2) -> n2.getVisits() - n1.getVisits());
+        return childrenCopy.get(0);
+    }
+
     /**
      * Returns the child with the highest UCT value.
      * @param parent The node whose children should be evaluated.
@@ -213,12 +237,13 @@ public class UCTPlayer extends Player {
      */
     private Node bestChild(Node parent, double c) {
         double highestValue = Double.MIN_VALUE;
-        Node bestChild = null;
+        Node bestChild = null;//parent.getRandomChild(random);
 
         if (!parent.hasChildren()) {
             return parent;
         }
 
+        boolean flag = false;
         for (Node child : parent.getChildren()) {
 
             if (child.getVisits() == 0 && c != 0) {
@@ -230,10 +255,17 @@ public class UCTPlayer extends Player {
             if (uct > highestValue) {
                 highestValue = uct;
                 bestChild = child;
+                flag = true;
             }
         }
 
-        return bestChild;
+        if (!flag) System.out.println("** Random next move selected because child had 0 visits.");
+
+        if (bestChild != null) {
+            return bestChild;
+        } else {
+            return parent.getRandomChild(random);
+        }
     }
 
     private List<Node> getMeepleNodes(Node parent) {
