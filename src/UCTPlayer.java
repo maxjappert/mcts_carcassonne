@@ -59,10 +59,10 @@ public class UCTPlayer extends Player {
     @Override
     Pair decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) {
         GameState state = new GameState(originalState);
-        Node root = new Node(state, 0, playerID, new Move(null, 0), tile);
+        Node root = new Node(state, 0, new Move(null, 0), tile);
 
         for (Move move : legalMoves) {
-            root.addChild(new Node(state, 1, playerID, move, tile));
+            root.addChild(new Node(state, 1, move, tile));
         }
 
         for (int i = 0; i < trainingIterations; i++) {
@@ -247,8 +247,8 @@ public class UCTPlayer extends Player {
     /**
      * Using the most visited child node to choose the next action minimises the payoff for some reason.
      * Choosing random actions is better.
-     * @param parent
-     * @return
+     * @param parent The parent whose most visited child should be returned.
+     * @return The most visited child of the parent.
      */
     private Node mostVisitedChild(Node parent) {
         if (!parent.hasChildren()) {
@@ -307,7 +307,7 @@ public class UCTPlayer extends Player {
 
         for (Move action : actions) {
 
-            Node meepleNode = new Node(parent.getState(), 1, parent.getState().getPlayer(), action, parent.getDrawnTile());
+            Node meepleNode = new Node(parent.getState(), 1, action, parent.getDrawnTile());
 
             meepleNodes.add(meepleNode);
         }
@@ -319,7 +319,7 @@ public class UCTPlayer extends Player {
         List<Integer> legalMeeplePlacements = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getCoords(), playerID);
         List<Node> chanceNodes = new ArrayList<>();
 
-        if (parent.getState().getNumMeeples(parent.getPlayer()) > 0) {
+        if (parent.getState().getNumMeeples(parent.getState().getPlayer()) > 0) {
             for (int legalMeeple : legalMeeplePlacements) {
                 Node chanceNode = new Node(parent, 2);
 
@@ -345,11 +345,11 @@ public class UCTPlayer extends Player {
                 Tile newTile = new Tile(parent.getDrawnTile());
 
                 newTile.rotateBy(parent.getRotation());
-                newState.placeMeeple(parent.getMeeplePlacement(), parent.getPlayer(), newTile);
+                newState.placeMeeple(parent.getMeeplePlacement(), parent.getState().getPlayer(), newTile);
 
                 newState.updateBoard(parent.getCoords(), newTile);
 
-                Node placementNode = new Node(newState, 0, otherPlayer(parent.getPlayer()), new Move(new Coordinates(-1, -1), 0), new Tile(tile));
+                Node placementNode = new Node(newState, 0, new Move(new Coordinates(-1, -1), 0), new Tile(tile));
                 placementNodes.add(placementNode);
             }
         }

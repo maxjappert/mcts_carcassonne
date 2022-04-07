@@ -15,7 +15,7 @@ public class Node {
     /**
      *  The total accumulated payoff achieved while passing through this node during the tree policy..
      */
-    private int[] qValue;
+    private final int[] qValue;
 
     /**
      *  The number of times this node was visited during the tree policy.
@@ -37,9 +37,6 @@ public class Node {
      */
     private final Tile drawnTile;
 
-    // TODO: delete this!
-    private final int player;
-
     /**
      *  The move which this node represents. null if this is a placement node.
      */
@@ -58,12 +55,11 @@ public class Node {
      */
     private final int type;
 
-    public Node(GameState state, int type, int player, Move move, Tile tile) {
+    public Node(GameState state, int type, Move move, Tile tile) {
 
         this.state = state;
         this.parent = null;
         this.type = type;
-        this.player = player;
         this.drawnTile = tile;
         qValue = new int[]{0, 0};
         visits = 0;
@@ -83,7 +79,6 @@ public class Node {
         this.visits = 0;
         this.children = new ArrayList<>();
         this.drawnTile = node.drawnTile;
-        this.player = node.player;
         this.move = node.move;
         this.meeplePlacement = node.meeplePlacement;
         this.type = type;
@@ -122,10 +117,6 @@ public class Node {
 
     public Move getMove() {
         return move;
-    }
-
-    public int getPlayer() {
-        return player;
     }
 
     public boolean hasChildren() {

@@ -24,10 +24,10 @@ public class Main {
         long deckRandomSeed;
 
         if (args.length == 0) {
-            player2 = new UCTPlayer(stateSpace, 2, 4f, 200, 3, 0.5f, 0);
+            player2 = new UCTPlayer(stateSpace, 2, 4f, 50, 3, 0.5f, 0);
             //player1 = new MinimaxPlayer(stateSpace, 1);
             player1 = new RandomPlayer(stateSpace, 1, 7);
-            //player2 = new UCTPlayer(stateSpace, 2, 4f, 200, 3, 0.5f, 0);
+            //player1 = new UCTPlayer(stateSpace, 1, 4f, 100, 3, 0.5f, 0);
             deckRandomSeed = 8;
         } else {
             if (args[0].equalsIgnoreCase("-h") || args[0].equalsIgnoreCase("-help")) {
