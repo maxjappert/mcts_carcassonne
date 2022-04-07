@@ -1,14 +1,15 @@
 import java.util.*;
 
 public class UCTPlayer extends Player {
-    private final float explorationTerm;
+    private float explorationTerm;
     private final int trainingIterations;
     private final Random random;
     private final float meeplePlacementProbability;
     private final long playoutSeed;
+    private final float explorationTermDelta;
 
 
-    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations, long randomPlayoutSeed, float meeplePlacementProbability) {
+    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations, long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -26,6 +27,8 @@ public class UCTPlayer extends Player {
         } else {
             this.meeplePlacementProbability = meeplePlacementProbability;
         }
+
+        this.explorationTermDelta = explorationTermDelta;
     }
 
     @Override
@@ -65,6 +68,8 @@ public class UCTPlayer extends Player {
         //Node chanceNode = mostVisitedChild(meepleNode);
 
         int meeplePlacement = chanceNode.getMeeplePlacement();
+
+        updateExplorationTerm(explorationTermDelta);
 
         return new Pair(moveChoice, meeplePlacement);
     }
@@ -360,5 +365,14 @@ public class UCTPlayer extends Player {
 
     public float getPlayoutMeeplePlacementProbability() {
         return meeplePlacementProbability;
+    }
+
+    public void updateExplorationTerm(float delta) {
+        if (explorationTerm - delta < 0) {
+            System.out.println("** Negative exploration term!");
+            System.exit(-1);
+        }
+
+        explorationTerm = explorationTerm + delta;
     }
 }

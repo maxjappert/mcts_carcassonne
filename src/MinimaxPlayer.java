@@ -70,7 +70,7 @@ public class MinimaxPlayer extends Player {
                 }
 
                 newState.updateBoard(move.getCoords(), tile);
-                newState.checkForScoreAfterRound();
+                newState.checkForScoreAfterRound(false);
                 value = Math.max(value, minimax(newState, deck, depth+1, false, alpha, beta));
                 if (value >= beta) {
                     break;
@@ -92,7 +92,7 @@ public class MinimaxPlayer extends Player {
                 }
 
                 newState.updateBoard(move.getCoords(), tile);
-                newState.checkForScoreAfterRound();
+                newState.checkForScoreAfterRound(false);
                 value = Math.min(value, minimax(newState, deck, depth+1, true, alpha, beta));
                 if (value <= alpha) {
                     break;
@@ -142,7 +142,7 @@ public class MinimaxPlayer extends Player {
 
             state.updateBoard(action.getCoords(), tile);
 
-            state.checkForScoreAfterRound();
+            state.checkForScoreAfterRound(false);
         }
 
         state.assignPointsAtEndOfGame();

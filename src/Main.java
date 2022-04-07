@@ -9,10 +9,12 @@ public class Main {
             4:  Deck random seed for assembling and shuffling the deck.
             5:  Player 1 exploration term (if applicable).
             6:  Player 1 meeple placement probability (if applicable).
-            7:  Player 1 training iterations (if applicable)
-            8:  Player 2 exploration term (if applicable).
-            9:  Player 2 meeple placement probability (if applicable).
-            10: Player 2 training iterations (if applicable)
+            7:  Player 1 training iterations (if applicable).
+            8:  Player 1 exploration term delta (if applicable).
+            9:  Player 2 exploration term (if applicable).
+            10: Player 2 meeple placement probability (if applicable).
+            11: Player 2 training iterations (if applicable)
+            12: Player 2 exploration term delta (if applicable).
             """;
 
     public static void main(String[] args) throws Exception {
@@ -22,18 +24,18 @@ public class Main {
         long deckRandomSeed;
 
         if (args.length == 0) {
-            player1 = new UCTPlayer(stateSpace, 1, 2f, 50, -1, 0.5f);
+            player1 = new UCTPlayer(stateSpace, 1, 4f, 500, 3, 0.5f, 0);
             //player1 = new MinimaxPlayer(stateSpace, 1);
-            player2 = new RandomPlayer(stateSpace, 2, -1);
-            deckRandomSeed = -1;
+            player2 = new RandomPlayer(stateSpace, 2, 7);
+            deckRandomSeed = 8;
         } else {
             if (args[0].equalsIgnoreCase("-h") || args[0].equalsIgnoreCase("-help")) {
                 System.out.println(instructions);
                 return;
             }
             try {
-                player1 = assignPlayer(args[0].toLowerCase(), 1, stateSpace, Long.parseLong(args[1]), Float.parseFloat(args[5]), Float.parseFloat(args[6]), Integer.parseInt(args[7]));
-                player2 = assignPlayer(args[2].toLowerCase(), 2, stateSpace, Long.parseLong(args[3]), Float.parseFloat(args[8]), Float.parseFloat(args[9]), Integer.parseInt(args[10]));
+                player1 = assignPlayer(args[0].toLowerCase(), 1, stateSpace, Long.parseLong(args[1]), Float.parseFloat(args[5]), Float.parseFloat(args[6]), Integer.parseInt(args[7]), Float.parseFloat(args[8]));
+                player2 = assignPlayer(args[2].toLowerCase(), 2, stateSpace, Long.parseLong(args[3]), Float.parseFloat(args[9]), Float.parseFloat(args[10]), Integer.parseInt(args[11]), Float.parseFloat(args[12]));
                 deckRandomSeed = Long.parseLong(args[4]);
             } catch (NumberFormatException nfe) {
                 System.out.println("Invalid numbers.");
@@ -47,10 +49,10 @@ public class Main {
     }
 
     private static Player assignPlayer(String type, int playerID, GameStateSpace stateSpace, long randomSeed, float explorationTerm,
-                                       float randomPlayoutMeeplePlacementProbability, int trainingIterations) {
+                                       float randomPlayoutMeeplePlacementProbability, int trainingIterations, float explorationTermDelta) {
         return switch (type) {
             case "human" -> new HumanPlayer(stateSpace, playerID);
-            case "uct" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability);
+            case "uct" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability, explorationTermDelta);
             case "random" -> new RandomPlayer(stateSpace, playerID, randomSeed);
             default -> null;
         };
