@@ -33,8 +33,11 @@ public class UCTPlayer extends Player {
      */
     private final float explorationTermDelta;
 
+    private final String treePolicyType;
 
-    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations, long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta) {
+
+    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
+                        long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -54,6 +57,11 @@ public class UCTPlayer extends Player {
         }
 
         this.explorationTermDelta = explorationTermDelta;
+        this.treePolicyType = treePolicyType.toLowerCase();
+
+        if (treePolicyType.equalsIgnoreCase("epsilon-greedy-uct") && explorationTerm >= 1) {
+            System.out.println("** Invalid epsilon.");
+        }
     }
 
     @Override
@@ -71,7 +79,6 @@ public class UCTPlayer extends Player {
             Node node = treePolicy(root, deck);
 
             int[] payoff = defaultPolicy(node.getState(), deck);
-            //int payoff = minimax(state, deck, 0, state.getPlayer() == playerID, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
             backup(node, payoff);
         }
@@ -173,7 +180,18 @@ public class UCTPlayer extends Player {
                     node = node.getRandomChild(random);
                     deck.remove(random.nextInt(deck.size()));
                 } else {
-                    node = bestChild(node, explorationTerm);
+                    if (treePolicyType.equalsIgnoreCase("uct")) {
+                        node = bestChild(node, explorationTerm);
+                    } else if (treePolicyType.equalsIgnoreCase("epsilon-greedy-uct")) {
+                        if (random.nextFloat() < explorationTerm) {
+                            node = node.getRandomChild(random);
+                        } else {
+                            node = bestChild(node, 0);
+                        }
+                    } else {
+                        System.out.println("** Invalid tree policy type");
+                        System.exit(-1);
+                    }
                 }
             }
         } while (!node.isTerminal());
@@ -267,6 +285,7 @@ public class UCTPlayer extends Player {
      * @return The child with the highest UCT value.
      */
     private Node bestChild(Node parent, double c) {
+
         double highestValue = Double.MIN_VALUE;
         Node bestChild = null;//parent.getRandomChild(random);
 

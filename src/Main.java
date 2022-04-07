@@ -24,7 +24,7 @@ public class Main {
         long deckRandomSeed;
 
         if (args.length == 0) {
-            player2 = new UCTPlayer(stateSpace, 2, 4f, 50, 3, 0.5f, 0);
+            player2 = new UCTPlayer(stateSpace, 2, 4f, 100, 3, 0.5f, 0, "uct");
             //player1 = new MinimaxPlayer(stateSpace, 1);
             player1 = new RandomPlayer(stateSpace, 1, 7);
             //player1 = new UCTPlayer(stateSpace, 1, 4f, 100, 3, 0.5f, 0);
@@ -53,7 +53,8 @@ public class Main {
                                        float randomPlayoutMeeplePlacementProbability, int trainingIterations, float explorationTermDelta) {
         return switch (type) {
             case "human" -> new HumanPlayer(stateSpace, playerID);
-            case "uct" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability, explorationTermDelta);
+            case "uct" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability, explorationTermDelta, "uct");
+            case "epsilon-greedy-mcts" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability, explorationTermDelta, "epsilon-greedy-mcts");
             case "random" -> new RandomPlayer(stateSpace, playerID, randomSeed);
             default -> null;
         };
