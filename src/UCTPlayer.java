@@ -70,7 +70,7 @@ public class UCTPlayer extends Player {
 
             Node node = treePolicy(root, deck);
 
-            int payoff = defaultPolicy(node.getState(), deck);
+            int[] payoff = defaultPolicy(node.getState(), deck);
             //int payoff = minimax(state, deck, 0, state.getPlayer() == playerID, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
             backup(node, payoff);
@@ -187,7 +187,7 @@ public class UCTPlayer extends Player {
      * @param deck The deck at the starting point.
      * @return The payoff at the end of the playout.
      */
-    private int defaultPolicy(GameState originalState, List<Tile> deck) {
+    private int[] defaultPolicy(GameState originalState, List<Tile> deck) {
         GameState state = new GameState(originalState);
 
         while (deck.size() > 0) {
@@ -223,10 +223,10 @@ public class UCTPlayer extends Player {
         }
 
         state.assignPointsAtEndOfGame();
-        return state.getScore()[playerID - 1];
+        return state.getScore();
     }
 
-    private void backup(Node node, int payoff) {
+    private void backup(Node node, int[] payoff) {
         while (node != null) {
             node.updateVisits();
             node.updateQValue(payoff);
@@ -234,11 +234,12 @@ public class UCTPlayer extends Player {
         }
     }
 
-    private void backupNegamax(Node node, int payoff) {
+    private void backupNegamax(Node node, int[] payoff) {
         while (node != null) {
             node.updateVisits();
             node.updateQValue(payoff);
-            payoff = -payoff;
+            payoff[0] = -payoff[0];
+            payoff[1] = -payoff[1];
             node = node.getParent();
         }
     }
@@ -280,7 +281,9 @@ public class UCTPlayer extends Player {
                 return child;
             }
 
-            double uct = ((double) child.getQValue() / child.getVisits()) + 2 * c * ((2 * Math.log(parent.getVisits())) / child.getVisits());
+            int player = child.getState().getPlayer();
+
+            double uct = ((double) child.getQValue()[player-1] / child.getVisits()) + 2 * c * ((2 * Math.log(parent.getVisits())) / child.getVisits());
 
             if (uct > highestValue) {
                 highestValue = uct;

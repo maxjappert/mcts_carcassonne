@@ -17,11 +17,7 @@ public class Engine {
         GameState state = stateSpace.init();
         Random random;
 
-        if (randomSeed == -1) {
-            random = new Random();
-        } else {
-            random = new Random(randomSeed);
-        }
+        random = randomSeed == -1 ? new Random() : new Random(randomSeed);
 
         List<Tile> deck = assembleDeck(random);
 
