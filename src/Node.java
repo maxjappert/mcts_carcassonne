@@ -150,6 +150,7 @@ public class Node {
 
     public void addChildren(List<Node> newChildren) {
         for (Node child : newChildren) {
+
             addChild(child);
         }
     }

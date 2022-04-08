@@ -70,7 +70,14 @@ public class UCTPlayer extends Player {
         Node root = new Node(state, 0, new Move(null, 0), tile);
 
         for (Move move : legalMoves) {
-            root.addChild(new Node(state, 1, move, tile));
+
+            Node node = new Node(state, 1, move, tile);
+
+            if (root.getChildren().contains(node)) {
+                System.out.println("");
+            }
+
+            root.addChild(node);
         }
 
         for (int i = 0; i < trainingIterations; i++) {
@@ -439,10 +446,11 @@ public class UCTPlayer extends Player {
 
         if (node.getType() == 0) {
             Node child = getUnexpandedMeepleNode(node);
-            node.addChild(node);
+            node.addChild(child);
             return child;
         } else if (node.getType() == 1) {
             Node child = getUnexpandedChanceNode(node);
+
             node.addChild(child);
             return child;
         } else if (node.getType() == 2) {
