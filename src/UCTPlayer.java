@@ -199,6 +199,18 @@ public class UCTPlayer extends Player {
         return node;
     }
 
+    private boolean hasUnexploredChildren(Node parent) {
+        if (parent.getType() == 0) {
+            List<Move> successors = stateSpace.placementSucc(parent.getState(), parent.getDrawnTile());
+            return successors.size() != parent.getChildren().size();
+        } else if (parent.getType() == 1) {
+            List<Integer> successors = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getMove().getCoords(), parent.getState().getPlayer());
+            return successors.size() != parent.getChildren().size();
+        }
+
+        return false;
+    }
+
     /**
      * Random playout.
      * @param originalState Starting point.
@@ -325,13 +337,59 @@ public class UCTPlayer extends Player {
         List<Node> meepleNodes = new ArrayList<>();
 
         for (Move action : actions) {
-
             Node meepleNode = new Node(parent.getState(), 1, action, parent.getDrawnTile());
 
             meepleNodes.add(meepleNode);
         }
 
         return meepleNodes;
+    }
+
+    private Node getUnexpandedMeepleNode(Node parent) {
+        List<Move> actions = stateSpace.placementSucc(parent.getState(), parent.getDrawnTile());
+        List<Node> children = parent.getChildren();
+
+        for (Move action : actions) {
+            boolean flag = true;
+            for (Node child : children) {
+                if (child.getMove().isEqualTo(action)) {
+                    flag = false;
+                    break;
+                }
+            }
+
+
+            if (flag) return new Node(parent.getState(), 1, action, parent.getDrawnTile());
+        }
+
+        System.out.println("** Error in getting single meeple node.");
+        return null;
+    }
+
+    private Node getUnexpandedChanceNode(Node parent) {
+        List<Integer> legalMeeplePlacements = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getCoords(), playerID);
+        List<Node> children = parent.getChildren();
+
+        if (parent.getState().getNumMeeples(parent.getState().getPlayer()) > 0) {
+            for (int legalMeeple : legalMeeplePlacements) {
+                boolean flag = true;
+                for (Node child : children) {
+                    if (child.getMeeplePlacement() == legalMeeple) {
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if (flag) {
+                    Node chanceNode = new Node(parent, 2);
+                    chanceNode.addMeeple(legalMeeple);
+                    return chanceNode;
+                }
+            }
+        }
+
+        System.out.println("** Error in getting single chance node.");
+        return null;
     }
 
     private List<Node> getChanceNodes(Node parent) {
@@ -374,6 +432,32 @@ public class UCTPlayer extends Player {
         }
 
         return placementNodes;
+    }
+
+    private Node expandSingleNode(Node node, List<Tile> deck) {
+        List<Node> children = new ArrayList<>();
+
+        if (node.getType() == 0) {
+            Node child = getUnexpandedMeepleNode(node);
+            node.addChild(node);
+            return child;
+        } else if (node.getType() == 1) {
+            Node child = getUnexpandedChanceNode(node);
+            node.addChild(child);
+            return child;
+        } else if (node.getType() == 2) {
+            children = getPlacementNodes(node, deck);
+
+            if (children.isEmpty()) {
+                return node;
+            }
+
+            node.addChildren(children);
+            return node.getRandomChild(random);
+        } else {
+            System.out.println("** Error in expand!!!");
+            return null;
+        }
     }
 
     private Node expand(Node node, List<Tile> deck) {
