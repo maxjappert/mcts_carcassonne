@@ -23,6 +23,8 @@ public class Main {
         Player player2;
         long deckRandomSeed;
 
+        ArgParser argParser = new ArgParser();
+
         if (args.length == 0) {
             player2 = new UCTPlayer(stateSpace, 2, 4f, 100, 3, 0.5f, 0, "uct");
             //player1 = new MinimaxPlayer(stateSpace, 1);
@@ -30,18 +32,10 @@ public class Main {
             //player1 = new UCTPlayer(stateSpace, 1, 4f, 100, 3, 0.5f, 0);
             deckRandomSeed = 8;
         } else {
-            if (args[0].equalsIgnoreCase("-h") || args[0].equalsIgnoreCase("-help")) {
-                System.out.println(instructions);
-                return;
-            }
-            try {
-                player1 = assignPlayer(args[0].toLowerCase(), 1, stateSpace, Long.parseLong(args[1]), Float.parseFloat(args[5]), Float.parseFloat(args[6]), Integer.parseInt(args[7]), Float.parseFloat(args[8]));
-                player2 = assignPlayer(args[2].toLowerCase(), 2, stateSpace, Long.parseLong(args[3]), Float.parseFloat(args[9]), Float.parseFloat(args[10]), Integer.parseInt(args[11]), Float.parseFloat(args[12]));
-                deckRandomSeed = Long.parseLong(args[4]);
-            } catch (NumberFormatException nfe) {
-                System.out.println("Invalid numbers.");
-                return;
-            }
+            Player[] players = argParser.assignPlayers(args);
+            player1 = players[0];
+            player2 = players[1];
+            deckRandomSeed = argParser.getDeckRandomSeed();
         }
 
         Engine engine = new Engine(player1, player2, deckRandomSeed);

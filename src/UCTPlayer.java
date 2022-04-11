@@ -1,5 +1,6 @@
 import java.util.*;
 
+//TODO: rename to MCTSPlayer
 public class UCTPlayer extends Player {
 
     /**
@@ -34,7 +35,6 @@ public class UCTPlayer extends Player {
     private final float explorationTermDelta;
 
     private final String treePolicyType;
-
 
     protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                         long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType) {
@@ -189,7 +189,7 @@ public class UCTPlayer extends Player {
                 } else {
                     if (treePolicyType.equalsIgnoreCase("uct")) {
                         node = bestChild(node, explorationTerm);
-                    } else if (treePolicyType.equalsIgnoreCase("epsilon-greedy-uct")) {
+                    } else if (treePolicyType.equalsIgnoreCase("epsilon-greedy")) {
                         if (random.nextFloat() < explorationTerm) {
                             node = node.getRandomChild(random);
                         } else {

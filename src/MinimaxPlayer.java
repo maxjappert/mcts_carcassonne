@@ -63,7 +63,6 @@ public class MinimaxPlayer extends Player {
                 Tile tile = new Tile(drawnTile);
                 tile.rotateBy(move.getRotation());
 
-                // TODO: Make this clever
                 if (new Random().nextFloat() < 0.5) {
                     List<Integer> meepleSuccessors = stateSpace.meepleSucc(newState, tile, move.getCoords(), playerID == 1 ? 1 : 2);
                     tile.placeMeeple(meepleSuccessors.get(new Random().nextInt(meepleSuccessors.size())), playerID == 1 ? 1 : 2);
@@ -85,7 +84,6 @@ public class MinimaxPlayer extends Player {
                 Tile tile = new Tile(drawnTile);
                 tile.rotateBy(move.getRotation());
 
-                // TODO: Make this clever
                 if (new Random().nextFloat() < 0.5) {
                     List<Integer> meepleSuccessors = stateSpace.meepleSucc(newState, tile, move.getCoords(), playerID == 1 ? 2 : 1);
                     tile.placeMeeple(meepleSuccessors.get(new Random().nextInt(meepleSuccessors.size())), playerID == 1 ? 2 : 1);
@@ -102,8 +100,6 @@ public class MinimaxPlayer extends Player {
             return value;
         }
     }
-
-    // TODO: Somewhere here meeples are being placed on the deck.
 
     private int defaultPolicy(GameState originalState, List<Tile> originalDeck) {
         GameState state = new GameState(originalState);
