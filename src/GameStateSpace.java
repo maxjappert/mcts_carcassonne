@@ -168,4 +168,50 @@ public class GameStateSpace {
 
         return true;
     }
+
+    public int moveHeuristic(GameState originalState, Move move, Tile originalTile, int player) {
+        int output = 0;
+
+        GameState state = new GameState(originalState);
+        Tile tile = new Tile(originalTile);
+        tile.rotateBy(move.getRotation());
+
+        int prevScore = state.getScore()[player-1];
+        int prevScoreOp = player == 1 ? state.getScore()[1] : state.getScore()[0];
+
+        state.updateBoard(move.getCoords(), tile);
+        state.checkForScoreAfterRound(false);
+        state.assignPointsAtEndOfGame();
+        int updatedScore = state.getScore()[player-1];
+        int updatedScoreOp = player == 1 ? state.getScore()[1] : state.getScore()[0];
+
+        // The difference between the updated and the previous score minus the difference between the updated and the
+        // previous score of the opponent.
+        output = updatedScore - prevScore - (updatedScoreOp - prevScoreOp);
+
+        return output;
+    }
+
+    public int meepleHeuristic(GameState originalState, Tile originalTile, int placement, int player) {
+        int output = 0;
+
+        GameState state = new GameState(originalState);
+        Tile tile = new Tile(originalTile);
+
+        int prevScore = state.getScore()[player-1];
+        int prevScoreOp = player == 1 ? state.getScore()[1] : state.getScore()[0];
+
+        state.placeMeeple(placement, player, tile);
+
+        state.checkForScoreAfterRound(false);
+        state.assignPointsAtEndOfGame();
+        int updatedScore = state.getScore()[player-1];
+        int updatedScoreOp = player == 1 ? state.getScore()[1] : state.getScore()[0];
+
+        // The difference between the updated and the previous score minus the difference between the updated and the
+        // previous score of the opponent.
+        output = updatedScore - prevScore - (updatedScoreOp - prevScoreOp);
+
+        return output;
+    }
 }
