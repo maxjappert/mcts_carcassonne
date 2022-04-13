@@ -99,10 +99,6 @@ public class Engine {
 
             List<Integer> meepleSuccessors = stateSpace.meepleSucc(state, drawnTile, move.getCoords(), player);
 
-            System.out.println(state.getNeighboursByType(move.getCoords(), false).size() + " neighbours.");
-
-            System.out.println(meepleSuccessors.toString());
-
             if (meepleSuccessors.contains(meeplePlacement)) {
                 drawnTile.placeMeeple(choice.getSecond(), player);
             } else {

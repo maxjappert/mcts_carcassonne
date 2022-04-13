@@ -9,11 +9,10 @@ public class Main {
         ArgParser argParser = new ArgParser();
 
         if (args.length == 0) {
-//            player1 = new UCTPlayer(stateSpace, 1, 2f, 50, -1, 0.5f, 0, "uct", false);
-//            player2 = new UCTPlayer(stateSpace, 2, 2f, 50, -1, 0.5f, 0, "uct", true);
-//            player1 = new MinimaxPlayer(stateSpace, 1);
-            player1 = new RandomPlayer(stateSpace, 1, -1);
-            player2 = new RandomPlayer(stateSpace, 2, -1);
+            player1 = new UCTPlayer(stateSpace, 1, 2f, 50, -1, 0.5f, 0, "uct", false);
+            player2 = new UCTPlayer(stateSpace, 2, 2f, 50, -1, 0.5f, 0, "uct", true);
+            //player1 = new RandomPlayer(stateSpace, 1, -1);
+            //player2 = new RandomPlayer(stateSpace, 2, -1);
             deckRandomSeed = -1;
         } else {
             Player[] players = argParser.assignPlayers(args);

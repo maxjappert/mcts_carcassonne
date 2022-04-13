@@ -254,9 +254,16 @@ public class UCTPlayer extends Player {
             Move action;
 
             if (heuristic) {
-                actions.sort((o1, o2) -> stateSpace.moveHeuristic(state, o2, tile, state.getPlayer())
-                        - stateSpace.moveHeuristic(state, o1, tile, state.getPlayer()));
-                action = actions.get(0);
+                action = new Move(new Coordinates(-1, -1), -1);
+                int bestH = Integer.MIN_VALUE;
+
+                for (Move cand : actions) {
+                    int h = stateSpace.moveHeuristic(state, cand, tile, state.getPlayer());
+                    if (h > bestH) {
+                        bestH = h;
+                        action = cand;
+                    }
+                }
             } else {
                 action = actions.get(random.nextInt(actions.size()));
             }
@@ -269,9 +276,15 @@ public class UCTPlayer extends Player {
             List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
 
             if (heuristic) {
-                legalMeeples.sort((o1, o2) -> stateSpace.meepleHeuristic(state, tile, o2, state.getPlayer())
-                        - stateSpace.meepleHeuristic(state, tile, o1, state.getPlayer()));
-                meeplePlacement = legalMeeples.get(0);
+                int bestH = Integer.MIN_VALUE;
+
+                for (int meeple : legalMeeples) {
+                    int h = stateSpace.meepleHeuristic(state, tile, meeple, state.getPlayer());
+                    if (h > bestH) {
+                        bestH = h;
+                        meeplePlacement = meeple;
+                    }
+                }
             } else {
                 if (random.nextFloat() < meeplePlacementProbability) {
                     meeplePlacement = legalMeeples.get(random.nextInt(legalMeeples.size()));

@@ -18,10 +18,8 @@ public class ArgParser {
         int p2TrainingIterations = 150;
         float p1ExplorationTermDelta = 0;
         float p2ExplorationTermDelta = 0;
-        boolean p1heuristicPlayout = false;
-        boolean p2heuristicPlayout = false;
-
-        System.out.println(new ArrayList<String>(List.of(args)).toString());
+        boolean p1heuristicPlayout = true;
+        boolean p2heuristicPlayout = true;
 
         if (args[0].equals("-h") || args[0].equals("-help")) {
             printHelp();

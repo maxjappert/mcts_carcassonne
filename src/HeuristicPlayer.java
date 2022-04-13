@@ -9,11 +9,7 @@ public class HeuristicPlayer extends Player{
     protected HeuristicPlayer(GameStateSpace stateSpace, int playerID, long randomSeed) {
         super(stateSpace, playerID);
 
-        if (randomSeed == -1) {
-            random = new Random();
-        } else {
-            random = new Random(randomSeed);
-        }
+        random = randomSeed == -1 ? new Random() : new Random(randomSeed);
     }
 
     @Override
