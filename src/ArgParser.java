@@ -18,6 +18,8 @@ public class ArgParser {
         int p2TrainingIterations = 150;
         float p1ExplorationTermDelta = 0;
         float p2ExplorationTermDelta = 0;
+        boolean p1heuristicPlayout = false;
+        boolean p2heuristicPlayout = false;
 
         System.out.println(new ArrayList<String>(List.of(args)).toString());
 
@@ -75,6 +77,12 @@ public class ArgParser {
                     case "--p2explorationtermdelta" -> {
                         p2ExplorationTermDelta = Float.parseFloat(val);
                     }
+                    case "--p1heuristicplayout" -> {
+                        p1heuristicPlayout = Boolean.parseBoolean(val);
+                    }
+                    case "--p2heuristicplayout" -> {
+                        p2heuristicPlayout = Boolean.parseBoolean(val);
+                    }
                 }
 
                 if (i+2 == args.length) {
@@ -94,8 +102,8 @@ public class ArgParser {
         Player[] players = new Player[2];
 
         switch (p1Type) {
-            case "uct" -> players[0] = new UCTPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct");
-            case "epsilon-greedy" -> players[0] = new UCTPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "epsilon-greedy");
+            case "uct" -> players[0] = new UCTPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct", p1heuristicPlayout);
+            case "epsilon-greedy" -> players[0] = new UCTPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "epsilon-greedy", p1heuristicPlayout);
             case "human" -> players[0] = new HumanPlayer(stateSpace, 1);
             case "random" -> players[0] = new RandomPlayer(stateSpace, 1, p1RandomSeed);
             case "heuristic" -> players[0] = new HeuristicPlayer(stateSpace, 1, p1RandomSeed);
@@ -103,8 +111,8 @@ public class ArgParser {
         }
 
         switch (p2Type) {
-            case "uct" -> players[1] = new UCTPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct");
-            case "epsilon-greedy" -> players[1] = new UCTPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy");
+            case "uct" -> players[1] = new UCTPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct", p2heuristicPlayout);
+            case "epsilon-greedy" -> players[1] = new UCTPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy", p2heuristicPlayout);
             case "human" -> players[1] = new HumanPlayer(stateSpace, 2);
             case "random" -> players[1] = new RandomPlayer(stateSpace, 2, p2RandomSeed);
             case "heuristic" -> players[1] = new HeuristicPlayer(stateSpace, 2, p2RandomSeed);
@@ -128,6 +136,7 @@ public class ArgParser {
                     --p[1/2]meepleplacementprob <Float>           Probability of considering a meeple placement for random playouts.
                     --p[1/2]trainingiterations <Integer>          The number of training iterations for a given MCTS player.
                     --p[1/2]explorationtermdelta <Float>          This term is added to the exploration term after every move a UCT player plays.
+                    --p[1/2]heuristicplayout <Boolean>            Decides if the UCT player uses a heuristic in the playout step.
                     --help or -h                                  Print this message.
                 """;
 

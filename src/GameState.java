@@ -813,4 +813,18 @@ public class GameState {
     public int getDeckSize() {
         return deckSize;
     }
+
+    public List<Tile> getAllTilesOnBoard() {
+        List<Tile> tiles = new ArrayList<>();
+
+        for (List<Tile> row : board) {
+            for (Tile tile : row) {
+                if (tile != null) {
+                    tiles.add(tile);
+                }
+            }
+        }
+
+        return tiles;
+    }
 }

@@ -313,23 +313,6 @@ public class Tile {
             }
         }
 
-        // Inelegant workaround to avoid the identical representation of tiles 6 and 14.
-        if (type == 6) {
-            if (points[1] == 1 && points[4] == 1) {
-                output[3][3] = '.';
-                output[4][4] = '.';
-            } else if (points[4] == 1 && points[7] == 1) {
-                output[1][3] = '.';
-                output[0][4] = '.';
-            } else if (points[7] == 1 && points[10] == 1) {
-                output[1][1] = '.';
-                output[0][0] = '.';
-            } else if (points[10] == 1 && points[1] == 1) {
-                output[3][1] = '.';
-                output[4][0] = '.';
-            }
-        }
-
         output[2][2] = c;
 
         if (meeple[1] != -1) {

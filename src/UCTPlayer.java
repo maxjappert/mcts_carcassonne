@@ -36,6 +36,8 @@ public class UCTPlayer extends Player {
 
     private final String treePolicyType;
 
+    private final boolean heuristicPlayout;
+
     /**
      * @param stateSpace A state space object.
      * @param playerID The player ID (1 or 2) of this player.
@@ -47,7 +49,7 @@ public class UCTPlayer extends Player {
      * @param treePolicyType Either 'uct' or 'epsilon-greedy'.
      */
     protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
-                        long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType) {
+                        long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType, boolean heuristicPlayout) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -72,6 +74,8 @@ public class UCTPlayer extends Player {
         if (treePolicyType.equalsIgnoreCase("epsilon-greedy-uct") && explorationTerm >= 1) {
             System.out.println("** Invalid epsilon.");
         }
+
+        this.heuristicPlayout = heuristicPlayout;
     }
 
     @Override
@@ -95,7 +99,7 @@ public class UCTPlayer extends Player {
 
             Node node = treePolicy(root, deck);
 
-            int[] payoff = defaultPolicy(node.getState(), deck);
+            int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
 
             backup(node, payoff);
         }
@@ -234,7 +238,7 @@ public class UCTPlayer extends Player {
      * @param deck The deck at the starting point.
      * @return The payoff at the end of the playout.
      */
-    private int[] defaultPolicy(GameState originalState, List<Tile> deck) {
+    private int[] defaultPolicy(GameState originalState, List<Tile> deck, boolean heuristic) {
         GameState state = new GameState(originalState);
 
         while (deck.size() > 0) {
@@ -247,21 +251,35 @@ public class UCTPlayer extends Player {
                 continue;
             }
 
-            Move action = actions.get(random.nextInt(actions.size()));
+            Move action;
+
+            if (heuristic) {
+                actions.sort((o1, o2) -> stateSpace.moveHeuristic(state, o2, tile, state.getPlayer())
+                        - stateSpace.moveHeuristic(state, o1, tile, state.getPlayer()));
+                action = actions.get(0);
+            } else {
+                action = actions.get(random.nextInt(actions.size()));
+            }
+
             for (int i = 0; i < action.getRotation(); i++) {
                 tile.rotate();
             }
 
-            if (random.nextFloat() < meeplePlacementProbability) {
-                List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
+            int meeplePlacement = -1;
+            List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
 
-                if (!legalMeeples.isEmpty()) {
-                    int meeplePlacement = legalMeeples.get(random.nextInt(legalMeeples.size()));
-
-                    if (meeplePlacement > -1) {
-                        state.placeMeeple(meeplePlacement, state.getPlayer(), tile);
-                    }
+            if (heuristic) {
+                legalMeeples.sort((o1, o2) -> stateSpace.meepleHeuristic(state, tile, o2, state.getPlayer())
+                        - stateSpace.meepleHeuristic(state, tile, o1, state.getPlayer()));
+                meeplePlacement = legalMeeples.get(0);
+            } else {
+                if (random.nextFloat() < meeplePlacementProbability) {
+                    meeplePlacement = legalMeeples.get(random.nextInt(legalMeeples.size()));
                 }
+            }
+
+            if (meeplePlacement > -1) {
+                state.placeMeeple(meeplePlacement, state.getPlayer(), tile);
             }
 
             state.updateBoard(action.getCoords(), tile);

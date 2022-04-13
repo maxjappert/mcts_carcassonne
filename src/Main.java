@@ -9,11 +9,12 @@ public class Main {
         ArgParser argParser = new ArgParser();
 
         if (args.length == 0) {
-            player2 = new HeuristicPlayer(stateSpace, 2, 5);
-            //player1 = new MinimaxPlayer(stateSpace, 1);
-            player1 = new RandomPlayer(stateSpace, 1, 4);
-            //player1 = new UCTPlayer(stateSpace, 1, 2f, 100, 3, 0.5f, 0, "uct");
-            deckRandomSeed = 2;
+//            player1 = new UCTPlayer(stateSpace, 1, 2f, 50, -1, 0.5f, 0, "uct", false);
+//            player2 = new UCTPlayer(stateSpace, 2, 2f, 50, -1, 0.5f, 0, "uct", true);
+//            player1 = new MinimaxPlayer(stateSpace, 1);
+            player1 = new RandomPlayer(stateSpace, 1, -1);
+            player2 = new RandomPlayer(stateSpace, 2, -1);
+            deckRandomSeed = -1;
         } else {
             Player[] players = argParser.assignPlayers(args);
             player1 = players[0];
@@ -24,18 +25,6 @@ public class Main {
         Engine engine = new Engine(player1, player2, deckRandomSeed);
 
         engine.play();
-    }
-
-    private static Player assignPlayer(String type, int playerID, GameStateSpace stateSpace, long randomSeed, float explorationTerm,
-                                       float randomPlayoutMeeplePlacementProbability, int trainingIterations, float explorationTermDelta) {
-        return switch (type) {
-            case "human" -> new HumanPlayer(stateSpace, playerID);
-            case "uct" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability, explorationTermDelta, "uct");
-            case "epsilon-greedy-mcts" -> new UCTPlayer(stateSpace, playerID, explorationTerm, trainingIterations, randomSeed, randomPlayoutMeeplePlacementProbability, explorationTermDelta, "epsilon-greedy-mcts");
-            case "random" -> new RandomPlayer(stateSpace, playerID, randomSeed);
-            default -> null;
-        };
-
     }
 
 //    public static void createReport() throws Exception {

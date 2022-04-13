@@ -59,10 +59,6 @@ public class Engine {
 
             state.displayBoard();
 
-            if (deck.size() == 35) {
-                System.out.println("");
-            }
-
             System.out.println(deck.size() + " tiles remaining.");
             System.out.println("Player " + state.getPlayer() + "'s turn:");
 
@@ -137,6 +133,29 @@ public class Engine {
     private void addTilesToDeck(List<Tile> deck, int type, int amount, boolean pennant) {
         for (int i = 0; i < amount; i++) {
             deck.add(new Tile(type, pennant));
+        }
+    }
+
+    private void checkForAreasWithMultipleMeeples(GameState state) {
+        List<Integer> areasWithMeeples = new ArrayList<>();
+
+        for (Tile tile : state.getAllTilesOnBoard()) {
+            for (int point = 0; point <= 12; point++) {
+                if (tile.getMeeple()[0] == point && areasWithMeeples.contains(tile.getArea(point))) {
+                    System.out.println("Error in following tile:");
+                    tile.printTile();
+                    System.out.println("Conflict with the following tiles:");
+                    List<Tile> tilesOfArea = state.getTilesOfArea(tile.getArea(point));
+                    for (Tile tileOfArea : tilesOfArea) {
+                        if (tileOfArea.hasMeeple() && tileOfArea.getArea(tileOfArea.getMeeple()[0]) == tile.getArea(point)) {
+                            tileOfArea.printTile();
+                        }
+                    }
+                    System.exit(-1);
+                } else if (tile.getMeeple()[0] == point && !areasWithMeeples.contains(tile.getArea(point)))  {
+                    areasWithMeeples.add(tile.getArea(point));
+                }
+            }
         }
     }
 
