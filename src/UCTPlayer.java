@@ -36,6 +36,16 @@ public class UCTPlayer extends Player {
 
     private final String treePolicyType;
 
+    /**
+     * @param stateSpace A state space object.
+     * @param playerID The player ID (1 or 2) of this player.
+     * @param explorationTerm Exploration term for UCT (commonly denoted as variable c) the epsilon term in [0, 1] for epsilon-greedy.
+     * @param trainingIterations Number of training iterations.
+     * @param randomPlayoutSeed Random seed for making the playout reproducible.
+     * @param meeplePlacementProbability Probability of placing a meeple during random playout.
+     * @param explorationTermDelta Change of the exploration term per iteration.
+     * @param treePolicyType Either 'uct' or 'epsilon-greedy'.
+     */
     protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                         long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType) {
         super(stateSpace, playerID);

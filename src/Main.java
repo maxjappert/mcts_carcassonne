@@ -1,22 +1,5 @@
 public class Main {
 
-    static String instructions = """
-            The following arguments must be passed to the program:
-            0:  Either "human", "random" or "uct" for player 1.
-            1:  Player 1 random seed (either for random player or for the random playout for the UCT player).
-            2:  Either "human", "random" or "uct" for player 2.
-            3:  Player 2 random seed.
-            4:  Deck random seed for assembling and shuffling the deck.
-            5:  Player 1 exploration term (if applicable).
-            6:  Player 1 meeple placement probability (if applicable).
-            7:  Player 1 training iterations (if applicable).
-            8:  Player 1 exploration term delta (if applicable).
-            9:  Player 2 exploration term (if applicable).
-            10: Player 2 meeple placement probability (if applicable).
-            11: Player 2 training iterations (if applicable)
-            12: Player 2 exploration term delta (if applicable).
-            """;
-
     public static void main(String[] args) throws Exception {
         GameStateSpace stateSpace = new GameStateSpace();
         Player player1;
@@ -28,9 +11,9 @@ public class Main {
         if (args.length == 0) {
             player2 = new HeuristicPlayer(stateSpace, 2);
             //player1 = new MinimaxPlayer(stateSpace, 1);
-            player1 = new RandomPlayer(stateSpace, 1, -1);
-            //player1 = new UCTPlayer(stateSpace, 1, 4f, 100, 3, 0.5f, 0);
-            deckRandomSeed = -1;
+            //player1 = new RandomPlayer(stateSpace, 1, -1);
+            player1 = new UCTPlayer(stateSpace, 1, 2f, 100, 3, 0.5f, 0, "uct");
+            deckRandomSeed = 2;
         } else {
             Player[] players = argParser.assignPlayers(args);
             player1 = players[0];
