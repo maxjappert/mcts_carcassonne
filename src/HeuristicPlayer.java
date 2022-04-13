@@ -1,10 +1,19 @@
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class HeuristicPlayer extends Player{
-    protected HeuristicPlayer(GameStateSpace stateSpace, int playerID) {
+    Random random;
+
+    protected HeuristicPlayer(GameStateSpace stateSpace, int playerID, long randomSeed) {
         super(stateSpace, playerID);
+
+        if (randomSeed == -1) {
+            random = new Random();
+        } else {
+            random = new Random(randomSeed);
+        }
     }
 
     @Override
@@ -30,14 +39,14 @@ public class HeuristicPlayer extends Player{
         tile.rotateBy(move.getRotation());
 
         List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, move.getCoords(), playerID);
-        Collections.shuffle(legalMeeples);
+        Collections.shuffle(legalMeeples, random);
         int highestMeepleValue = Integer.MIN_VALUE;
         int bestMeeplePlacement = -1;
 
         for (int point : legalMeeples) {
             int h = stateSpace.meepleHeuristic(state, tile, point, playerID);
             if (h > highestMeepleValue) {
-                System.out.println("Meeple heuristic: " + h);
+                //System.out.println("Meeple heuristic: " + h);
                 highestMeepleValue = h;
                 bestMeeplePlacement = point;
             }

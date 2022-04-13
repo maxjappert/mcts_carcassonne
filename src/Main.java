@@ -9,7 +9,7 @@ public class Main {
         ArgParser argParser = new ArgParser();
 
         if (args.length == 0) {
-            player2 = new HeuristicPlayer(stateSpace, 2);
+            player2 = new HeuristicPlayer(stateSpace, 2, 5);
             //player1 = new MinimaxPlayer(stateSpace, 1);
             player1 = new RandomPlayer(stateSpace, 1, 4);
             //player1 = new UCTPlayer(stateSpace, 1, 2f, 100, 3, 0.5f, 0, "uct");

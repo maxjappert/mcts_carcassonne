@@ -98,6 +98,7 @@ public class ArgParser {
             case "epsilon-greedy" -> players[0] = new UCTPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "epsilon-greedy");
             case "human" -> players[0] = new HumanPlayer(stateSpace, 1);
             case "random" -> players[0] = new RandomPlayer(stateSpace, 1, p1RandomSeed);
+            case "heuristic" -> players[0] = new HeuristicPlayer(stateSpace, 1, p1RandomSeed);
             default -> System.out.println("Invalid player type for player 1. The options are 'uct'/'epsilon-greedy'/'human'/'random'.");
         }
 
@@ -106,6 +107,7 @@ public class ArgParser {
             case "epsilon-greedy" -> players[1] = new UCTPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy");
             case "human" -> players[1] = new HumanPlayer(stateSpace, 2);
             case "random" -> players[1] = new RandomPlayer(stateSpace, 2, p2RandomSeed);
+            case "heuristic" -> players[1] = new HeuristicPlayer(stateSpace, 2, p2RandomSeed);
             default -> System.out.println("Invalid player type for player 2. The options are 'uct'/'epsilon-greedy'/'human'/'random'.");
         }
 
@@ -119,7 +121,7 @@ public class ArgParser {
                 Welcome! Please use the following arguments to specify how this module should be used:
                 
                     --p[1/2] <type>                               Specify the type of player. The possible types are:
-                                                                  ['uct'/'human'/'random'/'epsilon-greedy']
+                                                                  ['uct'/'human'/'random'/'epsilon-greedy'/'heuristic']
                     --p[1/2]seed <Integer>                        Make the random actions for a given player reproducible by specifying a random seed.
                     --deckseed <Integer>                          Make the shuffling of the deck reproducible.
                     --p[1/2]explorationterm <Float>               The exploration term for the UCT player. Acts as the \u03B5 for \u03B5-greedy players.
