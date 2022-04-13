@@ -169,8 +169,16 @@ public class GameStateSpace {
         return true;
     }
 
+    /**
+     * Rates the quality of a move (without meeple placement) given a board and a tile.
+     * @param originalState The state on which the placement is to take place.
+     * @param move The move to be rated.
+     * @param originalTile The tile to be rotated and placed.
+     * @param player The ID of the player in question
+     * @return A rating of the move. The higher, the better.
+     */
     public int moveHeuristic(GameState originalState, Move move, Tile originalTile, int player) {
-        int output = 0;
+        int output;
 
         GameState state = new GameState(originalState);
         Tile tile = new Tile(originalTile);
@@ -192,8 +200,15 @@ public class GameStateSpace {
         return output;
     }
 
+    /**
+     * Rates the quality of a meeple placement given a board, a tile and a move.
+     * @param originalState The state on which the placement is to take place.
+     * @param originalTile The tile to be rotated and placed.
+     * @param player The ID of the player in question
+     * @return A rating of the move. The higher, the better.
+     */
     public int meepleHeuristic(GameState originalState, Tile originalTile, int placement, int player) {
-        int output = 0;
+        int output;
 
         GameState state = new GameState(originalState);
         Tile tile = new Tile(originalTile);
