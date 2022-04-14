@@ -9,8 +9,8 @@ public class Main {
         ArgParser argParser = new ArgParser();
 
         if (args.length == 0) {
-            player1 = new MCTSPlayer(stateSpace, 1, 2f, 10, 5, 0.5f, 0, "uct", false);
-            player2 = new MCTSPlayer(stateSpace, 2, 2f, 10, 4, 0.5f, 0, "heuristic-mcts", false);
+            player1 = new MCTSPlayer(stateSpace, 1, 2f, 50, 5, 0.5f, 0, "uct", false);
+            player2 = new MCTSPlayer(stateSpace, 2, 2f, 50, 4, 0.5f, 0, "epsilon-greedy", false);
             //player1 = new RandomPlayer(stateSpace, 1, -1);
             //player2 = new RandomPlayer(stateSpace, 2, -1);
             deckRandomSeed = 6;

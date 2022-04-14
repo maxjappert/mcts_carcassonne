@@ -201,11 +201,11 @@ public class MCTSPlayer extends Player {
                         node = bestChildUCT(node, explorationTerm);
                     } else if (treePolicyType.equalsIgnoreCase("heuristic-mcts")) {
                         node = bestChildHeuristic(node);
-                    } else if (treePolicyType.equalsIgnoreCase("epsilon-greedy")) {
+                    } else if (treePolicyType.contains("epsilon-greedy")) {
                         if (random.nextFloat() < explorationTerm) {
                             node = node.getRandomChild(random);
                         } else {
-                            node = bestChildUCT(node, 0);
+                            node = treePolicyType.equalsIgnoreCase("heuristic-epsilon-greedy") ? bestChildHeuristic(node) : bestChildUCT(node, 0);
                         }
                     } else {
                         System.out.println("** Invalid tree policy type");
