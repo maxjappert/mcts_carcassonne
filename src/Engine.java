@@ -17,7 +17,11 @@ public class Engine {
         GameState state = stateSpace.init();
         Random random;
 
-        random = randomSeed == -1 ? new Random() : new Random(randomSeed);
+        if (randomSeed == -1) {
+            this.randomSeed = new Random().nextInt(Integer.MAX_VALUE);
+        }
+
+        random = new Random(randomSeed);
 
         List<Tile> deck = assembleDeck(random);
 
@@ -28,28 +32,32 @@ public class Engine {
                 Player 1:   %s
                 """, randomSeed, player1.getTypeAsString()));
 
-        if (player1 instanceof UCTPlayer) {
-            info.append("Player 1:   c = " + ((UCTPlayer) player1).getExplorationTerm() + ", " + ((UCTPlayer) player1)
-                    .getTrainingIterations() + " training iterations, with " + ((UCTPlayer) player1).getPlayoutSeed()
-                    + " as a playout seed and a meeple placement probability of " + ((UCTPlayer) player1)
+        if (player1 instanceof MCTSPlayer) {
+            info.append("Player 1:   c = " + ((MCTSPlayer) player1).getExplorationTerm() + ", " + ((MCTSPlayer) player1)
+                    .getTrainingIterations() + " training iterations, with " + ((MCTSPlayer) player1).getPlayoutSeed()
+                    + " as a playout seed and a meeple placement probability of " + ((MCTSPlayer) player1)
                     .getPlayoutMeeplePlacementProbability() * 100 + "%.\n");
         }
 
         if (player1 instanceof RandomPlayer) {
             info.append("Player 1 random seed: " + ((RandomPlayer) player1).getSeed() + "\n");
+        } else if (player1 instanceof HeuristicPlayer) {
+            info.append("Player 1 random seed: " + ((HeuristicPlayer) player1).getSeed() + "\n");
         }
 
         info.append("Player 2:   " + player2.getTypeAsString() + "\n");
 
-        if (player2 instanceof UCTPlayer) {
-            info.append("Player 2:   c = " + ((UCTPlayer) player2).getExplorationTerm() + ", " + ((UCTPlayer) player2)
-                    .getTrainingIterations() + " training iterations, with " + ((UCTPlayer) player2).getPlayoutSeed()
-                    + " as a playout seed and a meeple placement probability of " + ((UCTPlayer) player2)
+        if (player2 instanceof MCTSPlayer) {
+            info.append("Player 2:   c = " + ((MCTSPlayer) player2).getExplorationTerm() + ", " + ((MCTSPlayer) player2)
+                    .getTrainingIterations() + " training iterations, with " + ((MCTSPlayer) player2).getPlayoutSeed()
+                    + " as a playout seed and a meeple placement probability of " + ((MCTSPlayer) player2)
                     .getPlayoutMeeplePlacementProbability() * 100 + "%.\n");
         }
 
         if (player2 instanceof RandomPlayer) {
             info.append("Player 2 random seed: " + ((RandomPlayer) player2).getSeed());
+        } else if (player2 instanceof HeuristicPlayer) {
+            info.append("Player 2 random seed: " + ((HeuristicPlayer) player2).getSeed());
         }
 
         System.out.println(info);

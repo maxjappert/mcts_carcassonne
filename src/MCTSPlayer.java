@@ -1,7 +1,6 @@
 import java.util.*;
 
-//TODO: rename to MCTSPlayer
-public class UCTPlayer extends Player {
+public class MCTSPlayer extends Player {
 
     /**
      *  Denotes the importance of exploration during the tree policy. Corresponds to the c variable in the UCT formula.
@@ -48,19 +47,20 @@ public class UCTPlayer extends Player {
      * @param explorationTermDelta Change of the exploration term per iteration.
      * @param treePolicyType Either 'uct' or 'epsilon-greedy'.
      */
-    protected UCTPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
-                        long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType, boolean heuristicPlayout) {
+    protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
+                         long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType, boolean heuristicPlayout) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
         this.trainingIterations = trainingIterations;
         if (randomPlayoutSeed == -1) {
-            this.random = new Random();
+            long seed = new Random().nextInt(Integer.MAX_VALUE);
+            this.random = new Random(seed);
+            this.playoutSeed = seed;
         } else {
             this.random = new Random(randomPlayoutSeed);
+            this.playoutSeed = randomPlayoutSeed;
         }
-
-        this.playoutSeed = randomPlayoutSeed;
 
         if (meeplePlacementProbability > 1 || meeplePlacementProbability < 0) {
             this.meeplePlacementProbability = 0.5f;
@@ -87,10 +87,6 @@ public class UCTPlayer extends Player {
 
             Node node = new Node(state, 1, move, tile);
 
-            if (root.getChildren().contains(node)) {
-                System.out.println("");
-            }
-
             root.addChild(node);
         }
 
@@ -107,7 +103,7 @@ public class UCTPlayer extends Player {
         //visualizeGraph(root);
 
         // Exploration term set to 0, since when executing we only want to consider the exploitation term.
-        Node meepleNode = bestChild(root, 0);
+        Node meepleNode = bestChildUCT(root, 0);
 
         int moveChoice;
         if (legalMoves.contains(meepleNode.getMove())) {
@@ -117,7 +113,7 @@ public class UCTPlayer extends Player {
             moveChoice = -1;
         }
 
-        Node chanceNode = bestChild(meepleNode, 0);
+        Node chanceNode = bestChildUCT(meepleNode, 0);
         //Node chanceNode = mostVisitedChild(meepleNode);
 
         int meeplePlacement = chanceNode.getMeeplePlacement();
@@ -127,7 +123,7 @@ public class UCTPlayer extends Player {
         return new Pair(moveChoice, meeplePlacement);
     }
 
-    private int getTreeSize(Node root) {
+    private int  getTreeSize(Node root) {
         int treeSize = 0;
 
         for (Node node : root.getChildren()) {
@@ -202,12 +198,14 @@ public class UCTPlayer extends Player {
                     deck.remove(random.nextInt(deck.size()));
                 } else {
                     if (treePolicyType.equalsIgnoreCase("uct")) {
-                        node = bestChild(node, explorationTerm);
+                        node = bestChildUCT(node, explorationTerm);
+                    } else if (treePolicyType.equalsIgnoreCase("heuristic-mcts")) {
+                        node = bestChildHeuristic(node);
                     } else if (treePolicyType.equalsIgnoreCase("epsilon-greedy")) {
                         if (random.nextFloat() < explorationTerm) {
                             node = node.getRandomChild(random);
                         } else {
-                            node = bestChild(node, 0);
+                            node = bestChildUCT(node, 0);
                         }
                     } else {
                         System.out.println("** Invalid tree policy type");
@@ -218,18 +216,6 @@ public class UCTPlayer extends Player {
         } while (!node.isTerminal());
 
         return node;
-    }
-
-    private boolean hasUnexploredChildren(Node parent) {
-        if (parent.getType() == 0) {
-            List<Move> successors = stateSpace.placementSucc(parent.getState(), parent.getDrawnTile());
-            return successors.size() != parent.getChildren().size();
-        } else if (parent.getType() == 1) {
-            List<Integer> successors = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getMove().getCoords(), parent.getState().getPlayer());
-            return successors.size() != parent.getChildren().size();
-        }
-
-        return false;
     }
 
     /**
@@ -312,16 +298,6 @@ public class UCTPlayer extends Player {
         }
     }
 
-    private void backupNegamax(Node node, int[] payoff) {
-        while (node != null) {
-            node.updateVisits();
-            node.updateQValue(payoff);
-            payoff[0] = -payoff[0];
-            payoff[1] = -payoff[1];
-            node = node.getParent();
-        }
-    }
-
     /**
      * Using the most visited child node to choose the next action minimises the payoff for some reason.
      * Choosing random actions is better.
@@ -344,7 +320,7 @@ public class UCTPlayer extends Player {
      * @param c The exploration term.
      * @return The child with the highest UCT value.
      */
-    private Node bestChild(Node parent, double c) {
+    private Node bestChildUCT(Node parent, double c) {
 
         double highestValue = Double.MIN_VALUE;
         Node bestChild = null;//parent.getRandomChild(random);
@@ -380,6 +356,29 @@ public class UCTPlayer extends Player {
         }
     }
 
+    private Node bestChildHeuristic(Node parent) {
+        int type = parent.getType();
+        int highestH = Integer.MIN_VALUE;
+        Node bestNode = null;
+
+        if (!parent.hasChildren()) return parent;
+
+        for (Node child : parent.getChildren()) {
+            if (type == 0 && stateSpace.moveHeuristic(parent.getState(), child.getMove(), parent.getDrawnTile(), parent.getState().getPlayer()) > highestH) {
+                highestH = stateSpace.moveHeuristic(parent.getState(), child.getMove(), parent.getDrawnTile(), parent.getState().getPlayer());
+                bestNode = child;
+            } else if (type == 1 && stateSpace.meepleHeuristic(parent.getState(), parent.getDrawnTile(), child.getMeeplePlacement(), parent.getState().getPlayer()) > highestH) {
+                highestH = stateSpace.meepleHeuristic(parent.getState(), parent.getDrawnTile(), child.getMeeplePlacement(), parent.getState().getPlayer());
+                bestNode = child;
+            } else if (type == 2) {
+                bestNode = parent.getRandomChild(random);
+                break;
+            }
+        }
+
+        return bestNode;
+    }
+
     private List<Node> getMeepleNodes(Node parent) {
         List<Move> actions = stateSpace.placementSucc(parent.getState(), parent.getDrawnTile());
         List<Node> meepleNodes = new ArrayList<>();
@@ -391,53 +390,6 @@ public class UCTPlayer extends Player {
         }
 
         return meepleNodes;
-    }
-
-    private Node getUnexpandedMeepleNode(Node parent) {
-        List<Move> actions = stateSpace.placementSucc(parent.getState(), parent.getDrawnTile());
-        List<Node> children = parent.getChildren();
-
-        for (Move action : actions) {
-            boolean flag = true;
-            for (Node child : children) {
-                if (child.getMove().isEqualTo(action)) {
-                    flag = false;
-                    break;
-                }
-            }
-
-
-            if (flag) return new Node(parent.getState(), 1, action, parent.getDrawnTile());
-        }
-
-        System.out.println("** Error in getting single meeple node.");
-        return null;
-    }
-
-    private Node getUnexpandedChanceNode(Node parent) {
-        List<Integer> legalMeeplePlacements = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getCoords(), playerID);
-        List<Node> children = parent.getChildren();
-
-        if (parent.getState().getNumMeeples(parent.getState().getPlayer()) > 0) {
-            for (int legalMeeple : legalMeeplePlacements) {
-                boolean flag = true;
-                for (Node child : children) {
-                    if (child.getMeeplePlacement() == legalMeeple) {
-                        flag = false;
-                        break;
-                    }
-                }
-
-                if (flag) {
-                    Node chanceNode = new Node(parent, 2);
-                    chanceNode.addMeeple(legalMeeple);
-                    return chanceNode;
-                }
-            }
-        }
-
-        System.out.println("** Error in getting single chance node.");
-        return null;
     }
 
     private List<Node> getChanceNodes(Node parent) {
@@ -480,33 +432,6 @@ public class UCTPlayer extends Player {
         }
 
         return placementNodes;
-    }
-
-    private Node expandSingleNode(Node node, List<Tile> deck) {
-        List<Node> children = new ArrayList<>();
-
-        if (node.getType() == 0) {
-            Node child = getUnexpandedMeepleNode(node);
-            node.addChild(child);
-            return child;
-        } else if (node.getType() == 1) {
-            Node child = getUnexpandedChanceNode(node);
-
-            node.addChild(child);
-            return child;
-        } else if (node.getType() == 2) {
-            children = getPlacementNodes(node, deck);
-
-            if (children.isEmpty()) {
-                return node;
-            }
-
-            node.addChildren(children);
-            return node.getRandomChild(random);
-        } else {
-            System.out.println("** Error in expand!!!");
-            return null;
-        }
     }
 
     private Node expand(Node node, List<Tile> deck) {

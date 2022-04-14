@@ -9,12 +9,12 @@ public class RandomPlayer extends Player {
     public RandomPlayer(GameStateSpace stateSpace, int playerID, long randomSeed) {
         super(stateSpace, playerID);
         if (randomSeed == -1) {
-            random = new Random();
+            this.seed = new Random().nextInt(Integer.MAX_VALUE);
         } else {
-            random = new Random(randomSeed);
+            this.seed = randomSeed;
         }
 
-        this.seed = randomSeed;
+        random = new Random(seed);
     }
 
     /**

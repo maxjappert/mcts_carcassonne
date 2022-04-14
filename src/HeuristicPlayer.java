@@ -5,9 +5,19 @@ import java.util.Random;
 
 public class HeuristicPlayer extends Player{
     Random random;
+    long randomSeed;
 
     protected HeuristicPlayer(GameStateSpace stateSpace, int playerID, long randomSeed) {
         super(stateSpace, playerID);
+
+        if (randomSeed == -1) {
+            long seed = new Random().nextInt(Integer.MAX_VALUE);
+            this.random = new Random(seed);
+            this.randomSeed = seed;
+        } else {
+            this.random = new Random(randomSeed);
+            this.randomSeed = randomSeed;
+        }
 
         random = randomSeed == -1 ? new Random() : new Random(randomSeed);
     }
@@ -54,5 +64,9 @@ public class HeuristicPlayer extends Player{
     @Override
     String getTypeAsString() {
         return "heuristic";
+    }
+
+    long getSeed() {
+        return randomSeed;
     }
 }
