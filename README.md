@@ -16,7 +16,7 @@ as an argument. The default number of iterations is 150. Additionally, MCTS can 
 where the playout consists of choosing random moves, or a heuristic default policy, which utilises domain-specific
 knowledge during playout, always picking the next move which maximises the heuristic function.
 
-The following implementations of MCTS can be chosen:
+The following tree policies for MCTS have been implemented:
 
 ### UCT
 
@@ -33,13 +33,13 @@ corresponds to the UCT function with an exploration term of 0).
 
 ### Heuristic Epsilon-Greedy MCTS
 
-Same as the normal epsilon-greedy, with the exception that with a probability of (1-epsilon) during the tree policy
-the next node is chosen as the node representing the state which maximises the heuristic function.
+Same as the normal epsilon-greedy the node is chosen which maximises the heuristic function with a probability of
+(epsilon-1). A random node is chosen with a probability of epsilon.
 
-### Heuristic MCTS
+### MCTS with Boltzmann Exploration
 
-Hereby the tree policy picks the move which maximises the heuristic function. Corresponds to heuristic-epsilon-greedy
-with an epsilon = 0.
+With this option the tree policy chooses the next nodes according to the Boltzmann distribution. The exploration term
+corresponds to tau in the formula.
 
 ## Random
 
