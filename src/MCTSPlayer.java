@@ -207,6 +207,8 @@ public class MCTSPlayer extends Player {
                         } else {
                             node = treePolicyType.equalsIgnoreCase("heuristic-epsilon-greedy") ? bestChildHeuristic(node) : bestChildUCT(node, 0);
                         }
+                    } else if (treePolicyType.contains("boltzmann")) {
+                        node = getBoltzmannNode(node.getChildren());
                     } else {
                         System.out.println("** Invalid tree policy type");
                         System.exit(-1);
@@ -479,5 +481,40 @@ public class MCTSPlayer extends Player {
         }
 
         explorationTerm = explorationTerm + delta;
+    }
+
+    public Node getBoltzmannNode(List<Node> nodes) {
+        double normalisationTerm = 0;
+
+        for (Node node : nodes) {
+
+            if (node.getVisits() == 0) {
+                return node;
+            }
+
+            double exponent = ((double)node.getQValue()[playerID-1] / node.getVisits()) / explorationTerm;
+            normalisationTerm += Math.exp(exponent);
+        }
+
+        List<Double> boltzmannValues = new ArrayList<>(nodes.size());
+        double sum = 0;
+        for (int i = 0; i < nodes.size(); i++) {
+            Node node = nodes.get(i);
+            double value = Math.exp(((double)node.getQValue()[playerID-1]/node.getVisits())/explorationTerm) / normalisationTerm;
+            boltzmannValues.add(i, value);
+            sum += value;
+        }
+
+        if (sum < 0.98 || sum > 1.02) Engine.printError("** Error in getBoltzmannNode(...):  Sum or probabilities is " + sum);
+
+        while (true) {
+            double r = random.nextDouble();
+            int index = random.nextInt(boltzmannValues.size());
+            double p = boltzmannValues.get(index);
+
+            if (r < p) {
+                return nodes.get(index);
+            }
+        }
     }
 }

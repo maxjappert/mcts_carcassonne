@@ -9,11 +9,11 @@ public class Main {
         ArgParser argParser = new ArgParser();
 
         if (args.length == 0) {
-            player1 = new MCTSPlayer(stateSpace, 1, 2f, 50, 5, 0.5f, 0, "uct", false);
-            player2 = new MCTSPlayer(stateSpace, 2, 2f, 50, 4, 0.5f, 0, "epsilon-greedy", false);
+            player1 = new MCTSPlayer(stateSpace, 1, 0.8f, 50, -1, 0.5f, 0, "boltzmann", false);
+            player2 = new MCTSPlayer(stateSpace, 2, 2f, 50, -1, 0.5f, 0, "uct", false);
             //player1 = new RandomPlayer(stateSpace, 1, -1);
             //player2 = new RandomPlayer(stateSpace, 2, -1);
-            deckRandomSeed = 6;
+            deckRandomSeed = -1;
         } else {
             Player[] players = argParser.assignPlayers(args);
             player1 = players[0];
