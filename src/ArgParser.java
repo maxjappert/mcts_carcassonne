@@ -88,7 +88,7 @@ public class ArgParser {
             }
 
         } catch (NumberFormatException nfe) {
-            System.out.println("Error: Faulty arguments.");
+            Engine.printError("Error: Faulty arguments.");
             System.exit(1);
         }
 

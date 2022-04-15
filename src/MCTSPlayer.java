@@ -72,7 +72,7 @@ public class MCTSPlayer extends Player {
         this.treePolicyType = treePolicyType.toLowerCase();
 
         if (treePolicyType.equalsIgnoreCase("epsilon-greedy-uct") && explorationTerm >= 1) {
-            System.out.println("** Invalid epsilon.");
+            Engine.printError(" Invalid epsilon.");
         }
 
         this.heuristicPlayout = heuristicPlayout;
@@ -210,7 +210,7 @@ public class MCTSPlayer extends Player {
                     } else if (treePolicyType.contains("boltzmann")) {
                         node = getBoltzmannNode(node.getChildren());
                     } else {
-                        System.out.println("** Invalid tree policy type");
+                        Engine.printError(" Invalid tree policy type");
                         System.exit(-1);
                     }
                 }
@@ -349,7 +349,7 @@ public class MCTSPlayer extends Player {
             }
         }
 
-        if (!flag) System.out.println("** Random next move selected because child had 0 visits.");
+        if (!flag) Engine.printError(" Random next move selected because child had 0 visits.");
 
         if (bestChild != null) {
             return bestChild;
@@ -446,7 +446,7 @@ public class MCTSPlayer extends Player {
         } else if (node.getType() == 2) {
             children = getPlacementNodes(node, deck);
         } else {
-            System.out.println("** Error in expand!!!");
+            Engine.printError(" Error in expand!!!");
         }
 
         if (children.isEmpty()) {
@@ -476,7 +476,7 @@ public class MCTSPlayer extends Player {
 
     public void updateExplorationTerm(float delta) {
         if (explorationTerm - delta < 0) {
-            System.out.println("** Negative exploration term!");
+            Engine.printError(" Negative exploration term!");
             System.exit(-1);
         }
 

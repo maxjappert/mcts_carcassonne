@@ -99,7 +99,7 @@ public class Node {
     public void addChild(Node child) {
 
         if (children.contains(child)) {
-            System.out.println("** Duplicate child added.");
+            Engine.printError(" Duplicate child added.");
             return;
         }
 
