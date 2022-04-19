@@ -340,7 +340,7 @@ public class MCTSPlayer extends Player {
 
             int player = child.getState().getPlayer();
 
-            double uct = ((double) child.getQValue()[player-1] / child.getVisits()) + 2 * c * ((2 * Math.log(parent.getVisits())) / child.getVisits());
+            double uct = ((double) child.getQValue()[player-1] / child.getVisits()) + 2 * c * getUpperConfidenceBound(child.getVisits(), parent.getVisits(), "ucb1");
 
             if (uct > highestValue) {
                 highestValue = uct;
@@ -517,4 +517,14 @@ public class MCTSPlayer extends Player {
             }
         }
     }
+
+    private double getUpperConfidenceBound(int childVisits, int parentVisits, String type) {
+        if (type.equals("ucb1")) return Math.sqrt((2 * Math.log(parentVisits)) / childVisits);
+
+        return 0;
+    }
+
+//    private double V(Node child, int parentVisits, int iterations) {
+//
+//    }
 }
