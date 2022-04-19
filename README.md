@@ -19,7 +19,7 @@ knowledge during playout, always picking the next move which maximises the heuri
 For the MCTS player, the playout-payoff to be propagated back up the tree can be weighted according to the
 point in the game by adding a backpropagation-weight-delta. This comes from the intuitive notion that later playouts are
 less random and more representative of the actual value of a node depending on the size of the tree, i.e., the depth 
-of the node.
+of the node (Xie, Liu 2009).
 
 The following tree policies for MCTS have been implemented:
 
