@@ -32,7 +32,7 @@ public class MCTSPlayer extends Player {
      *  per move.
      */
     private final float explorationTermDelta;
-    //private final float backpropDelta;
+    private final float backpropDelta;
 
     private final String treePolicyType;
 
@@ -51,7 +51,8 @@ public class MCTSPlayer extends Player {
      * @param treePolicyType Either 'uct' or 'epsilon-greedy'.
      */
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
-                         long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta, String treePolicyType, boolean heuristicPlayout) {
+                         long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
+                         String treePolicyType, boolean heuristicPlayout, float backpropDelta) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -79,7 +80,8 @@ public class MCTSPlayer extends Player {
         }
 
         this.heuristicPlayout = heuristicPlayout;
-        this.backpropWeight = 0;
+        this.backpropWeight = 1;
+        this.backpropDelta = backpropDelta;
     }
 
     @Override
@@ -102,6 +104,8 @@ public class MCTSPlayer extends Player {
             int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
 
             backup(node, payoff);
+
+            updateBackpropWeight(backpropDelta);
         }
 
         //visualizeGraph(root);
@@ -299,6 +303,8 @@ public class MCTSPlayer extends Player {
     private void backup(Node node, int[] payoff) {
         while (node != null) {
             node.updateVisits();
+            payoff[0] *= backpropWeight;
+            payoff[1] *= backpropWeight;
             node.updateQValue(payoff);
             node = node.getParent();
         }
@@ -486,6 +492,10 @@ public class MCTSPlayer extends Player {
         }
 
         explorationTerm = explorationTerm + delta;
+    }
+
+    private void updateBackpropWeight(float delta) {
+        backpropWeight += delta;
     }
 
     public Node getBoltzmannNode(List<Node> nodes) {

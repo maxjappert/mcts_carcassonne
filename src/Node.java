@@ -15,7 +15,7 @@ public class Node {
     /**
      *  The total accumulated payoff achieved while passing through this node during the tree policy..
      */
-    private final int[] qValue;
+    private final float[] qValue;
 
     /**
      *  The number of times this node was visited during the tree policy.
@@ -61,7 +61,7 @@ public class Node {
         this.parent = null;
         this.type = type;
         this.drawnTile = tile;
-        qValue = new int[]{0, 0};
+        qValue = new float[]{0, 0};
         visits = 0;
         children = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public class Node {
     public Node(Node node, int type) {
         this.state = node.state;
         this.parent = node;
-        this.qValue = new int[]{0, 0};
+        this.qValue = new float[]{0, 0};
         this.visits = 0;
         this.children = new ArrayList<>();
         this.drawnTile = node.drawnTile;
@@ -127,7 +127,7 @@ public class Node {
         return children;
     }
 
-    public int[] getQValue() {
+    public float[] getQValue() {
         return qValue;
     }
 

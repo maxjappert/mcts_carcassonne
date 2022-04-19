@@ -16,6 +16,11 @@ as an argument. The default number of iterations is 150. Additionally, MCTS can 
 where the playout consists of choosing random moves, or a heuristic default policy, which utilises domain-specific
 knowledge during playout, always picking the next move which maximises the heuristic function.
 
+For the MCTS player, the playout-payoff to be propagated back up the tree can be weighted according to the
+point in the game by adding a backpropagation-weight-delta. This comes from the intuitive notion that later playouts are
+less random and more representative of the actual value of a node depending on the size of the tree, i.e., the depth 
+of the node.
+
 The following tree policies for MCTS have been implemented:
 
 ### UCT
