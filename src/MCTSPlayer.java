@@ -32,10 +32,13 @@ public class MCTSPlayer extends Player {
      *  per move.
      */
     private final float explorationTermDelta;
+    //private final float backpropDelta;
 
     private final String treePolicyType;
 
     private final boolean heuristicPlayout;
+
+    private float backpropWeight;
 
     /**
      * @param stateSpace A state space object.
@@ -76,6 +79,7 @@ public class MCTSPlayer extends Player {
         }
 
         this.heuristicPlayout = heuristicPlayout;
+        this.backpropWeight = 0;
     }
 
     @Override
@@ -93,7 +97,7 @@ public class MCTSPlayer extends Player {
         for (int i = 0; i < trainingIterations; i++) {
             List<Tile> deck = Engine.copyDeck(originalDeck);
 
-            Node node = treePolicy(root, deck);
+            Node node = treePolicy(root, deck, i);
 
             int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
 
@@ -103,7 +107,7 @@ public class MCTSPlayer extends Player {
         //visualizeGraph(root);
 
         // Exploration term set to 0, since when executing we only want to consider the exploitation term.
-        Node meepleNode = bestChildUCT(root, 0);
+        Node meepleNode = bestChildUCT(root, 0, 0);
 
         int moveChoice;
         if (legalMoves.contains(meepleNode.getMove())) {
@@ -113,7 +117,7 @@ public class MCTSPlayer extends Player {
             moveChoice = -1;
         }
 
-        Node chanceNode = bestChildUCT(meepleNode, 0);
+        Node chanceNode = bestChildUCT(meepleNode, 0, 0);
         //Node chanceNode = mostVisitedChild(meepleNode);
 
         int meeplePlacement = chanceNode.getMeeplePlacement();
@@ -179,7 +183,7 @@ public class MCTSPlayer extends Player {
 //        }
 //    }
 
-    private Node treePolicy(Node root, List<Tile> deck) {
+    private Node treePolicy(Node root, List<Tile> deck, int iterations) {
         Node node = root;
 
         do {
@@ -197,15 +201,15 @@ public class MCTSPlayer extends Player {
                     node = node.getRandomChild(random);
                     deck.remove(random.nextInt(deck.size()));
                 } else {
-                    if (treePolicyType.equalsIgnoreCase("uct")) {
-                        node = bestChildUCT(node, explorationTerm);
-                    } else if (treePolicyType.equalsIgnoreCase("heuristic-mcts")) {
+                    if (treePolicyType.contains("uct")) {
+                        node = bestChildUCT(node, explorationTerm, iterations);
+                    } else if (treePolicyType.equals("heuristic-mcts")) {
                         node = bestChildHeuristic(node);
                     } else if (treePolicyType.contains("epsilon-greedy")) {
                         if (random.nextFloat() < explorationTerm) {
                             node = node.getRandomChild(random);
                         } else {
-                            node = treePolicyType.equalsIgnoreCase("heuristic-epsilon-greedy") ? bestChildHeuristic(node) : bestChildUCT(node, 0);
+                            node = treePolicyType.equalsIgnoreCase("heuristic-epsilon-greedy") ? bestChildHeuristic(node) : bestChildUCT(node, 0, 0);
                         }
                     } else if (treePolicyType.contains("boltzmann")) {
                         node = getBoltzmannNode(node.getChildren());
@@ -322,7 +326,7 @@ public class MCTSPlayer extends Player {
      * @param c The exploration term.
      * @return The child with the highest UCT value.
      */
-    private Node bestChildUCT(Node parent, double c) {
+    private Node bestChildUCT(Node parent, double c, int iterations) {
 
         double highestValue = Double.MIN_VALUE;
         Node bestChild = null;//parent.getRandomChild(random);
@@ -340,10 +344,11 @@ public class MCTSPlayer extends Player {
 
             int player = child.getState().getPlayer();
 
-            double uct = ((double) child.getQValue()[player-1] / child.getVisits()) + 2 * c * getUpperConfidenceBound(child.getVisits(), parent.getVisits(), "ucb1");
+            double upperConfidenceBound = getUpperConfidenceBound(child, parent.getVisits(), iterations);
+            double ucb1 = ((double) child.getQValue()[player-1] / child.getVisits()) + 2 * c * upperConfidenceBound;
 
-            if (uct > highestValue) {
-                highestValue = uct;
+            if (ucb1 > highestValue) {
+                highestValue = ucb1;
                 bestChild = child;
                 flag = true;
             }
@@ -518,13 +523,16 @@ public class MCTSPlayer extends Player {
         }
     }
 
-    private double getUpperConfidenceBound(int childVisits, int parentVisits, String type) {
-        if (type.equals("ucb1")) return Math.sqrt((2 * Math.log(parentVisits)) / childVisits);
-
+    private double getUpperConfidenceBound(Node child, int parentVisits, int iterations) {
+        if (treePolicyType.equals("uct")) return Math.sqrt((2 * Math.log(parentVisits)) / child.getVisits());
+        else if (treePolicyType.equals("uct-tuned")) return Math.sqrt((Math.log(parentVisits) / child.getVisits()) * Math.min(0.25, V(child, iterations)));
         return 0;
     }
 
-//    private double V(Node child, int parentVisits, int iterations) {
-//
-//    }
+    private double V(Node child, int iterations) {
+        int player = child.getState().getPlayer();
+        double slice = Math.pow((double)child.getQValue()[player-1] / child.getVisits(), 2);
+        double logIts = iterations == 0 ? 0 : Math.log(iterations);
+        return 0.5 * slice * child.getVisits() - ((double)child.getQValue()[player-1] / child.getVisits()) + Math.sqrt((2 * logIts)/child.getVisits());
+    }
 }

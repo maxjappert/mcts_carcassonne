@@ -25,6 +25,10 @@ according to the exploration term, which can be passed as an argument. Additiona
 passed, which is a term added to the exploration term after every decision the player has made. It makes sense to pass
 a negative value, since it makes sense to explore more at the beginning and become increasingly more greedy.
 
+### UCT with UCB1-Tuned
+
+Similar to UCT, yet uses an alternative formula for the upper confidence bounds. As proposed by Auer et al. (2002).
+
 ### Epsilon-Greedy MCTS
 
 Epsilon-greedy uses a tree policy, whereby with a probability of epsilon (here epsilon is passed as the exploration term)
@@ -55,3 +59,9 @@ type of player which is implemented.
 
 The greedy (or heuristic) player always picks the next move which maximises the heuristic function. This implementation
 is useful for testing the effectiveness of a heuristic function.
+
+### Backpropagation Weight
+
+Additionally, for the MCTS player, the playout-payoff to be propagated back up the tree can be weighted according to the
+point in the game by adding a backpropagation-weight-delta. This comes from the intuitive notion that the playouts are
+more representative of the actual value of a node depending on the size of the tree, i.e., the depth of the node.
