@@ -1,6 +1,5 @@
 public class ArgParser {
     private long deckRandomSeed;
-    private boolean verbose;
 
     public Player[] assignPlayers(String[] args) {
         String p1Type                   = "human";
@@ -20,7 +19,7 @@ public class ArgParser {
         boolean p2heuristicPlayout      = true;
         float p1backpropDelta           = 0;
         float p2backpropDelta           = 0;
-        this.verbose                    = true;
+        Engine.verbose                  = true;
 
         if (args[0].equals("-h") || args[0].equals("-help")) {
             printHelp();
@@ -37,59 +36,27 @@ public class ArgParser {
             while (true) {
                 String val = args[i + 1].toLowerCase();
                 switch (args[i]) {
-                    case "--p1", "-p1" -> {
-                        p1Type = val;
-                    }
-                    case "--p2", "-p2" -> {
-                        p2Type = val;
-                    }
-                    case "--p1seed" -> {
-                        p1RandomSeed = Long.parseLong(val);
-                    }
-                    case "--p2seed" -> {
-                        p2RandomSeed = Long.parseLong(val);
-                    }
-                    case "--deckseed" -> {
-                        this.deckRandomSeed = Long.parseLong(val);
-                    }
-                    case "--p1explorationterm" -> {
-                        p1ExplorationTerm = Float.parseFloat(val);
-                    }
-                    case "--p2explorationterm" -> {
-                        p2ExplorationTerm = Float.parseFloat(val);
-                    }
-                    case "--p1meepleplacementprob" -> {
-                        p1MeeplePlacementProb = Float.parseFloat(val);
-                    }
-                    case "--p2meepleplacementprob" -> {
-                        p2MeeplePlacementProb = Float.parseFloat(val);
-                    }
-                    case "--p1trainingiterations" -> {
-                        p1TrainingIterations = Integer.parseInt(val);
-                    }
-                    case "--p2trainingiterations" -> {
-                        p2TrainingIterations = Integer.parseInt(val);
-                    }
-                    case "--p1explorationtermdelta" -> {
-                        p1ExplorationTermDelta = Float.parseFloat(val);
-                    }
-                    case "--p2explorationtermdelta" -> {
-                        p2ExplorationTermDelta = Float.parseFloat(val);
-                    }
-                    case "--p1heuristicplayout" -> {
-                        p1heuristicPlayout = Boolean.parseBoolean(val);
-                    }
-                    case "--p2heuristicplayout" -> {
-                        p2heuristicPlayout = Boolean.parseBoolean(val);
-                    }
-                    case "--p1backpropdelta" -> {
-                        p1backpropDelta = Float.parseFloat(val);
-                    }
-                    case "--p2backpropdelta" -> {
-                        p2backpropDelta = Float.parseFloat(val);
-                    }
-                    case "-v", "--verbose" -> {
-                        this.verbose = Boolean.parseBoolean(val);
+                    case "--p1", "-p1"              -> p1Type = val;
+                    case "--p2", "-p2"              -> p2Type = val;
+                    case "--p1seed"                 -> p1RandomSeed = Long.parseLong(val);
+                    case "--p2seed"                 -> p2RandomSeed = Long.parseLong(val);
+                    case "--deckseed"               -> this.deckRandomSeed = Long.parseLong(val);
+                    case "--p1explorationterm"      -> p1ExplorationTerm = Float.parseFloat(val);
+                    case "--p2explorationterm"      -> p2ExplorationTerm = Float.parseFloat(val);
+                    case "--p1meepleplacementprob"  -> p1MeeplePlacementProb = Float.parseFloat(val);
+                    case "--p2meepleplacementprob"  -> p2MeeplePlacementProb = Float.parseFloat(val);
+                    case "--p1trainingiterations"   -> p1TrainingIterations = Integer.parseInt(val);
+                    case "--p2trainingiterations"   -> p2TrainingIterations = Integer.parseInt(val);
+                    case "--p1explorationtermdelta" -> p1ExplorationTermDelta = Float.parseFloat(val);
+                    case "--p2explorationtermdelta" -> p2ExplorationTermDelta = Float.parseFloat(val);
+                    case "--p1heuristicplayout"     -> p1heuristicPlayout = Boolean.parseBoolean(val);
+                    case "--p2heuristicplayout"     -> p2heuristicPlayout = Boolean.parseBoolean(val);
+                    case "--p1backpropdelta"        -> p1backpropDelta = Float.parseFloat(val);
+                    case "--p2backpropdelta"        -> p2backpropDelta = Float.parseFloat(val);
+                    case "-v", "--verbose"          -> Engine.verbose = Boolean.parseBoolean(val);
+                    default -> {
+                        System.out.println("Unrecognised argument: " + args[i] + "\n\nPlease try again.");
+                        System.exit(1);
                     }
                 }
 
@@ -170,10 +137,6 @@ public class ArgParser {
 
     public long getDeckRandomSeed() {
         return deckRandomSeed;
-    }
-
-    public boolean isVerbose() {
-        return verbose;
     }
 }
 

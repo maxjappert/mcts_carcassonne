@@ -7,11 +7,10 @@ public class Engine {
     private long randomSeed;
     public static boolean verbose;
 
-    public Engine(Player player1, Player player2, long randomSeed, boolean v) {
+    public Engine(Player player1, Player player2, long randomSeed) {
         this.player1 = player1;
         this.player2 = player2;
         this.randomSeed = randomSeed;
-        verbose = v;
     }
 
     public void play() throws Exception {
@@ -30,36 +29,34 @@ public class Engine {
         StringBuilder info = new StringBuilder(String.format("""
                 The game is played with the following parameters:
                 
-                Deck Seed : %d
-                Player 1:   %s
+                Deck Seed:            %d
+                Player 1:             %s
                 """, randomSeed, player1.getTypeAsString()));
 
         if (player1 instanceof MCTSPlayer) {
-            info.append("Player 1:   c = " + ((MCTSPlayer) player1).getExplorationTerm() + ", " + ((MCTSPlayer) player1)
-                    .getTrainingIterations() + " training iterations, with " + ((MCTSPlayer) player1).getPlayoutSeed()
-                    + " as a playout seed and a meeple placement probability of " + ((MCTSPlayer) player1)
-                    .getPlayoutMeeplePlacementProbability() * 100 + "%.\n");
+            info.append("P1: c = ").append(((MCTSPlayer) player1).getExplorationTerm()).append(", ").append(((MCTSPlayer) player1)
+                    .getTrainingIterations()).append(" training iterations, with ").append(((MCTSPlayer) player1).getPlayoutSeed()).append(" as a playout seed and a meeple placement probability of ").append(((MCTSPlayer) player1)
+                    .getPlayoutMeeplePlacementProbability() * 100).append("%.\n");
         }
 
         if (player1 instanceof RandomPlayer) {
-            info.append("Player 1 random seed: " + ((RandomPlayer) player1).getSeed() + "\n");
+            info.append("P1 random seed:       ").append(((RandomPlayer) player1).getSeed()).append("\n");
         } else if (player1 instanceof HeuristicPlayer) {
-            info.append("Player 1 random seed: " + ((HeuristicPlayer) player1).getSeed() + "\n");
+            info.append("P1 random seed:       ").append(((HeuristicPlayer) player1).getSeed()).append("\n");
         }
 
-        info.append("Player 2:   " + player2.getTypeAsString() + "\n");
+        info.append("Player 2:             ").append(player2.getTypeAsString()).append("\n");
 
         if (player2 instanceof MCTSPlayer) {
-            info.append("Player 2:   c = " + ((MCTSPlayer) player2).getExplorationTerm() + ", " + ((MCTSPlayer) player2)
-                    .getTrainingIterations() + " training iterations, with " + ((MCTSPlayer) player2).getPlayoutSeed()
-                    + " as a playout seed and a meeple placement probability of " + ((MCTSPlayer) player2)
-                    .getPlayoutMeeplePlacementProbability() * 100 + "%.\n");
+            info.append("P2: c = ").append(((MCTSPlayer) player2).getExplorationTerm()).append(", ").append(((MCTSPlayer) player2)
+                    .getTrainingIterations()).append(" training iterations, with ").append(((MCTSPlayer) player2).getPlayoutSeed()).append(" as a playout seed and a meeple placement probability of ").append(((MCTSPlayer) player2)
+                    .getPlayoutMeeplePlacementProbability() * 100).append("%.\n");
         }
 
         if (player2 instanceof RandomPlayer) {
-            info.append("Player 2 random seed: " + ((RandomPlayer) player2).getSeed());
+            info.append("P2 random seed:       ").append(((RandomPlayer) player2).getSeed());
         } else if (player2 instanceof HeuristicPlayer) {
-            info.append("Player 2 random seed: " + ((HeuristicPlayer) player2).getSeed());
+            info.append("P2 random seed:       ").append(((HeuristicPlayer) player2).getSeed());
         }
 
         System.out.println(info);
@@ -97,8 +94,12 @@ public class Engine {
             Pair choice;
 
             if (player == 1) {
+                if ((player1 instanceof MCTSPlayer || player1 instanceof MinimaxPlayer) && verbose)
+                    System.out.println("Player 1 is calculating a move...");
                 choice = player1.decideOnNextMove(state, drawnTile, deck, moves);
             } else {
+                if ((player2 instanceof MCTSPlayer || player2 instanceof MinimaxPlayer) && verbose)
+                    System.out.println("Player 2 is calculating a move...");
                 choice = player2.decideOnNextMove(state, drawnTile, deck, moves);
             }
 
