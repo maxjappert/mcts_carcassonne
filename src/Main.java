@@ -5,6 +5,7 @@ public class Main {
         Player player1;
         Player player2;
         long deckRandomSeed;
+        boolean verbose;
 
         ArgParser argParser = new ArgParser();
 
@@ -14,14 +15,16 @@ public class Main {
             //player1 = new RandomPlayer(stateSpace, 1, -1);
             //player2 = new RandomPlayer(stateSpace, 2, -1);
             deckRandomSeed = 77;
+            verbose = true;
         } else {
             Player[] players = argParser.assignPlayers(args);
             player1 = players[0];
             player2 = players[1];
             deckRandomSeed = argParser.getDeckRandomSeed();
+            verbose = argParser.isVerbose();
         }
 
-        Engine engine = new Engine(player1, player2, deckRandomSeed);
+        Engine engine = new Engine(player1, player2, deckRandomSeed, verbose);
 
         engine.play();
     }

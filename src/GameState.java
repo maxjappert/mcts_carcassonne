@@ -586,7 +586,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += 9;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            if (verbose) System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
+                            if (verbose && Engine.verbose) System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
                             tile.removeMeeple();
                             return;
                         }
@@ -599,7 +599,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += points;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            if (verbose) System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
+                            if (verbose && Engine.verbose) System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             completedCities.add(tile.getArea(tile.getMeeple()[0]));
                             tile.removeMeeple();
                             return;
@@ -613,7 +613,7 @@ public class GameState {
                             scores[tile.getMeeple()[1] - 1] += points;
                             //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
-                            if (verbose) System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
+                            if (verbose && Engine.verbose) System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             tile.removeMeeple();
                             return;
                         }

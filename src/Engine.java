@@ -2,14 +2,16 @@ import java.util.*;
 
 public class Engine {
 
-    Player player1;
-    Player player2;
-    long randomSeed;
+    private final Player player1;
+    private final Player player2;
+    private long randomSeed;
+    public static boolean verbose;
 
-    public Engine(Player player1, Player player2, long randomSeed) {
+    public Engine(Player player1, Player player2, long randomSeed, boolean v) {
         this.player1 = player1;
         this.player2 = player2;
         this.randomSeed = randomSeed;
+        verbose = v;
     }
 
     public void play() throws Exception {
@@ -63,12 +65,12 @@ public class Engine {
         System.out.println(info);
 
         while (!stateSpace.isGoal(state)) {
-            System.out.println("Current score: " + Arrays.toString(state.getScore()));
+            if (verbose) System.out.println("Current score: " + Arrays.toString(state.getScore()));
 
-            state.displayBoard();
+            if (verbose) state.displayBoard();
 
-            System.out.println(deck.size() + " tiles remaining.");
-            System.out.println("Player " + state.getPlayer() + "'s turn:");
+            if (verbose) System.out.println(deck.size() + " tiles remaining.");
+            if (verbose) System.out.println("Player " + state.getPlayer() + "'s turn:");
 
             Tile drawnTile = drawTile(deck);
             drawnTile.printTile();
@@ -84,7 +86,7 @@ public class Engine {
                 // In the rare case that the drawn tile cannot legally be placed, the tile is added back to the deck
                 // and a new tile is drawn.
                 if (moves.isEmpty()) {
-                    System.out.printf("Player %d draws tile with no possible legal moves. The tile is therefore redrawn.\n\n", ((deck.size() % 2) + 1));
+                    if (verbose) System.out.printf("Player %d draws tile with no possible legal moves. The tile is therefore redrawn.\n\n", ((deck.size() % 2) + 1));
                     deck.add(drawnTile);
                     Collections.shuffle(deck, random);
                     drawnTile = drawTile(deck);
@@ -110,7 +112,7 @@ public class Engine {
             if (meepleSuccessors.contains(meeplePlacement)) {
                 drawnTile.placeMeeple(choice.getSecond(), player);
             } else {
-                System.out.printf("Meeple placement at point %d not allowed.\n\n", meeplePlacement);
+                if (verbose) System.out.printf("Meeple placement at point %d not allowed.\n\n", meeplePlacement);
             }
 
             state.updateBoard(move.getCoords(), drawnTile);
@@ -124,8 +126,6 @@ public class Engine {
 
         System.out.println("Player 1 has " + state.getScore()[0] + " points.");
         System.out.println("Player 2 has " + state.getScore()[1] + " points.");
-
-        state.getScore();
     }
 
     /**
@@ -137,29 +137,6 @@ public class Engine {
     private void addTilesToDeck(List<Tile> deck, int type, int amount, boolean pennant) {
         for (int i = 0; i < amount; i++) {
             deck.add(new Tile(type, pennant));
-        }
-    }
-
-    private void checkForAreasWithMultipleMeeples(GameState state) {
-        List<Integer> areasWithMeeples = new ArrayList<>();
-
-        for (Tile tile : state.getAllTilesOnBoard()) {
-            for (int point = 0; point <= 12; point++) {
-                if (tile.getMeeple()[0] == point && areasWithMeeples.contains(tile.getArea(point))) {
-                    System.out.println("Error in following tile:");
-                    tile.printTile();
-                    System.out.println("Conflict with the following tiles:");
-                    List<Tile> tilesOfArea = state.getTilesOfArea(tile.getArea(point));
-                    for (Tile tileOfArea : tilesOfArea) {
-                        if (tileOfArea.hasMeeple() && tileOfArea.getArea(tileOfArea.getMeeple()[0]) == tile.getArea(point)) {
-                            tileOfArea.printTile();
-                        }
-                    }
-                    System.exit(-1);
-                } else if (tile.getMeeple()[0] == point && !areasWithMeeples.contains(tile.getArea(point)))  {
-                    areasWithMeeples.add(tile.getArea(point));
-                }
-            }
         }
     }
 
@@ -215,6 +192,6 @@ public class Engine {
     }
 
     public static void printError(String message) {
-        System.out.println("\u001B[31m **" + message + "\u001B[0m");
+        if (verbose) System.out.println("\u001B[31m **" + message + "\u001B[0m");
     }
 }

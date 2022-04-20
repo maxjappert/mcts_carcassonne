@@ -117,7 +117,7 @@ public class MCTSPlayer extends Player {
         if (legalMoves.contains(meepleNode.getMove())) {
             moveChoice = legalMoves.indexOf(meepleNode.getMove());
         } else {
-            System.out.println("Error in choice system of UCTPlayer!!!");
+            Engine.printError("Error in choice system of UCTPlayer!!!");
             moveChoice = -1;
         }
 
