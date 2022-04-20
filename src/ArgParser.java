@@ -37,10 +37,10 @@ public class ArgParser {
             while (true) {
                 String val = args[i + 1].toLowerCase();
                 switch (args[i]) {
-                    case "--p1" -> {
+                    case "--p1", "-p1" -> {
                         p1Type = val;
                     }
-                    case "--p2" -> {
+                    case "--p2", "-p2" -> {
                         p2Type = val;
                     }
                     case "--p1seed" -> {

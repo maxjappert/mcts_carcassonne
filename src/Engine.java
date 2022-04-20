@@ -73,7 +73,7 @@ public class Engine {
             if (verbose) System.out.println("Player " + state.getPlayer() + "'s turn:");
 
             Tile drawnTile = drawTile(deck);
-            drawnTile.printTile();
+            if (verbose) drawnTile.printTile();
 
             // Players should be given a list of possible moves and should pick one of those moves.
 
