@@ -363,14 +363,19 @@ public class GameState {
             }
         }
 
-        // Here the labels which allow for naming tiles and therefore moves. 65 in decimal corresponds to 'A' in ASCII.
+        // 49 in decimal corresponds to a 1 in ASCII.
         char columnName = 49;
         for (int i = 0; i < boardDimensions[1] + 2; i++) {
-            boardFormat[boardDimensions[0] * 5 + 10][i * 10 + 4] = columnName;
+            if (columnName <= 57) {
+                boardFormat[boardDimensions[0] * 5 + 10][i * 10 + 4] = columnName;
+            } else {
+                boardFormat[boardDimensions[0] * 5 + 10][i * 10 + 4] = 49;
+                boardFormat[boardDimensions[0] * 5 + 10][i * 10 + 5] = (char) (columnName - 10);
+            }
             columnName += 1;
         }
 
-        // 49 in decimal corresponds to a 1 in ASCII.
+        // Here the labels which allow for naming tiles and therefore moves. 65 in decimal corresponds to 'A' in ASCII.
         char rowName = 65;
         for (int i = 0; i < boardDimensions[0] + 2; i++) {
             boardFormat[i * 5 + 2][boardDimensions[1] * 10 + 20] = rowName;

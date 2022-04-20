@@ -21,7 +21,7 @@ public class ArgParser {
         float p2backpropDelta           = 0;
         Engine.verbose                  = true;
 
-        if (args[0].equals("-h") || args[0].equals("-help")) {
+        if (args[0].equals("-h") || args[0].equals("--help")) {
             printHelp();
             System.exit(0);
         }
