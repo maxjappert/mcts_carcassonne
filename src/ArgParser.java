@@ -51,8 +51,8 @@ public class ArgParser {
                     case "--p2trainingiterations"   -> p2TrainingIterations = Integer.parseInt(val);
                     case "--p1explorationtermdelta" -> p1ExplorationTermDelta = Float.parseFloat(val);
                     case "--p2explorationtermdelta" -> p2ExplorationTermDelta = Float.parseFloat(val);
-                    case "--p1heuristicplayout"     -> p1heuristicPlayout = Boolean.parseBoolean(val);
-                    case "--p2heuristicplayout"     -> p2heuristicPlayout = Boolean.parseBoolean(val);
+                    case "--p1playout"              -> p1heuristicPlayout = val.equalsIgnoreCase("heuristic");
+                    case "--p2playout"              -> p2heuristicPlayout = val.equalsIgnoreCase("heuristic");
                     case "--p1backpropdelta"        -> p1backpropDelta = Float.parseFloat(val);
                     case "--p2backpropdelta"        -> p2backpropDelta = Float.parseFloat(val);
                     case "-v", "--verbose"          -> Engine.verbose = Boolean.parseBoolean(val);
@@ -119,11 +119,12 @@ public class ArgParser {
         String help = """
                 Welcome! Please use the following arguments to specify how this module should be used:
                 
-                  --p[1/2] <type>                        Specify the type of player. The possible types are:
+                  --p[1/2] <tree policy type>            Specify the type of tree policy the MCTS player should
+                                                         use. The possible types are:
                                                          ['uct'/'human'/'random'/'[heuristic-]epsilon-greedy'/
                                                          'heuristic'/'heuristic-mcts'/'boltzmann'/'minimax']
                   --p[1/2]seed <Integer>                 Make the random actions for a given player reproducible
-                                                         by specifying a random seed.
+                                                         by specifying a seed.
                   --deckseed <Integer>                   Make the shuffling of the deck reproducible.
                   --p[1/2]explorationterm <Float>        The exploration term for the UCT player. Acts as the
                                                          \u03B5 for \u03B5-greedy players.
@@ -132,11 +133,11 @@ public class ArgParser {
                   --p[1/2]trainingiterations <Integer>   The number of training iterations for a given MCTS player.
                   --p[1/2]explorationtermdelta <Float>   This term is added to the exploration term after every
                                                          move a MCTS  player plays.
-                  --p[1/2]heuristicplayout <Boolean>     Decides if the MCTS player uses a heuristic in the
-                                                         playout step.
+                  --p[1/2]playout <Type>                 Decides the type of playout the MCTS player will perform.
+                                                         Possible types are: ['random'/'heuristic']
                   --p[1/2]backpropdelta <Float>          This term is added to the backpropagation-weight
                                                          after every move an MCTS-player makes.
-                  --p[1/2]minimaxdepth                   How deep does the Minimax-Player actually perform a
+                  --p[1/2]minimaxdepth <Integer>         How deep does the Minimax-Player actually perform a
                                                          Minimax-Search before switching to the default policy.
                   -v or --verbose <Boolean>              Controls if detailed information on the game progress
                                                          should be printed to console. True by default. If set

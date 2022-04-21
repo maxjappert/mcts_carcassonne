@@ -32,7 +32,8 @@ a negative value, since it makes sense to explore more at the beginning and beco
 
 ### UCT with UCB1-Tuned
 
-Similar to UCT, yet uses an alternative formula for the upper confidence bounds. As proposed by Auer et al. (2002).
+Similar to UCT, yet uses an alternative formula (UCB1-Tuned) for the upper confidence bounds. As proposed by Auer et al.
+(2002).
 
 ### Epsilon-Greedy MCTS
 
@@ -64,6 +65,13 @@ type of player which is implemented.
 
 The greedy (or heuristic) player always picks the next move which maximises the heuristic function. This implementation
 is useful for testing the effectiveness of a heuristic function.
+
+## Minimax with alpha-beta Pruning
+
+The search depth, before the value of a state is determined with a playout, can be specified as an argument via the 
+console. Since this has an infeasible runtime (probably due to the insane branching factor), this is more of a symbolic
+
+implementation.
 
 ### Backpropagation Weight
 
