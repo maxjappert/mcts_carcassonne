@@ -64,6 +64,7 @@ public class Node {
         this.move = move;
         this.meeplePlacement = -1;
 
+        Engine.numNodes++;
         this.id = Engine.numNodes;
     }
 

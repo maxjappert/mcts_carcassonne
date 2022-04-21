@@ -110,7 +110,7 @@ public class MCTSPlayer extends Player {
                     graph ""
                        {
                         fontname="Helvetica,Arial,sans-serif"
-                        node [fontname="Helvetica,Arial,sans-serif"]
+                        node [fontname="Helvetica,Arial,sans-serif" width=0.01 shape=point]
                         edge [fontname="Helvetica,Arial,sans-serif"]
                         
                     """);
