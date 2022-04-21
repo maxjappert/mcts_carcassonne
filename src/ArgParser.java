@@ -121,7 +121,7 @@ public class ArgParser {
                 
                   --p[1/2] <tree policy type>            Specify the type of tree policy the MCTS player should
                                                          use. The possible types are:
-                                                         ['uct'/'human'/'random'/'[heuristic-]epsilon-greedy'/
+                                                         ['uct'/'human'/'random'/'[heuristic-]epsilon-greedy[-decaying]'/
                                                          'heuristic'/'heuristic-mcts'/'boltzmann'/'minimax']
                   --p[1/2]seed <Integer>                 Make the random actions for a given player reproducible
                                                          by specifying a seed.

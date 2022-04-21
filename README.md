@@ -2,7 +2,7 @@
 
 This repository contains the code for my Bachelor's thesis, which involves implementing variations of the Monte Carlo 
 tree search framework for the board game Carcassonne. The program additionally allows for playing the game via console
-inputs. The following arguments can be passed 
+inputs. Please use the `-h` or `--help` flag for details on the possible arguments.
 
 All random actions can be reproduced for each player separately by passing a random seed as an argument. Additionally,
 the deck can be reproduced by the same means.
@@ -30,7 +30,7 @@ according to the exploration term, which can be passed as an argument. Additiona
 passed, which is a term added to the exploration term after every decision the player has made. It makes sense to pass
 a negative value, since it makes sense to explore more at the beginning and become increasingly more greedy.
 
-### UCT with UCB1-Tuned
+### UCT-Tuned
 
 Similar to UCT, yet uses an alternative formula (UCB1-Tuned) for the upper confidence bounds. As proposed by Auer et al.
 (2002).
@@ -40,6 +40,11 @@ Similar to UCT, yet uses an alternative formula (UCB1-Tuned) for the upper confi
 Epsilon-greedy uses a tree policy, whereby with a probability of epsilon (here epsilon is passed as the exploration term)
 a random move is chosen, otherwise the move with the highest approximated game theoretical value is chosen (this value
 corresponds to the UCT function with an exploration term of 0).
+
+### Decaying Epsilon-Greedy
+
+With decaying epsilon-greedy the value of epsilon is always 1/k for iteration k of the training process. Thereby the
+algorithm gets increasingly greedy during the training process, which corresponds to intuition.
 
 ### Heuristic Epsilon-Greedy MCTS
 

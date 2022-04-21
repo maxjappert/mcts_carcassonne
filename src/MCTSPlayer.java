@@ -106,6 +106,10 @@ public class MCTSPlayer extends Player {
             backup(node, payoff);
 
             updateBackpropWeight(backpropDelta);
+
+            if (treePolicyType.contains("decaying")) {
+                explorationTerm = 1f / i;
+            }
         }
 
         //visualizeGraph(root);
@@ -131,7 +135,7 @@ public class MCTSPlayer extends Player {
         return new Pair(moveChoice, meeplePlacement);
     }
 
-    private int  getTreeSize(Node root) {
+    private int getTreeSize(Node root) {
         int treeSize = 0;
 
         for (Node node : root.getChildren()) {

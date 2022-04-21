@@ -9,10 +9,10 @@ public class Main {
         ArgParser argParser = new ArgParser();
 
         if (args.length == 0) {
-            player1 = new MCTSPlayer(stateSpace, 1, 2f, 100, -1, 0.5f, 0, "uct", false, 0f);
-            //player2 = new MCTSPlayer(stateSpace, 2, 2f, 150, 66, 0.5f, 0, "uct", false, 0.05f);
-            player1 = new RandomPlayer(stateSpace, 1, -1);
-            player2 = new MinimaxPlayer(stateSpace, 2, -1, 2, 0.5f);
+            player1 = new MCTSPlayer(stateSpace, 1, 2f, 50, -1, 0.5f, 0, "uct", false, 0f);
+            player2 = new MCTSPlayer(stateSpace, 2, 2f, 50, -1, 0.5f, 0, "uct", true, 0);
+            //player1 = new RandomPlayer(stateSpace, 1, -1);
+            //player2 = new MinimaxPlayer(stateSpace, 2, -1, 2, 0.5f);
             deckRandomSeed = -1;
             Engine.verbose = true;
         } else {
