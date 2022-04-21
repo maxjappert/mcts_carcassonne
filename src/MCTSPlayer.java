@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class MCTSPlayer extends Player {
@@ -40,6 +44,12 @@ public class MCTSPlayer extends Player {
 
     private float backpropWeight;
 
+    private boolean generateGraphwizData;
+
+    File file;
+    FileWriter fw;
+    BufferedWriter br;
+
     /**
      * @param stateSpace A state space object.
      * @param playerID The player ID (1 or 2) of this player.
@@ -52,7 +62,7 @@ public class MCTSPlayer extends Player {
      */
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
-                         String treePolicyType, boolean heuristicPlayout, float backpropDelta) {
+                         String treePolicyType, boolean heuristicPlayout, float backpropDelta, boolean generateGraphwizData) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -82,18 +92,45 @@ public class MCTSPlayer extends Player {
         this.heuristicPlayout = heuristicPlayout;
         this.backpropWeight = 1;
         this.backpropDelta = backpropDelta;
+        this.generateGraphwizData = generateGraphwizData;
     }
 
     @Override
-    Pair decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) {
+    Pair decideOnNextMove(GameState originalState, Tile tile, List<Tile> originalDeck, List<Move> legalMoves) throws IOException {
         GameState state = new GameState(originalState);
         Node root = new Node(state, 0, new Move(null, 0), tile);
+
+        if (generateGraphwizData) {
+            file = new File("/home/maxja/mcts_carcassonne/tree" + originalState.getDeckSize() + ".dot");
+            file.delete();
+            file.createNewFile();
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            br = new BufferedWriter(fw);
+            br.write("""
+                    graph ""
+                       {
+                        fontname="Helvetica,Arial,sans-serif"
+                        node [fontname="Helvetica,Arial,sans-serif"]
+                        edge [fontname="Helvetica,Arial,sans-serif"]
+                        
+                    """);
+
+            br.write("n" + root.id + " [label=\"\"] ; \n\n");
+            br.flush();
+        }
 
         for (Move move : legalMoves) {
 
             Node node = new Node(state, 1, move, tile);
 
             root.addChild(node);
+
+            //System.out.println(root.id);
+            if (generateGraphwizData) {
+                br.write("n" + root.id + " -- n" + node.id + " ;\n\n");
+                br.write("n" + node.id + " [label=\"\"] ;\n\n");
+                br.flush();
+            }
         }
 
         for (int i = 0; i < trainingIterations; i++) {
@@ -131,6 +168,13 @@ public class MCTSPlayer extends Player {
         int meeplePlacement = chanceNode.getMeeplePlacement();
 
         updateExplorationTerm(explorationTermDelta);
+
+        if (generateGraphwizData) {
+            br.write("}");
+            br.flush();
+            br.close();
+            fw.close();
+        }
 
         return new Pair(moveChoice, meeplePlacement);
     }
@@ -191,7 +235,7 @@ public class MCTSPlayer extends Player {
 //        }
 //    }
 
-    private Node treePolicy(Node root, List<Tile> deck, int iterations) {
+    private Node treePolicy(Node root, List<Tile> deck, int iterations) throws IOException {
         Node node = root;
 
         do {
@@ -451,7 +495,7 @@ public class MCTSPlayer extends Player {
         return placementNodes;
     }
 
-    private Node expand(Node node, List<Tile> deck) {
+    private Node expand(Node node, List<Tile> deck) throws IOException {
         List<Node> children = new ArrayList<>();
 
         if (node.getType() == 0) {
@@ -469,6 +513,15 @@ public class MCTSPlayer extends Player {
         }
 
         node.addChildren(children);
+
+        if (generateGraphwizData) {
+            for (Node child : children) {
+                br.write("n" + node.id + " -- n" + child.id + " ; \n\n");
+                br.write("n" + child.id + " [label=\"\"] ;\n\n");
+                br.flush();
+                //System.out.println(node.id);
+            }
+        }
 
         return node.getRandomChild(random);
     }

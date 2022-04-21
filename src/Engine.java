@@ -6,6 +6,7 @@ public class Engine {
     private final Player player2;
     private long randomSeed;
     public static boolean verbose;
+    public static int numNodes = 0;
 
     public Engine(Player player1, Player player2, long randomSeed) {
         this.player1 = player1;

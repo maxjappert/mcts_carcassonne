@@ -41,7 +41,8 @@ public class Node {
      *  The meeple placement which this node represents. null if this is not a chance node.
      */
     private int meeplePlacement;
-    //long id = new Random().nextLong();
+
+    public int id;
 
     /**
      * 0: Placement Node
@@ -62,6 +63,8 @@ public class Node {
 
         this.move = move;
         this.meeplePlacement = -1;
+
+        this.id = Engine.numNodes;
     }
 
     /**
@@ -77,6 +80,8 @@ public class Node {
         this.move = node.move;
         this.meeplePlacement = node.meeplePlacement;
         this.type = type;
+        Engine.numNodes++;
+        this.id = Engine.numNodes;
     }
 
     public void addMeeple(int placement) {
@@ -100,6 +105,7 @@ public class Node {
 
         children.add(child);
         child.setParent(this);
+        Engine.numNodes++;
     }
 
     public void setParent(Node parent) {
@@ -145,9 +151,10 @@ public class Node {
 
     public void addChildren(List<Node> newChildren) {
         for (Node child : newChildren) {
-
             addChild(child);
         }
+
+        Engine.numNodes += newChildren.size();
     }
 
     public GameState getState() {
