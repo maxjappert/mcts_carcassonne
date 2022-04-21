@@ -186,4 +186,25 @@ public class Node {
     public int getType() {
         return type;
     }
+
+    /**
+     * Used for visualising the MCTS tree. The colours denote the type of node.
+     * @return The color representing the type of node.
+     */
+    public String getColour() {
+        switch (type) {
+            case 0 -> {
+                return "red";
+            }
+            case 1 -> {
+                return "green";
+            }
+            case 2 -> {
+                return "blue";
+            }
+            default -> {
+                return "";
+            }
+        }
+    }
 }

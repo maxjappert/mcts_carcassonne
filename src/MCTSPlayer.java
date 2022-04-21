@@ -106,16 +106,18 @@ public class MCTSPlayer extends Player {
             file.createNewFile();
             fw = new FileWriter(file.getAbsoluteFile(), true);
             br = new BufferedWriter(fw);
+
+            // For removing the points, the width can be set to 0.01.
             br.write("""
                     graph ""
                        {
                         fontname="Helvetica,Arial,sans-serif"
-                        node [fontname="Helvetica,Arial,sans-serif" width=0.01 shape=point]
+                        node [fontname="Helvetica,Arial,sans-serif" width=0.1 shape=point]
                         edge [fontname="Helvetica,Arial,sans-serif"]
                         
                     """);
 
-            br.write("n" + root.id + " [label=\"\"] ; \n\n");
+            br.write("n" + root.id + " [label=\"\", fillcolor=" + root.getColour() + "] ; \n\n");
             br.flush();
         }
 
@@ -128,7 +130,7 @@ public class MCTSPlayer extends Player {
             //System.out.println(root.id);
             if (generateGraphwizData) {
                 br.write("n" + root.id + " -- n" + node.id + " ;\n\n");
-                br.write("n" + node.id + " [label=\"\"] ;\n\n");
+                br.write("n" + node.id + " [label=\"\", fillcolor= " + node.getColour() + "] ;\n\n");
                 br.flush();
             }
         }
@@ -197,43 +199,6 @@ public class MCTSPlayer extends Player {
     public int getTrainingIterations() {
         return trainingIterations;
     }
-
-    //    private void visualizeGraph(Node root) {
-//        Graph graph = new SingleGraph("Test");
-//
-//        graph.setStrict(false);
-//        graph.setAutoCreate( true );
-//
-////        graph.addNode("A");
-////        graph.addNode("B");
-////        graph.addEdge("AB", "A", "B");
-////
-//        System.setProperty("org.graphstream.ui", "swing");
-////        graph.display();
-//
-//        expandVisualisation(root, graph);
-//
-//        Viewer view = graph.display(false);
-//        HierarchicalLayout hl = new HierarchicalLayout();
-//        view.enableAutoLayout(hl);
-//        //view.disableAutoLayout();
-//    }
-
-    //private void expandVisualisation(Node root, Graph graph) {
-//        List<Node> children = root.getChildren();
-//
-//        if (children.isEmpty()) {
-//            return;
-//        }
-//
-//        for (Node child : children) {
-//            graph.addEdge("" + root.id + child.id, Long.toString(root.id), Long.toString(child.id));
-//        }
-//
-//        for (Node child : children) {
-//            expandVisualisation(child, graph);
-//        }
-//    }
 
     private Node treePolicy(Node root, List<Tile> deck, int iterations) throws IOException {
         Node node = root;
@@ -517,7 +482,7 @@ public class MCTSPlayer extends Player {
         if (generateGraphwizData) {
             for (Node child : children) {
                 br.write("n" + node.id + " -- n" + child.id + " ; \n\n");
-                br.write("n" + child.id + " [label=\"\"] ;\n\n");
+                br.write("n" + child.id + " [label=\"\", fillcolor=" + child.getColour() + "] ;\n\n");
                 br.flush();
                 //System.out.println(node.id);
             }
