@@ -20,6 +20,8 @@ public class ArgParser {
         float p1backpropDelta           = 0;
         float p2backpropDelta           = 0;
         Engine.verbose                  = true;
+        int p1MinimaxDepth              = 15;
+        int p2MinimaxDepth              = 15;
 
         if (args[0].equals("-h") || args[0].equals("--help")) {
             printHelp();
@@ -54,6 +56,8 @@ public class ArgParser {
                     case "--p1backpropdelta"        -> p1backpropDelta = Float.parseFloat(val);
                     case "--p2backpropdelta"        -> p2backpropDelta = Float.parseFloat(val);
                     case "-v", "--verbose"          -> Engine.verbose = Boolean.parseBoolean(val);
+                    case "--p1minimaxdepth"         -> p1MinimaxDepth = Integer.parseInt(val);
+                    case "--p2minimaxdepth"         -> p2MinimaxDepth = Integer.parseInt(val);
                     default -> {
                         System.out.println("Unrecognised argument: " + args[i] + "\n\nPlease try again.");
                         System.exit(1);
@@ -85,6 +89,7 @@ public class ArgParser {
             case "human"            -> players[0] = new HumanPlayer(stateSpace, 1);
             case "random"           -> players[0] = new RandomPlayer(stateSpace, 1, p1RandomSeed);
             case "heuristic"        -> players[0] = new HeuristicPlayer(stateSpace, 1, p1RandomSeed);
+            case "minimax"          -> players[0] = new MinimaxPlayer(stateSpace, 1, p1RandomSeed, p1MinimaxDepth, p1MeeplePlacementProb);
             default -> {
                 System.out.println("Invalid player type for player 1. The options are 'uct'/'[heuristic-]epsilon-greedy'/'human'/'random'/'heuristic'/'heuristic-mcts'.");
                 System.exit(1);
@@ -100,6 +105,7 @@ public class ArgParser {
             case "human"            -> players[1] = new HumanPlayer(stateSpace, 2);
             case "random"           -> players[1] = new RandomPlayer(stateSpace, 2, p2RandomSeed);
             case "heuristic"        -> players[1] = new HeuristicPlayer(stateSpace, 2, p2RandomSeed);
+            case "minimax"          -> players[1] = new MinimaxPlayer(stateSpace, 2, p2RandomSeed, p2MinimaxDepth, p2MeeplePlacementProb);
             default -> {
                 System.out.println("Invalid player type for player 2. The options are 'uct'/'[heuristic-]epsilon-greedy'/'human'/'random'/'heuristic'/'heuristic-mcts'.");
                 System.exit(1);
@@ -115,7 +121,7 @@ public class ArgParser {
                 
                   --p[1/2] <type>                        Specify the type of player. The possible types are:
                                                          ['uct'/'human'/'random'/'[heuristic-]epsilon-greedy'/
-                                                         'heuristic'/'heuristic-mcts'/'boltzmann']
+                                                         'heuristic'/'heuristic-mcts'/'boltzmann'/'minimax']
                   --p[1/2]seed <Integer>                 Make the random actions for a given player reproducible
                                                          by specifying a random seed.
                   --deckseed <Integer>                   Make the shuffling of the deck reproducible.
@@ -130,6 +136,8 @@ public class ArgParser {
                                                          playout step.
                   --p[1/2]backpropdelta <Float>          This term is added to the backpropagation-weight
                                                          after every move an MCTS-player makes.
+                  --p[1/2]minimaxdepth                   How deep does the Minimax-Player actually perform a
+                                                         Minimax-Search before switching to the default policy.
                   -v or --verbose <Boolean>              Controls if detailed information on the game progress
                                                          should be printed to console. True by default. If set
                                                          to false, then the only things printed to console are

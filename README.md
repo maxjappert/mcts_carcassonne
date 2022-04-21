@@ -1,8 +1,8 @@
-# Monte-Carlo Tree Search on Carcassonne
+# Monte-Carlo Tree Search for Carcassonne
 
 This repository contains the code for my Bachelor's thesis, which involves implementing variations of the Monte Carlo 
 tree search framework for the board game Carcassonne. The program additionally allows for playing the game via console
-inputs. With the argument `-h` the syntax for passing the introduced variables is printed to console.
+inputs. The following arguments can be passed 
 
 All random actions can be reproduced for each player separately by passing a random seed as an argument. Additionally,
 the deck can be reproduced by the same means.

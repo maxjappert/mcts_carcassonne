@@ -229,4 +229,19 @@ public class GameStateSpace {
 
         return output;
     }
+
+    public int getIndexOfBestMeeplePlacement(GameState state, Tile tile, List<Integer> placements, int player) {
+        int index = -1;
+        int maxValue = Integer.MIN_VALUE;
+
+        for (int i = 0; i < placements.size(); i++) {
+            int h = meepleHeuristic(state, tile, placements.get(i), player);
+            if (h > maxValue) {
+                maxValue = h;
+                index = i;
+            }
+        }
+
+        return index;
+    }
 }
