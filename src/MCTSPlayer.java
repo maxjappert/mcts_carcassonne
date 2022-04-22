@@ -100,8 +100,10 @@ public class MCTSPlayer extends Player {
         GameState state = new GameState(originalState);
         Node root = new Node(state, 0, new Move(null, 0), tile);
 
+        generateGraphwizData = originalDeck.size() >= 70 && generateGraphwizData;
+
         if (generateGraphwizData) {
-            file = new File("/home/maxja/mcts_carcassonne/tree" + originalState.getDeckSize() + ".dot");
+            file = new File("/home/maxja/mcts_carcassonne/tree.dot");
             file.delete();
             file.createNewFile();
             fw = new FileWriter(file.getAbsoluteFile(), true);
@@ -112,7 +114,7 @@ public class MCTSPlayer extends Player {
                     graph ""
                        {
                         fontname="Helvetica,Arial,sans-serif"
-                        node [fontname="Helvetica,Arial,sans-serif" width=0.1 shape=point]
+                        node [fontname="Helvetica,Arial,sans-serif" width=0.01 shape=point]
                         edge [fontname="Helvetica,Arial,sans-serif"]
                         
                     """);

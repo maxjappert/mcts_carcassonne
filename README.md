@@ -49,7 +49,8 @@ algorithm gets increasingly greedy during the training process, which correspond
 ### Heuristic Epsilon-Greedy MCTS
 
 Same as the normal epsilon-greedy the node is chosen which maximises the heuristic function with a probability of
-(epsilon-1). A random node is chosen with a probability of epsilon.
+(epsilon-1). A random node is chosen with a probability of epsilon. For epsilon = 0 we have a heuristic
+tree policy which traverses the tree only according to the heuristic function.
 
 ### MCTS with Boltzmann Exploration
 
