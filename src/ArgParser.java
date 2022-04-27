@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ArgParser {
     private long deckRandomSeed;
 
@@ -29,8 +33,25 @@ public class ArgParser {
             System.exit(0);
         }
 
+        // This is the case if the arguments are passed by Python using a list. In that case we need to convert the
+        // Python syntax to a format which java understands.
+        if (args[0].charAt(0) == '[') {
+            String argString = Arrays.toString(args);
+            argString = argString.replace("[", "");
+            argString = argString.replace("]", "");
+            argString = argString.replace("'", "");
+            String[] tempArgs = argString.split(",");
+            args = new String[tempArgs.length];
+            args = tempArgs;
+
+            for (int i = 0; i < args.length; i++) {
+                args[i] = args[i].replace(" ", "");
+            }
+        }
+
         if (args.length % 2 != 0) {
             System.out.println("Have you missed specifying an argument?");
+            System.out.println("Specified arguments: \n" + new ArrayList<>(List.of(args)));
             System.exit(1);
         }
 

@@ -1,0 +1,14 @@
+{
+  "algorithm": "random-vs-random",
+  "domain": "carcassonne",
+  "id": [
+    "carcassonne",
+    "random-vs-random",
+    "2"
+  ],
+  "memory_limit": 8192,
+  "problem": "carcassonne",
+  "run_dir": "runs-00001-00100/00003",
+  "seed": 2,
+  "time_limit": 1800
+}

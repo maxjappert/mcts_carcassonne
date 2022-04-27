@@ -33,33 +33,32 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 
 ### kann gelöscht werden
-BHOSLIB_GRAPHS = sorted(glob.glob(os.path.join(BENCHMARKS_DIR, "bhoslib", "*.mis")))
-RANDOM_GRAPHS = sorted(glob.glob(os.path.join(BENCHMARKS_DIR, "random", "*.txt")))
-ALGORITHMS = ["2approx", "greedy"]
-SEEDS = 2018
+# BHOSLIB_GRAPHS = sorted(glob.glob(os.path.join(BENCHMARKS_DIR, "bhoslib", "*.mis")))
+# RANDOM_GRAPHS = sorted(glob.glob(os.path.join(BENCHMARKS_DIR, "random", "*.txt")))
+# ALGORITHMS = ["2approx", "greedy"]
+# SEEDS = 2018
 ####
 
 
 TIME_LIMIT = 1800
-MEMORY_LIMIT = 2048
+MEMORY_LIMIT = 8192
 
 if REMOTE:
-    ENV = BaselSlurmEnvironment(email="my.name@unibas.ch")
-    SUITE = BHOSLIB_GRAPHS + RANDOM_GRAPHS
+    ENV = BaselSlurmEnvironment(email="max.jappert@unibas.ch")
+    #SUITE = BHOSLIB_GRAPHS + RANDOM_GRAPHS
 else:
     ENV = LocalEnvironment(processes=8)
     # Use smaller suite for local tests.
-    SUITE = BHOSLIB_GRAPHS[:1] + RANDOM_GRAPHS[:1]
+    #SUITE = BHOSLIB_GRAPHS[:1] + RANDOM_GRAPHS[:1]
 
 
 ### muss angepasst werden
 ATTRIBUTES = [
-    "cover",
-    "cover_size",
-    "error",
-    "solve_time",
-    "solver_exit_code",
-    Attribute("solved", absolute=True),
+    "p1_points",
+    "p2_points",
+    "p1_contemplation_time",
+    "p2_contemplation_time",
+    #Attribute("solved", absolute=True),
 ]
 ####
 
@@ -67,40 +66,44 @@ ATTRIBUTES = [
 # Create a new experiment.
 exp = Experiment(environment=ENV)
 # TODO
-exp.add_resource("solver", os.path.join(SCRIPT_DIR, "solver.py"))
+exp.add_resource("solver", os.path.join(SCRIPT_DIR, "carcassonne.jar"))
 # Add custom parser.
 exp.add_parser("parser.py")
 
 ALGORITHMS = {
-    'uct-vs-heuristic': ['--player1', 'uct', ...],
-    'heuristic-vs-uct': ['--player1', 'heuristic', ...],
-    'random-vs-heuristic': ['--player1', 'random', ...],
-    'heuristic-vs-random': ['--player1', 'random', ...],
+    'random-vs-random': ['--p1',  'random', '--p2', 'random']
 }
+
 for algo_name, algo_cmd in ALGORITHMS.items():
     for seed in range(5):
         # loop over both positionings of players?
         run = exp.add_run()
+
+        algo_cmd_string = ''
+
+        for arg in algo_cmd:
+            algo_cmd_string = algo_cmd_string + arg + ' '
+
         run.add_command(
             f"{algo_name}",
-            ["{solver}", algo_cmd, "--seed", 2018],
+            ["java",  "-jar", "{solver}", algo_cmd, "--deckseed", seed, "-v", "false"],
             time_limit=TIME_LIMIT,
             memory_limit=MEMORY_LIMIT,
         )
         # AbsoluteReport needs the following attributes:
         # 'domain', 'problem' and 'algorithm'.
-        domain = "carcassone"
-        task_name = "carcassone"
-        run.set_property("domain", domain)
+        domain = "carcassonne"
+        task_name = "carcassonne"
         run.set_property("problem", task_name)
+        run.set_property("domain", domain)
         run.set_property("algorithm", algo_name)
         # BaseReport needs the following properties:
         # 'time_limit', 'memory_limit', 'seed'.
         run.set_property("time_limit", TIME_LIMIT)
         run.set_property("memory_limit", MEMORY_LIMIT)
-        run.set_property("seed", SEED)
+        run.set_property("seed", seed)
         # Every run has to have a unique id in the form of a list.
-        run.set_property("id", [algo, domain, task_name, seed])
+        run.set_property("id", [domain, algo_name, f"{seed}"])
 
 # Add step that writes experiment files to disk.
 exp.add_step("build", exp.build)

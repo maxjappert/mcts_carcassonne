@@ -62,6 +62,10 @@ public class Engine {
 
         System.out.println(info);
 
+        double player1ContemplationTime = 0;
+        double player2ContemplationTime = 0;
+
+
         while (!stateSpace.isGoal(state)) {
             if (verbose) System.out.println("Current score: " + Arrays.toString(state.getScore()));
 
@@ -97,11 +101,17 @@ public class Engine {
             if (player == 1) {
                 if ((player1 instanceof MCTSPlayer || player1 instanceof MinimaxPlayer) && verbose)
                     System.out.println("Player 1 is calculating a move...");
+                long time1 = System.nanoTime();
                 choice = player1.decideOnNextMove(state, drawnTile, deck, moves);
+                long time2 = System.nanoTime();
+                player1ContemplationTime += (time2 - time1) / Math.pow(10, 9);
             } else {
                 if ((player2 instanceof MCTSPlayer || player2 instanceof MinimaxPlayer) && verbose)
                     System.out.println("Player 2 is calculating a move...");
+                long time1 = System.nanoTime();
                 choice = player2.decideOnNextMove(state, drawnTile, deck, moves);
+                long time2 = System.nanoTime();
+                player2ContemplationTime += (time2 - time1) / Math.pow(10, 9);
             }
 
             Move move = moves.get(choice.getFirst());
@@ -126,8 +136,11 @@ public class Engine {
 
         state.assignPointsAtEndOfGame();
 
-        System.out.println("Player 1 has " + state.getScore()[0] + " points.");
-        System.out.println("Player 2 has " + state.getScore()[1] + " points.");
+        System.out.println("P1 points: " + state.getScore()[0]);
+        System.out.println("P2 points: " + state.getScore()[1]);
+
+        System.out.println("P1 contemplation time in seconds: " + player1ContemplationTime);
+        System.out.println("P2 contemplation time in seconds: " + player2ContemplationTime);
     }
 
     /**

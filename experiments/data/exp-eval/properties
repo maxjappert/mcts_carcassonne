@@ -1,0 +1,92 @@
+{
+  "carcassonne-random-vs-random-0": {
+    "algorithm": "random-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "random-vs-random",
+      "0"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 0.000952647,
+    "p1_points": 70,
+    "p2_contemplation_time": 0.000398163,
+    "p2_points": 55,
+    "problem": "carcassonne",
+    "run_dir": "runs-00001-00100/00001",
+    "seed": 0,
+    "time_limit": 1800
+  },
+  "carcassonne-random-vs-random-1": {
+    "algorithm": "random-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "random-vs-random",
+      "1"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 0.0008229699999999996,
+    "p1_points": 64,
+    "p2_contemplation_time": 0.000410224,
+    "p2_points": 61,
+    "problem": "carcassonne",
+    "run_dir": "runs-00001-00100/00002",
+    "seed": 1,
+    "time_limit": 1800
+  },
+  "carcassonne-random-vs-random-2": {
+    "algorithm": "random-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "random-vs-random",
+      "2"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 0.000861774,
+    "p1_points": 57,
+    "p2_contemplation_time": 0.00041041600000000004,
+    "p2_points": 75,
+    "problem": "carcassonne",
+    "run_dir": "runs-00001-00100/00003",
+    "seed": 2,
+    "time_limit": 1800
+  },
+  "carcassonne-random-vs-random-3": {
+    "algorithm": "random-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "random-vs-random",
+      "3"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 0.0010081069999999998,
+    "p1_points": 92,
+    "p2_contemplation_time": 0.000409137,
+    "p2_points": 73,
+    "problem": "carcassonne",
+    "run_dir": "runs-00001-00100/00004",
+    "seed": 3,
+    "time_limit": 1800
+  },
+  "carcassonne-random-vs-random-4": {
+    "algorithm": "random-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "random-vs-random",
+      "4"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 0.000947669,
+    "p1_points": 57,
+    "p2_contemplation_time": 0.000407022,
+    "p2_points": 73,
+    "problem": "carcassonne",
+    "run_dir": "runs-00001-00100/00005",
+    "seed": 4,
+    "time_limit": 1800
+  }
+}
