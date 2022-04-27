@@ -1,14 +1,14 @@
 {
-  "algorithm": "random-vs-uct",
+  "algorithm": "uct-vs-random",
   "domain": "carcassonne",
   "id": [
     "carcassonne",
-    "random-vs-uct",
+    "uct-vs-random",
     "1"
   ],
   "memory_limit": 8192,
-  "problem": "random-vs-uct",
-  "run_dir": "runs-00001-00100/00002",
+  "problem": "uct-vs-random",
+  "run_dir": "runs-00001-00100/00007",
   "seed": 1,
   "time_limit": 1800
 }

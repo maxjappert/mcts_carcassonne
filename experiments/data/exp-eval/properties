@@ -1,91 +1,181 @@
 {
-  "carcassonne-random-vs-random-0": {
-    "algorithm": "random-vs-random",
+  "carcassonne-random-vs-uct-0": {
+    "algorithm": "random-vs-uct",
     "domain": "carcassonne",
     "id": [
       "carcassonne",
-      "random-vs-random",
+      "random-vs-uct",
       "0"
     ],
     "memory_limit": 8192,
-    "p1_contemplation_time": 0.000952647,
-    "p1_points": 70,
-    "p2_contemplation_time": 0.000398163,
-    "p2_points": 55,
-    "problem": "carcassonne",
+    "p1_contemplation_time": 0.000496726,
+    "p1_points": 71,
+    "p2_contemplation_time": 47.437787311,
+    "p2_points": 94,
+    "problem": "random-vs-uct",
     "run_dir": "runs-00001-00100/00001",
     "seed": 0,
     "time_limit": 1800
   },
-  "carcassonne-random-vs-random-1": {
-    "algorithm": "random-vs-random",
+  "carcassonne-random-vs-uct-1": {
+    "algorithm": "random-vs-uct",
     "domain": "carcassonne",
     "id": [
       "carcassonne",
-      "random-vs-random",
+      "random-vs-uct",
       "1"
     ],
     "memory_limit": 8192,
-    "p1_contemplation_time": 0.0008229699999999996,
-    "p1_points": 64,
-    "p2_contemplation_time": 0.000410224,
-    "p2_points": 61,
-    "problem": "carcassonne",
+    "p1_contemplation_time": 0.000530765,
+    "p1_points": 68,
+    "p2_contemplation_time": 43.502201651,
+    "p2_points": 101,
+    "problem": "random-vs-uct",
     "run_dir": "runs-00001-00100/00002",
     "seed": 1,
     "time_limit": 1800
   },
-  "carcassonne-random-vs-random-2": {
-    "algorithm": "random-vs-random",
+  "carcassonne-random-vs-uct-2": {
+    "algorithm": "random-vs-uct",
     "domain": "carcassonne",
     "id": [
       "carcassonne",
-      "random-vs-random",
+      "random-vs-uct",
       "2"
     ],
     "memory_limit": 8192,
-    "p1_contemplation_time": 0.000861774,
-    "p1_points": 57,
-    "p2_contemplation_time": 0.00041041600000000004,
-    "p2_points": 75,
-    "problem": "carcassonne",
+    "p1_contemplation_time": 0.0004338280000000001,
+    "p1_points": 59,
+    "p2_contemplation_time": 18.78076937,
+    "p2_points": 85,
+    "problem": "random-vs-uct",
     "run_dir": "runs-00001-00100/00003",
     "seed": 2,
     "time_limit": 1800
   },
-  "carcassonne-random-vs-random-3": {
-    "algorithm": "random-vs-random",
+  "carcassonne-random-vs-uct-3": {
+    "algorithm": "random-vs-uct",
     "domain": "carcassonne",
     "id": [
       "carcassonne",
-      "random-vs-random",
+      "random-vs-uct",
       "3"
     ],
     "memory_limit": 8192,
-    "p1_contemplation_time": 0.0010081069999999998,
-    "p1_points": 92,
-    "p2_contemplation_time": 0.000409137,
-    "p2_points": 73,
-    "problem": "carcassonne",
+    "p1_contemplation_time": 0.0005327759999999998,
+    "p1_points": 101,
+    "p2_contemplation_time": 43.809587611000005,
+    "p2_points": 95,
+    "problem": "random-vs-uct",
     "run_dir": "runs-00001-00100/00004",
     "seed": 3,
     "time_limit": 1800
   },
-  "carcassonne-random-vs-random-4": {
-    "algorithm": "random-vs-random",
+  "carcassonne-random-vs-uct-4": {
+    "algorithm": "random-vs-uct",
     "domain": "carcassonne",
     "id": [
       "carcassonne",
-      "random-vs-random",
+      "random-vs-uct",
       "4"
     ],
     "memory_limit": 8192,
-    "p1_contemplation_time": 0.000947669,
-    "p1_points": 57,
-    "p2_contemplation_time": 0.000407022,
-    "p2_points": 73,
-    "problem": "carcassonne",
+    "p1_contemplation_time": 0.000421087,
+    "p1_points": 88,
+    "p2_contemplation_time": 18.394347754,
+    "p2_points": 116,
+    "problem": "random-vs-uct",
     "run_dir": "runs-00001-00100/00005",
+    "seed": 4,
+    "time_limit": 1800
+  },
+  "carcassonne-uct-vs-random-0": {
+    "algorithm": "uct-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "uct-vs-random",
+      "0"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 44.968476026999994,
+    "p1_points": 90,
+    "p2_contemplation_time": 0.00011280900000000001,
+    "p2_points": 66,
+    "problem": "uct-vs-random",
+    "run_dir": "runs-00001-00100/00006",
+    "seed": 0,
+    "time_limit": 1800
+  },
+  "carcassonne-uct-vs-random-1": {
+    "algorithm": "uct-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "uct-vs-random",
+      "1"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 47.31593924300001,
+    "p1_points": 97,
+    "p2_contemplation_time": 0.00010378799999999998,
+    "p2_points": 65,
+    "problem": "uct-vs-random",
+    "run_dir": "runs-00001-00100/00007",
+    "seed": 1,
+    "time_limit": 1800
+  },
+  "carcassonne-uct-vs-random-2": {
+    "algorithm": "uct-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "uct-vs-random",
+      "2"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 45.824954535,
+    "p1_points": 71,
+    "p2_contemplation_time": 0.000111085,
+    "p2_points": 73,
+    "problem": "uct-vs-random",
+    "run_dir": "runs-00001-00100/00008",
+    "seed": 2,
+    "time_limit": 1800
+  },
+  "carcassonne-uct-vs-random-3": {
+    "algorithm": "uct-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "uct-vs-random",
+      "3"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 44.64377943899999,
+    "p1_points": 151,
+    "p2_contemplation_time": 0.00010437200000000002,
+    "p2_points": 91,
+    "problem": "uct-vs-random",
+    "run_dir": "runs-00001-00100/00009",
+    "seed": 3,
+    "time_limit": 1800
+  },
+  "carcassonne-uct-vs-random-4": {
+    "algorithm": "uct-vs-random",
+    "domain": "carcassonne",
+    "id": [
+      "carcassonne",
+      "uct-vs-random",
+      "4"
+    ],
+    "memory_limit": 8192,
+    "p1_contemplation_time": 46.163980508,
+    "p1_points": 66,
+    "p2_contemplation_time": 0.000117897,
+    "p2_points": 75,
+    "problem": "uct-vs-random",
+    "run_dir": "runs-00001-00100/00010",
     "seed": 4,
     "time_limit": 1800
   }

@@ -65,13 +65,13 @@ ATTRIBUTES = [
 
 # Create a new experiment.
 exp = Experiment(environment=ENV)
-# TODO
 exp.add_resource("solver", os.path.join(SCRIPT_DIR, "carcassonne.jar"))
 # Add custom parser.
 exp.add_parser("parser.py")
 
 ALGORITHMS = {
-    'random-vs-random': ['--p1',  'random', '--p2', 'random']
+    'random-vs-uct': ['--p1',  'random', '--p2', 'uct', '--p2trainingiterations', '50', '--p2playout', 'random'],
+    'uct-vs-random': ['--p1', 'uct', '--p2', 'random', '--p1trainingiterations', '50', '--p1playout', 'random']
 }
 
 for algo_name, algo_cmd in ALGORITHMS.items():
@@ -93,7 +93,7 @@ for algo_name, algo_cmd in ALGORITHMS.items():
         # AbsoluteReport needs the following attributes:
         # 'domain', 'problem' and 'algorithm'.
         domain = "carcassonne"
-        task_name = "carcassonne"
+        task_name = algo_name
         run.set_property("problem", task_name)
         run.set_property("domain", domain)
         run.set_property("algorithm", algo_name)

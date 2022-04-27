@@ -18,7 +18,7 @@ redirects = {"stdout": run_log, "stderr": run_err}
 # Make sure we're in the run directory.
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-Call(['java', '-jar', '../../carcassonne.jar', "['--p1', 'random', '--p2', 'uct', '--p2trainingiterations', '50', '--p2playout', 'random']", '--deckseed', '0', '-v', 'false'], hard_stderr_limit=10240, hard_stdout_limit=10240, memory_limit=8192, name='random-vs-uct', soft_stderr_limit=64, soft_stdout_limit=1024, time_limit=1800, **redirects).wait()
+Call(['java', '-jar', '../../carcassonne.jar', "['--p1', 'uct', '--p2', 'random', '--p1trainingiterations', '50', '--p1playout', 'random']", '--deckseed', '3', '-v', 'false'], hard_stderr_limit=10240, hard_stdout_limit=10240, memory_limit=8192, name='uct-vs-random', soft_stderr_limit=64, soft_stdout_limit=1024, time_limit=1800, **redirects).wait()
 
 Call(['/home/maxja/mcts_carcassonne/venv/bin/python3', '../../parser.py'], hard_stderr_limit=10240, hard_stdout_limit=10240, memory_limit=None, name='parser', soft_stderr_limit=64, soft_stdout_limit=1024, time_limit=None, **redirects).wait()
 
