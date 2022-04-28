@@ -138,6 +138,8 @@ public class Engine {
 
         System.out.println("P1 contemplation time in seconds: " + player1ContemplationTime);
         System.out.println("P2 contemplation time in seconds: " + player2ContemplationTime);
+
+        System.out.println("Point difference: " + (state.getScore()[0]-state.getScore()[1]));
     }
 
     /**
