@@ -51,7 +51,6 @@ public class MinimaxPlayer extends Player {
             List<Integer> meepleSuccessors = stateSpace.meepleSucc(state, newTile, move.getCoords(), playerID);
             int index = stateSpace.getIndexOfBestMeeplePlacement(state, newTile, meepleSuccessors, state.getPlayer(), random);
             meeplePlacement = meepleSuccessors.get(index);
-            System.out.println("");
         }
 
         return new Pair(indexOfMaxValue, meeplePlacement);

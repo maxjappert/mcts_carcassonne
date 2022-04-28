@@ -20,7 +20,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 Call(['java', '-jar', '../../carcassonne.jar', "['--p1', 'uct', '--p2', 'random', '--p1trainingiterations', '50', '--p1playout', 'random']", '--deckseed', '2', '-v', 'false'], hard_stderr_limit=10240, hard_stdout_limit=10240, memory_limit=8192, name='uct-vs-random', soft_stderr_limit=64, soft_stdout_limit=1024, time_limit=1800, **redirects).wait()
 
-Call(['/home/maxja/mcts_carcassonne/venv/bin/python3', '../../parser.py'], hard_stderr_limit=10240, hard_stdout_limit=10240, memory_limit=None, name='parser', soft_stderr_limit=64, soft_stdout_limit=1024, time_limit=None, **redirects).wait()
+Call(['/home/maxja/mcts_carcassonne/experiments/.venv/bin/python3', '../../parser.py'], hard_stderr_limit=10240, hard_stdout_limit=10240, memory_limit=None, name='parser', soft_stderr_limit=64, soft_stdout_limit=1024, time_limit=None, **redirects).wait()
 
 
 for f in [run_log, run_err]:

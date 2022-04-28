@@ -19,14 +19,18 @@ public class ArgParser {
         int p2TrainingIterations        = 150;
         float p1ExplorationTermDelta    = 0;
         float p2ExplorationTermDelta    = 0;
-        boolean p1heuristicPlayout      = true;
-        boolean p2heuristicPlayout      = true;
+        boolean p1heuristicPlayout      = false;
+        boolean p2heuristicPlayout      = false;
         float p1backpropDelta           = 0;
         float p2backpropDelta           = 0;
         Engine.verbose                  = true;
         int p1MinimaxDepth              = 2;
         int p2MinimaxDepth              = 2;
         boolean graphwiz                = false;
+
+        for (int i = 0; i < args.length; i++) {
+            args[i] = args[i].toLowerCase();
+        }
 
         if (args[0].equals("-h") || args[0].equals("--help")) {
             printHelp();
@@ -104,15 +108,16 @@ public class ArgParser {
         Player[] players = new Player[2];
 
         switch (p1Type) {
-            case "uct"              -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct", p1heuristicPlayout, p1backpropDelta, graphwiz);
-            case "epsilon-greedy"   -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "epsilon-greedy", p1heuristicPlayout, p1backpropDelta, graphwiz);
-            case "heuristic-mcts"   -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "heuristic-mcts", p1heuristicPlayout, p1backpropDelta, graphwiz);
-            case "uct-tuned"        -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct-tuned", p1heuristicPlayout, p1backpropDelta, graphwiz);
-            case "boltzmann"        -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "boltzmann", p1heuristicPlayout, p1backpropDelta, graphwiz);
-            case "human"            -> players[0] = new HumanPlayer(stateSpace, 1);
-            case "random"           -> players[0] = new RandomPlayer(stateSpace, 1, p1RandomSeed);
-            case "heuristic"        -> players[0] = new HeuristicPlayer(stateSpace, 1, p1RandomSeed);
-            case "minimax"          -> players[0] = new MinimaxPlayer(stateSpace, 1, p1RandomSeed, p1MinimaxDepth, p1MeeplePlacementProb);
+            case "uct"                       -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct", p1heuristicPlayout, p1backpropDelta, graphwiz);
+            case "epsilon-greedy"            -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "epsilon-greedy", p1heuristicPlayout, p1backpropDelta, graphwiz);
+            case "decaying-epsilon-greedy"   -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "decaying-epsilon-greedy", p1heuristicPlayout, p1backpropDelta, graphwiz);
+            case "heuristic-mcts"            -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "heuristic-mcts", p1heuristicPlayout, p1backpropDelta, graphwiz);
+            case "uct-tuned"                 -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct-tuned", p1heuristicPlayout, p1backpropDelta, graphwiz);
+            case "boltzmann"                 -> players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "boltzmann", p1heuristicPlayout, p1backpropDelta, graphwiz);
+            case "human"                     -> players[0] = new HumanPlayer(stateSpace, 1);
+            case "random"                    -> players[0] = new RandomPlayer(stateSpace, 1, p1RandomSeed);
+            case "heuristic"                 -> players[0] = new HeuristicPlayer(stateSpace, 1, p1RandomSeed);
+            case "minimax"                   -> players[0] = new MinimaxPlayer(stateSpace, 1, p1RandomSeed, p1MinimaxDepth, p1MeeplePlacementProb);
             default -> {
                 System.out.println("Invalid player type for player 1. The options are 'uct'/'[heuristic-]epsilon-greedy'/'human'/'random'/'heuristic'/'heuristic-mcts'.");
                 System.exit(1);
@@ -120,15 +125,16 @@ public class ArgParser {
         }
 
         switch (p2Type) {
-            case "uct"              -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct", p2heuristicPlayout, p2backpropDelta, graphwiz);
-            case "epsilon-greedy"   -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz);
-            case "heuristic-mcts"   -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "heuristic-mcts", p2heuristicPlayout, p2backpropDelta, graphwiz);
-            case "uct-tuned"        -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct-tuned", p2heuristicPlayout, p2backpropDelta, graphwiz);
-            case "boltzmann"        -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "boltzmann", p2heuristicPlayout, p2backpropDelta, graphwiz);
-            case "human"            -> players[1] = new HumanPlayer(stateSpace, 2);
-            case "random"           -> players[1] = new RandomPlayer(stateSpace, 2, p2RandomSeed);
-            case "heuristic"        -> players[1] = new HeuristicPlayer(stateSpace, 2, p2RandomSeed);
-            case "minimax"          -> players[1] = new MinimaxPlayer(stateSpace, 2, p2RandomSeed, p2MinimaxDepth, p2MeeplePlacementProb);
+            case "uct"                       -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct", p2heuristicPlayout, p2backpropDelta, graphwiz);
+            case "epsilon-greedy"            -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz);
+            case "decaying-epsilon-greedy"   -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "decaying-epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz);
+            case "heuristic-mcts"            -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "heuristic-mcts", p2heuristicPlayout, p2backpropDelta, graphwiz);
+            case "uct-tuned"                 -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct-tuned", p2heuristicPlayout, p2backpropDelta, graphwiz);
+            case "boltzmann"                 -> players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "boltzmann", p2heuristicPlayout, p2backpropDelta, graphwiz);
+            case "human"                     -> players[1] = new HumanPlayer(stateSpace, 2);
+            case "random"                    -> players[1] = new RandomPlayer(stateSpace, 2, p2RandomSeed);
+            case "heuristic"                 -> players[1] = new HeuristicPlayer(stateSpace, 2, p2RandomSeed);
+            case "minimax"                   -> players[1] = new MinimaxPlayer(stateSpace, 2, p2RandomSeed, p2MinimaxDepth, p2MeeplePlacementProb);
             default -> {
                 System.out.println("Invalid player type for player 2. The options are 'uct'/'[heuristic-]epsilon-greedy'/'human'/'random'/'heuristic'/'heuristic-mcts'.");
                 System.exit(1);
