@@ -73,81 +73,100 @@ public class Tile {
         meeple = new int[]{-1, -1};
 
         switch (type) {
-            case 0 -> {
+            case 0: {
                 points = new int[]{0, 0, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
+                break;
             }
-            case 1 -> {
+            case 1: {
                 points = new int[]{0, 2, 0, 0, 0, 0, 1, 1, 1, 0, 2, 0};
                 middle = 2;
+                break;
             }
-            case 2 -> {
+            case 2: {
                 points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 0, 0};
                 middle = 2;
+                break;
             }
-            case 3 -> {
+            case 3: {
                 points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 0, 2, 0};
                 middle = 3;
+                break;
             }
-            case 4 -> {
+            case 4: {
                 points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
+                break;
             }
-            case 5 -> {
+            case 5: {
                 points = new int[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0};
                 middle = 0;
+                break;
             }
-            case 6 -> {
+            case 6: {
                 points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 0;
+                break;
             }
-            case 7 -> {
+            case 7: {
                 points = new int[]{0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
+                break;
             }
-            case 8 -> {
+            case 8: {
                 points = new int[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0};
                 middle = 2;
+                break;
             }
-            case 9 -> {
+            case 9: {
                 points = new int[]{0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0};
                 middle = 3;
+                break;
             }
-            case 10 -> {
+            case 10: {
                 points = new int[]{0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0};
                 middle = 3;
+                break;
             }
-            case 11 -> {
+            case 11: {
                 points = new int[]{0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
+                break;
             }
-            case 12 -> {
+            case 12: {
                 points = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                 middle = 4;
+                break;
             }
-            case 13 -> {
+            case 13: {
                 points = new int[]{0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1};
                 middle = 1;
+                break;
             }
-            case 14 -> {
+            case 14: {
                 points = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
+                break;
             }
-            case 15 -> {
+            case 15: {
                 points = new int[]{0, 2, 0, 0, 2, 0, 1, 1, 1, 1, 1, 1};
                 middle = 1;
+                break;
             }
-            case 16 -> {
+            case 16: {
                 points = new int[]{0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
+                break;
             }
-            case 17 -> {
+            case 17: {
                 points = new int[]{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
+                break;
             }
-            case 18 -> {
+            case 18: {
                 points = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
                 middle = 1;
+                break;
             }
         }
     }

@@ -110,14 +110,12 @@ public class MCTSPlayer extends Player {
             br = new BufferedWriter(fw);
 
             // For removing the points, the width can be set to 0.01.
-            br.write("""
-                    graph ""
-                       {
-                        fontname="Helvetica,Arial,sans-serif"
-                        node [fontname="Helvetica,Arial,sans-serif" width=0.01 shape=point]
-                        edge [fontname="Helvetica,Arial,sans-serif"]
+            br.write("graph \"\"\n" +
+                       "{\n" +
+                        "fontname=\"Helvetica,Arial,sans-serif\"\n" +
+                        "node [fontname=\"Helvetica,Arial,sans-serif\" width=0.01 shape=point]\n" +
+                        "edge [fontname=\"Helvetica,Arial,sans-serif\"]\n");
                         
-                    """);
 
             br.write("n" + root.id + " [label=\"\", fillcolor=" + root.getColour() + "] ; \n\n");
             br.flush();

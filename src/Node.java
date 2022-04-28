@@ -193,16 +193,16 @@ public class Node {
      */
     public String getColour() {
         switch (type) {
-            case 0 -> {
+            case 0: {
                 return "red";
             }
-            case 1 -> {
+            case 1: {
                 return "green";
             }
-            case 2 -> {
+            case 2: {
                 return "blue";
             }
-            default -> {
+            default: {
                 return "";
             }
         }

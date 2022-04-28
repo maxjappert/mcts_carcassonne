@@ -27,12 +27,9 @@ public class Engine {
 
         List<Tile> deck = assembleDeck(random);
 
-        StringBuilder info = new StringBuilder(String.format("""
-                The game is played with the following parameters:
-                
-                Deck Seed:            %d
-                Player 1:             %s
-                """, randomSeed, player1.getTypeAsString()));
+        StringBuilder info = new StringBuilder(String.format("The game is played with the following parameters:\n\n" +
+                "Deck Seed:            %d\n" +
+                "Player 1:             %s\n", randomSeed, player1.getTypeAsString()));
 
         if (player1 instanceof MCTSPlayer) {
             info.append("P1: c = ").append(((MCTSPlayer) player1).getExplorationTerm()).append(", ").append(((MCTSPlayer) player1)
