@@ -12,10 +12,13 @@ output = dict()
 for entry in dict_input.keys():
     name = entry[:-2]
     if name in output.keys():
-        output[name][0] += int(dict_input[entry]["p1_points"])
-        output[name][1] += int(dict_input[entry]["p2_points"])
-        output[name][2] += float(dict_input[entry]["p1_contemplation_time"])
-        output[name][3] += float(dict_input[entry]["p2_contemplation_time"])
+        try:
+            output[name][0] += int(dict_input[entry]["p1_points"])
+            output[name][1] += int(dict_input[entry]["p2_points"])
+            output[name][2] += float(dict_input[entry]["p1_contemplation_time"])
+            output[name][3] += float(dict_input[entry]["p2_contemplation_time"])
+        except KeyError:
+            print(name + " doesn't have all the properties.")
     else:
         try:
             output.update({name: [int(dict_input[entry]["p1_points"]), int(dict_input[entry]["p2_points"]),
@@ -27,7 +30,11 @@ for entry in dict_input.keys():
 print("Finished parsing .json file.")
 print("Creating .csv file...")
 
-os.remove(sys.argv[1] + "_table.csv")
+try:
+    os.remove(sys.argv[1] + "_table.csv")
+except FileNotFoundError:
+    ...
+
 with open(sys.argv[1] + "_table.csv", 'w') as csvfile:
 
     csvfile.write("name, p1_points, p2_points, p1_contemplation_time, p2_contemplation_time\n")

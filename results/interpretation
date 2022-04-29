@@ -1,0 +1,12 @@
+- UCT and uct-tuned 0 are shit, the highest win margins happen for exp-term 0
+- boltzmann 2 is better than boltzmann 5
+- ucttuned 5 is better than ucttuned 11
+- uct 5 better than uct 3
+- ucttuned4 is better than ucttuned 12
+- boltzmann 1 is better than 6
+- boltzmann 8 is better than 3
+- boltzmann 10 better than 7
+- uct 3 better than uct 7, 14
+- uct 3 is better than 7
+
+=> the results somehow don't make any sense, every term is about as good as all the other terms

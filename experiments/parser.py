@@ -35,6 +35,7 @@ if __name__ == "__main__":
     parser.add_pattern("p2_points", r"P2 points: (\d+)", type=int)
     parser.add_pattern("p1_contemplation_time", r"P1 contemplation time in seconds: (.+)", type=float)
     parser.add_pattern("p2_contemplation_time", r"P2 contemplation time in seconds: (.+)", type=float)
-    #parser.add_function(solved)
+    parser.add_pattern("points_difference", r"Point difference: (\d+)", type=int)
+#parser.add_function(solved)
     #parser.add_function(error)
     parser.parse()
