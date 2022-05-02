@@ -565,6 +565,6 @@ public class MCTSPlayer extends Player {
         int player = child.getState().getPlayer();
         double slice = Math.pow((double)child.getQValue()[player-1] / child.getVisits(), 2);
         double logIts = iterations == 0 ? 0 : Math.log(iterations);
-        return 0.5 * slice * child.getVisits() - ((double)child.getQValue()[player-1] / child.getVisits()) + Math.sqrt((2 * logIts)/child.getVisits());
+        return (1.0 / child.getVisits()) * slice * child.getVisits() - ((double)child.getQValue()[player-1] / child.getVisits()) + Math.sqrt((2 * logIts)/child.getVisits());
     }
 }
