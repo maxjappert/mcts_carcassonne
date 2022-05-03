@@ -10,6 +10,7 @@ public class MCTSPlayer extends Player {
      *  Denotes the importance of exploration during the tree policy. Corresponds to the c variable in the UCT formula.
      */
     private float explorationTerm;
+    final private float originalExplorationTerm;
 
     /**
      *  The number of training iterations for building the tree for choosing the next move.
@@ -89,6 +90,12 @@ public class MCTSPlayer extends Player {
             Engine.printError(" Invalid epsilon.");
         }
 
+        if (treePolicyType.equalsIgnoreCase("decaying-epsilon-greedy")) {
+            originalExplorationTerm = 1;
+        } else {
+            originalExplorationTerm = explorationTerm;
+        }
+
         this.heuristicPlayout = heuristicPlayout;
         this.backpropWeight = 1;
         this.backpropDelta = backpropDelta;
@@ -147,7 +154,7 @@ public class MCTSPlayer extends Player {
             updateBackpropWeight(backpropDelta);
 
             if (treePolicyType.contains("decaying")) {
-                explorationTerm = 1f / i;
+                explorationTerm = originalExplorationTerm / i;
             }
         }
 
