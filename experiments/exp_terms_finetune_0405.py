@@ -77,12 +77,12 @@ terms_to_test = [i*0.2 for i in range(0, 50)]
 for i in terms_to_test:
     for j in terms_to_test:
         if i != j:
-            key1 = f'uct{i}-vs-uct{j}-500its'
-            key2 = f'uct{j}-vs-uct{i}-500its'
-            key3 = f'boltzmann{i}-vs-boltzmann{j}-500its'
-            key4 = f'boltzmann{j}-vs-boltzmann{i}-500its'
-            key5 = f'ucttuned{i}-vs-ucttuned{j}-500its'
-            key6 = f'ucttuned{j}-vs-ucttuned{i}-500its'
+            key1 = f'uct{i}-vs-uct{j}-500its'.replace(".", "dot")
+            key2 = f'uct{j}-vs-uct{i}-500its'.replace(".", "dot")
+            key3 = f'boltzmann{i}-vs-boltzmann{j}-500its'.replace(".", "dot")
+            key4 = f'boltzmann{j}-vs-boltzmann{i}-500its'.replace(".", "dot")
+            key5 = f'ucttuned{i}-vs-ucttuned{j}-500its'.replace(".", "dot")
+            key6 = f'ucttuned{j}-vs-ucttuned{i}-500its'.replace(".", "dot")
             value1 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', str(i), '--p2explorationterm', str(j)]
             value2 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', str(j), '--p2explorationterm', str(i)]
             value3 = ['--p1',  'boltzmann', '--p2', 'boltzmann', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', str(i), '--p2explorationterm', str(j)]
