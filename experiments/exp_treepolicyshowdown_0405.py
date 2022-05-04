@@ -106,17 +106,17 @@ value11 = ['--p1',  'ucttuned', '--p2', 'decaying-epsilon-greedy', '--p1training
 value12 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'ucttuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 3, '--p2explorationterm', 1]
 
 ALGORITHMS.update({key1: value1})
-ALGORITHMS.update({key2: value1})
-ALGORITHMS.update({key3: value1})
-ALGORITHMS.update({key4: value1})
-ALGORITHMS.update({key5: value1})
-ALGORITHMS.update({key6: value1})
-ALGORITHMS.update({key7: value1})
-ALGORITHMS.update({key8: value1})
-ALGORITHMS.update({key9: value1})
-ALGORITHMS.update({key10: value1})
-ALGORITHMS.update({key11: value1})
-ALGORITHMS.update({key12: value1})
+ALGORITHMS.update({key2: value2})
+ALGORITHMS.update({key3: value3})
+ALGORITHMS.update({key4: value4})
+ALGORITHMS.update({key5: value5})
+ALGORITHMS.update({key6: value6})
+ALGORITHMS.update({key7: value7})
+ALGORITHMS.update({key8: value8})
+ALGORITHMS.update({key9: value9})
+ALGORITHMS.update({key10: value10})
+ALGORITHMS.update({key11: value11})
+ALGORITHMS.update({key12: value12})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
     for seed in range(5):
