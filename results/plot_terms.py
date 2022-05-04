@@ -21,7 +21,7 @@ for row in reader:
         if term == 't':
             continue
 
-        if row[0][index + 1] != '-':
+        while row[0][index + 1] != '-':
             if row[0][index + 1:index + 4] == 'div':
                 if float(row[0][index + 4:index+6] == '10'):
                     continue
@@ -29,6 +29,7 @@ for row in reader:
                     term = float(term) / float(row[0][index + 4])
             else:
                 term = term + row[0][index + 1]
+            index += 1
 
         term = float(term)
 
@@ -43,6 +44,10 @@ for row in reader:
             continue
 
 achieved_points = dict(sorted(achieved_points.items()))
+
+for key in achieved_points.keys():
+    achieved_points[key] = achieved_points[key] / 1000
+
 fig = plt.figure()
 terms = achieved_points.keys()
 points = achieved_points.values()
@@ -51,5 +56,5 @@ print(terms)
 
 print(points)
 
-plt.bar(terms, points)
+plt.plot(terms, points)
 plt.show()
