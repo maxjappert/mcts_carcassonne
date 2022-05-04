@@ -92,18 +92,18 @@ key10 = f'epsilongreedy-vs-uct3-1000its'
 key11 = f'ucttuned10-vs-epsilongreedy-1000its'
 key12 = f'epsilongreedy-vs-ucttuned10-1000its'
 
-value1 = ['--p1',  'uct', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 3, '--p2explorationterm', 10]
-value2 = ['--p1',  'boltzmann', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 10, '--p2explorationterm', 3]
-value3 = ['--p1',  'ucttuned', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 10, '--p2explorationterm', 10]
-value4 = ['--p1',  'boltzmann', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 10, '--p2explorationterm', 10]
-value5 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 1, '--p2explorationterm', 10]
-value6 = ['--p1',  'boltzmann', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 10, '--p2explorationterm', 1]
-value7 = ['--p1',  'uct', '--p2', 'ucttuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 3, '--p2explorationterm', 10]
-value8 = ['--p1',  'ucttuned', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 10, '--p2explorationterm', 3]
-value9 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 3, '--p2explorationterm', 1]
-value10 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 1, '--p2explorationterm', 3]
-value11 = ['--p1',  'ucttuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 1, '--p2explorationterm', 3]
-value12 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'ucttuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', 3, '--p2explorationterm', 1]
+value1 = ['--p1',  'uct', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '3', '--p2explorationterm', '10']
+value2 = ['--p1',  'boltzmann', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '3']
+value3 = ['--p1',  'ucttuned', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '10']
+value4 = ['--p1',  'boltzmann', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '10']
+value5 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '1', '--p2explorationterm', '10']
+value6 = ['--p1',  'boltzmann', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '1']
+value7 = ['--p1',  'uct', '--p2', 'ucttuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '3', '--p2explorationterm', '10']
+value8 = ['--p1',  'ucttuned', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '3']
+value9 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '3', '--p2explorationterm', '1']
+value10 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '1', '--p2explorationterm', '3']
+value11 = ['--p1',  'ucttuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '1', '--p2explorationterm', '3']
+value12 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'ucttuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '3', '--p2explorationterm', '1']
 
 ALGORITHMS.update({key1: value1})
 ALGORITHMS.update({key2: value2})
