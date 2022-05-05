@@ -40,7 +40,7 @@ BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 ####
 
 
-TIME_LIMIT = 1800
+TIME_LIMIT = 3600
 MEMORY_LIMIT = 8192
 
 if REMOTE:
