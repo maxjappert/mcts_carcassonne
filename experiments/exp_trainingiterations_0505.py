@@ -74,7 +74,7 @@ ALGORITHMS = dict()
 
 # Tests the performance against a random opponent using different exploration terms
 
-iterations = 1
+iterations = 2
 
 while iterations < 10000:
     key1 = f'uct-{iterations}its1'
