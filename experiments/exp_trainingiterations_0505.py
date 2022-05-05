@@ -74,9 +74,9 @@ ALGORITHMS = dict()
 
 # Tests the performance against a random opponent using different exploration terms
 
-iterations = 2
+for i in range(0, 14):
+    iterations = 2**i
 
-while iterations < 10000:
     key1 = f'uct-{iterations}its1'
     key2 = f'ucttuned-{iterations}its1'
     key3 = f'boltzmann-{iterations}its1'
@@ -103,8 +103,6 @@ while iterations < 10000:
     ALGORITHMS.update({key6: value6})
     ALGORITHMS.update({key7: value7})
     ALGORITHMS.update({key8: value8})
-
-    iterations = iterations**2
 
 for algo_name, algo_cmd in ALGORITHMS.items():
     for seed in range(5):
