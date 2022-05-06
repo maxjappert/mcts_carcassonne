@@ -74,8 +74,9 @@ ALGORITHMS = dict()
 
 # Tests the performance against a random opponent using different exploration terms
 
-for i in range(0, 14):
-    iterations = 2**i
+range1 = list(range(0, 500, 20))
+
+for iterations in (list(range(0, 500, 20)) + list(range(500, 2000, 100))):
 
     key1 = f'uct-{iterations}its1'
     key2 = f'ucttuned-{iterations}its1'
