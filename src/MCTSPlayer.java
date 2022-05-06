@@ -567,7 +567,7 @@ public class MCTSPlayer extends Player {
         else if (treePolicyType.equals("uct-tuned")) return Math.sqrt((Math.log(parentVisits) / child.getVisits()) * Math.min(0.25, V(child, iterations)));
         return 0;
     }
-§
+
     private double V(Node child, int iterations) {
         int player = child.getState().getPlayer();
         double slice = Math.pow((double)child.getQValue()[player-1] / child.getVisits(), 2);
