@@ -40,7 +40,7 @@ BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 ####
 
 
-TIME_LIMIT = 3600
+TIME_LIMIT = 1800
 MEMORY_LIMIT = 8192
 
 if REMOTE:
@@ -72,36 +72,37 @@ exp.add_parser("parser.py")
 
 ALGORITHMS = dict()
 
-# Tests the performance against a random opponent using different exploration terms
+# -boltzmann
+# -uct
+# -ucttuned
+# -espilon-greedy
 
-for iterations in (list(range(0, 500, 20)) + list(range(500, 2000, 100))):
+key1 = f'ucttuned1'
+key2 = f'ucttuned2'
+key3 = f'boltzmann1'
+key4 = f'boltzmann2'
+key5 = f'uct1'
+key6 = f'uct2'
+key7 = f'epsilongreedy1'
+key8 = f'epsilongreedy2'
 
-    key1 = f'uct-{iterations}its1'
-    key2 = f'ucttuned-{iterations}its1'
-    key3 = f'boltzmann-{iterations}its1'
-    key4 = f'epsilongreedy-{iterations}its1'
-    key5 = f'uct-{iterations}its2'
-    key6 = f'ucttuned-{iterations}its2'
-    key7 = f'boltzmann-{iterations}its2'
-    key8 = f'epsilongreedy-{iterations}its2'
+value1 = ['--p1',  'uct-tuned', '--p2', 'uct-tuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p1playout', 'heuristic', '--p1explorationterm', '10', '--p2explorationterm', '10']
+value2 = ['--p1',  'uct-tuned', '--p2', 'uct-tuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p2playout', 'heuristic', '--p1explorationterm', '10', '--p2explorationterm', '10']
+value3 = ['--p1',  'boltzmann', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p1playout', 'heuristic', '--p1explorationterm', '5', '--p2explorationterm', '5']
+value4 = ['--p1',  'boltzmann', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p1playout', 'heuristic', '--p2explorationterm', '5', '--p2explorationterm', '5']
+value5 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p1playout', 'heuristic', '--p2explorationterm', '2', '--p2explorationterm', '2']
+value6 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p2playout', 'heuristic', '--p2explorationterm', '2', '--p2explorationterm', '2']
+value7 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p1playout', 'heuristic', '--p2explorationterm', '1', '--p2explorationterm', '1']
+value8 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', 'p2playout', 'heuristic', '--p2explorationterm', '1', '--p2explorationterm', '1']
 
-    value1 = ['--p1',  'uct', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '3']
-    value2 = ['--p1',  'uct-tuned', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '10']
-    value3 = ['--p1',  'boltzmann', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '10']
-    value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '1']
-    value5 = ['--p2',  'uct', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '3']
-    value6 = ['--p2',  'uct-tuned', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '10']
-    value7 = ['--p2',  'boltzmann', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '10']
-    value8 = ['--p2',  'decaying-epsilon-greedy', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '1']
-
-    ALGORITHMS.update({key1: value1})
-    ALGORITHMS.update({key2: value2})
-    ALGORITHMS.update({key3: value3})
-    ALGORITHMS.update({key4: value4})
-    ALGORITHMS.update({key5: value5})
-    ALGORITHMS.update({key6: value6})
-    ALGORITHMS.update({key7: value7})
-    ALGORITHMS.update({key8: value8})
+ALGORITHMS.update({key1: value1})
+ALGORITHMS.update({key2: value2})
+ALGORITHMS.update({key3: value3})
+ALGORITHMS.update({key4: value4})
+ALGORITHMS.update({key5: value5})
+ALGORITHMS.update({key6: value6})
+ALGORITHMS.update({key7: value7})
+ALGORITHMS.update({key8: value8})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
     for seed in range(5):
