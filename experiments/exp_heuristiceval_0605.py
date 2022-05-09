@@ -86,14 +86,14 @@ key6 = f'uct2'
 key7 = f'epsilongreedy1'
 key8 = f'epsilongreedy2'
 
-value1 = ['--p1',  'uct-tuned', '--p2', 'uct-tuned', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1playout', 'heuristic', '--p1explorationterm', '10', '--p2explorationterm', '10']
-value2 = ['--p1',  'uct-tuned', '--p2', 'uct-tuned', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p2playout', 'heuristic', '--p1explorationterm', '10', '--p2explorationterm', '10']
-value3 = ['--p1',  'boltzmann', '--p2', 'boltzmann', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1playout', 'heuristic', '--p1explorationterm', '5', '--p2explorationterm', '5']
-value4 = ['--p1',  'boltzmann', '--p2', 'boltzmann', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1playout', 'heuristic', '--p2explorationterm', '5', '--p2explorationterm', '5']
-value5 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1playout', 'heuristic', '--p2explorationterm', '2', '--p2explorationterm', '2']
-value6 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p2playout', 'heuristic', '--p2explorationterm', '2', '--p2explorationterm', '2']
-value7 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1playout', 'heuristic', '--p2explorationterm', '1', '--p2explorationterm', '1']
-value8 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p2playout', 'heuristic', '--p2explorationterm', '1', '--p2explorationterm', '1']
+value1 = ['--p1',  'uct-tuned', '--p2', 'uct-tuned', '--p1trainingiterations', '250', '--p2trainingiterations', '250', '--p1playout', 'heuristic', '--p1explorationterm', '10', '--p2explorationterm', '10']
+value2 = ['--p1',  'uct-tuned', '--p2', 'uct-tuned', '--p1trainingiterations', '250', '--p2trainingiterations', '250', '--p2playout', 'heuristic', '--p1explorationterm', '10', '--p2explorationterm', '10']
+value3 = ['--p1',  'boltzmann', '--p2', 'boltzmann', '--p1trainingiterations', '250', '--p2trainingiterations', '250', '--p1playout', 'heuristic', '--p1explorationterm', '5', '--p2explorationterm', '5']
+value4 = ['--p1',  'boltzmann', '--p2', 'boltzmann', '--p1trainingiterations', '250', '--p2trainingiterations', '250', '--p2playout', 'heuristic', '--p1explorationterm', '5', '--p2explorationterm', '5']
+value5 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '250', '--p2trainingiterations', '250', '--p1playout', 'heuristic', '--p1explorationterm', '2', '--p2explorationterm', '2']
+value6 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '250', '--p2trainingiterations', '250', '--p2playout', 'heuristic', '--p1explorationterm', '2', '--p2explorationterm', '2']
+value7 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '250', '--p1trainingiterations', '250', '--p1playout', 'heuristic', '--p1explorationterm', '1', '--p2explorationterm', '1']
+value8 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '250', '--p2trainingiterations', '250', '--p2playout', 'heuristic', '--p1explorationterm', '1', '--p2explorationterm', '1']
 
 ALGORITHMS.update({key1: value1})
 ALGORITHMS.update({key2: value2})

@@ -236,7 +236,7 @@ public class GameStateSpace {
 
         for (int i = 0; i < placements.size(); i++) {
             int h = meepleHeuristic(state, tile, placements.get(i), player);
-            if (h > maxValue || (h == maxValue && random.nextFloat() < 0.3)) {
+            if (h > maxValue) {
                 maxValue = h;
                 index = i;
             }
