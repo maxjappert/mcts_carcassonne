@@ -192,7 +192,7 @@ public class ArgParser {
             case "epsilon-greedy":
                 players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz);
                 break;
-            case "decaying-epsilon-greedy":
+            case "decaying-epsilon":
                 players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "decaying-epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz);
                 break;
             case "heuristic-mcts":
