@@ -73,25 +73,25 @@ exp.add_parser("parser.py")
 ALGORITHMS = dict()
 
 for i in [i*0.5 for i in range(0, 30)]:
-    key1 = f'uct{i}_1'.replace('.', 'dot')
-    key2 = f'uct{i}_2'.replace('.', 'dot')
+    #key1 = f'uct{i}_1'.replace('.', 'dot')
+    #key2 = f'uct{i}_2'.replace('.', 'dot')
     key3 = f'ucttuned{i}_1'.replace('.', 'dot')
     key4 = f'ucttuned{i}_2'.replace('.', 'dot')
-    key5 = f'boltzmann{i}_1'.replace('.', 'dot')
-    key6 = f'boltzmann{i}_2'.replace('.', 'dot')
-    value1 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
-    value2 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
+    #key5 = f'boltzmann{i}_1'.replace('.', 'dot')
+    #key6 = f'boltzmann{i}_2'.replace('.', 'dot')
+    #value1 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
+    #value2 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
     value3 = ['--p1',  'ucttuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
     value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'ucttuned', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
-    value5 = ['--p1',  'boltzmann', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
-    value6 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'boltzmann', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
+    #value5 = ['--p1',  'boltzmann', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
+    #value6 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'boltzmann', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
 
-    ALGORITHMS.update({key1: value1})
-    ALGORITHMS.update({key2: value2})
+    #ALGORITHMS.update({key1: value1})
+    #ALGORITHMS.update({key2: value2})
     ALGORITHMS.update({key3: value3})
     ALGORITHMS.update({key4: value4})
-    ALGORITHMS.update({key5: value5})
-    ALGORITHMS.update({key6: value6})
+    #ALGORITHMS.update({key5: value5})
+    #ALGORITHMS.update({key6: value6})
 
     epsilon = 1
 

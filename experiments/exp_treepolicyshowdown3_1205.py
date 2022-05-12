@@ -72,10 +72,16 @@ exp.add_parser("parser.py")
 
 ALGORITHMS = dict()
 
+# What we want to test with this experiment is have the following tree policies play against each other and
+# then evaluate their performance:
 # -boltzmann
 # -uct
 # -ucttuned
-# -espilon-greedy
+# -random
+# -epsilon-greedy
+# -decaying-epsilon-greedy
+# -mcts with heuristic tree policy
+# -heuristic player (who simply picks the move which maximises the heuristic function
 
 key3 = f'ucttuned10-vs-boltzmann10-1000its'
 key4 = f'boltzmann10-vs-ucttuned10-1000its'
