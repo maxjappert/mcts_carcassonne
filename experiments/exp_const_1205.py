@@ -92,6 +92,8 @@ for i in [i*0.5 for i in range(0, 30)]:
         epsilon = 0
     elif i == 0.5:
         continue
+    else:
+        epsilon = 1.0 / i
 
     key7 = f'epsilongreedy{epsilon}_1'
     key8 = f'epsilongreedy{epsilon}_2'
