@@ -81,8 +81,8 @@ for i in [i*0.5 for i in range(0, 30)]:
     #key6 = f'boltzmann{i}_2'.replace('.', 'dot')
     #value1 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
     #value2 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
-    value3 = ['--p1',  'ucttuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
-    value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'ucttuned', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
+    value3 = ['--p1',  'uct-tuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
+    value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct-tuned', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
     #value5 = ['--p1',  'boltzmann', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
     #value6 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'boltzmann', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
 
