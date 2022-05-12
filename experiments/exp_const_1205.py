@@ -73,12 +73,12 @@ exp.add_parser("parser.py")
 ALGORITHMS = dict()
 
 for i in [i*0.5 for i in range(0, 30)]:
-    key1 = f'uct{i}_1'
-    key2 = f'uct{i}_2'
-    key3 = f'ucttuned{i}_1'
-    key4 = f'ucttuned{i}_2'
-    key5 = f'boltzmann{i}_1'
-    key6 = f'boltzmann{i}_2'
+    key1 = f'uct{i}_1'.replace('.', 'dot')
+    key2 = f'uct{i}_2'.replace('.', 'dot')
+    key3 = f'ucttuned{i}_1'.replace('.', 'dot')
+    key4 = f'ucttuned{i}_2'.replace('.', 'dot')
+    key5 = f'boltzmann{i}_1'.replace('.', 'dot')
+    key6 = f'boltzmann{i}_2'.replace('.', 'dot')
     value1 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
     value2 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
     value3 = ['--p1',  'ucttuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
@@ -102,8 +102,8 @@ for i in [i*0.5 for i in range(0, 30)]:
     else:
         epsilon = 1.0 / i
 
-    key7 = f'epsilongreedy{epsilon}_1'
-    key8 = f'epsilongreedy{epsilon}_2'
+    key7 = f'epsilongreedy{epsilon}_1'.replace('.', 'dot')
+    key8 = f'epsilongreedy{epsilon}_2'.replace('.', 'dot')
 
     value7 = ['--p1',  'epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(epsilon), '--p2explorationterm', '1']
     value8 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(epsilon)]
