@@ -32,13 +32,6 @@ REMOTE = NODE.endswith(".scicore.unibas.ch") or NODE.endswith(".cluster.bc2.ch")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 
-### kann gelöscht werden
-# BHOSLIB_GRAPHS = sorted(glob.glob(os.path.join(BENCHMARKS_DIR, "bhoslib", "*.mis")))
-# RANDOM_GRAPHS = sorted(glob.glob(os.path.join(BENCHMARKS_DIR, "random", "*.txt")))
-# ALGORITHMS = ["2approx", "greedy"]
-# SEEDS = 2018
-####
-
 
 TIME_LIMIT = 1800
 MEMORY_LIMIT = 8192
@@ -83,28 +76,31 @@ ALGORITHMS = dict()
 # -mcts with heuristic tree policy
 # -heuristic player (who simply picks the move which maximises the heuristic function
 
-key3 = f'ucttuned10-vs-boltzmann10-1000its'
-key4 = f'boltzmann10-vs-ucttuned10-1000its'
 
-key7 = f'uct3-vs-ucttuned10-1000its'
-key8 = f'ucttuned10-vs-uct3-1000its'
+tree_policies = dict()
 
-key11 = f'ucttuned10-vs-epsilongreedy-1000its'
-key12 = f'epsilongreedy-vs-ucttuned10-1000its'
+tree_policies.update({'boltzmann': 7})
+tree_policies.update({'uct': 7})
+tree_policies.update({'uct-tuned': 13})
+tree_policies.update({'random': -1})
+tree_policies.update({'epsilon-greedy': 0.3})
+tree_policies.update({'decaying-epsilon-greedy': 1})
+tree_policies.update({'heuristic-mcts': -1})
+tree_policies.update({'heuristic': -1})
 
-value3 = ['--p1',  'uct-tuned', '--p2', 'boltzmann', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '10']
-value4 = ['--p1',  'boltzmann', '--p2', 'uct-tuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '10']
-value7 = ['--p1',  'uct', '--p2', 'uct-tuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '3', '--p2explorationterm', '10']
-value8 = ['--p1',  'uct-tuned', '--p2', 'uct', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '10', '--p2explorationterm', '3']
-value11 = ['--p1',  'uct-tuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '1', '--p2explorationterm', '3']
-value12 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct-tuned', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', '3', '--p2explorationterm', '1']
+for tree_policy1 in tree_policies.keys():
+    for tree_policy2 in tree_policies.keys():
+        if tree_policy1 == tree_policy2:
+            continue
 
-ALGORITHMS.update({key3: value3})
-ALGORITHMS.update({key4: value4})
-ALGORITHMS.update({key7: value7})
-ALGORITHMS.update({key8: value8})
-ALGORITHMS.update({key11: value11})
-ALGORITHMS.update({key12: value12})
+        key1 = f'{tree_policy1}-vs-{tree_policy2}'
+        key2 = f'{tree_policy2}-vs-{tree_policy1}'
+
+        value1 = ['--p1',  f'{tree_policy1}', '--p2',  f'{tree_policy2}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy1]}', '--p2explorationterm', f'{tree_policies[tree_policy2]}']
+        value2 = ['--p1',  f'{tree_policy2}', '--p2',  f'{tree_policy1}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy2]}', '--p2explorationterm', f'{tree_policies[tree_policy1]}']
+
+        ALGORITHMS.update({key1: value1})
+        ALGORITHMS.update({key2: value2})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
     for seed in range(5):
