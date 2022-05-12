@@ -86,6 +86,13 @@ for i in [i*0.5 for i in range(0, 30)]:
     value5 = ['--p1',  'boltzmann', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', 1]
     value6 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'boltzmann', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', 1, '--p2explorationterm', str(i)]
 
+    ALGORITHMS.update({key1: value1})
+    ALGORITHMS.update({key2: value2})
+    ALGORITHMS.update({key3: value3})
+    ALGORITHMS.update({key4: value4})
+    ALGORITHMS.update({key5: value5})
+    ALGORITHMS.update({key6: value6})
+
     epsilon = 1
 
     if i == 0:
@@ -100,6 +107,9 @@ for i in [i*0.5 for i in range(0, 30)]:
 
     value7 = ['--p1',  'epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(epsilon), '--p2explorationterm', 1]
     value8 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', 1, '--p2explorationterm', str(epsilon)]
+
+    ALGORITHMS.update({key7: value7})
+    ALGORITHMS.update({key8: value8})
 
 
 
