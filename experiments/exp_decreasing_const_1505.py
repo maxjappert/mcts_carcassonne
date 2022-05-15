@@ -93,6 +93,9 @@ for type in tree_policies.keys():
         key1 = f'{type}_{delta}_1'
         key2 = f'{type}_{delta}_2'
 
+        key1 = key1.replace('.', 'dot')
+        key2 = key2.replace('.', 'dot')
+
         value1 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}', '--p1explorationtermdelta', f'{delta}']
         value2 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}', '--p2explorationtermdelta', f'{delta}']
 
