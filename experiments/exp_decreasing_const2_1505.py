@@ -33,7 +33,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 
 
-TIME_LIMIT = 1800
+TIME_LIMIT = 4800
 MEMORY_LIMIT = 8192
 
 if REMOTE:
@@ -87,8 +87,6 @@ deltas = [-0.25, -0.3, -0.35, -0.4, -0.45, -0.5, -0.03, -0.01]
 
 for type in tree_policies.keys():
     for delta in deltas:
-        if delta > 0.1 and (type == 'boltzmann' or type == 'uct-tuned'):
-            continue
 
         key1 = f'{type}_{delta}_1'
         key2 = f'{type}_{delta}_2'
