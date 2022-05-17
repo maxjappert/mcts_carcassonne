@@ -83,8 +83,8 @@ deltas = [-0.25, -0.3, -0.35, -0.4, -0.45, -0.5, -0.03, -0.01, -0.2, -0.15, -0.1
 
 for delta in deltas:
 
-    key1 = f'{type}_{delta}_1'
-    key2 = f'{type}_{delta}_2'
+    key1 = f'uct_{delta}_1'
+    key2 = f'uct_{delta}_2'
 
     key1 = key1.replace('.', 'dot')
     key2 = key2.replace('.', 'dot')
@@ -95,8 +95,8 @@ for delta in deltas:
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})
 
-    key1 = f'{type}_{delta}_1'
-    key2 = f'{type}_{delta}_2'
+    key3 = f'uct-tuned_{delta}_1'
+    key4 = f'uct-tuned_{delta}_2'
 
     key3 = key3.replace('.', 'dot')
     key4 = key4.replace('.', 'dot')
