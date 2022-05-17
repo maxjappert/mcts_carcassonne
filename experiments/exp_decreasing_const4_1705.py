@@ -79,29 +79,36 @@ ALGORITHMS = dict()
 
 tree_policies = dict()
 
-tree_policies.update({'boltzmann': 7})
-tree_policies.update({'uct': 7})
-tree_policies.update({'uct-tuned': 13})
+deltas = [-0.25, -0.3, -0.35, -0.4, -0.45, -0.5, -0.03, -0.01, -0.2, -0.15, -0.1, -0.05, 0]
 
-deltas = [0]
+for delta in deltas:
 
-for type in tree_policies.keys():
-    for delta in deltas:
+    key1 = f'{type}_{delta}_1'
+    key2 = f'{type}_{delta}_2'
 
-        key1 = f'{type}_{delta}_1'
-        key2 = f'{type}_{delta}_2'
+    key1 = key1.replace('.', 'dot')
+    key2 = key2.replace('.', 'dot')
 
-        key1 = key1.replace('.', 'dot')
-        key2 = key2.replace('.', 'dot')
+    value1 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'20', '--p2explorationterm', f'7', '--p1explorationtermdelta', f'{delta}']
+    value2 = ['--p1',  'uct', '--p2', 'uct', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'7', '--p2explorationterm', f'20', '--p2explorationtermdelta', f'{delta}']
 
-        value1 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}', '--p1explorationtermdelta', f'{delta}']
-        value2 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}', '--p2explorationtermdelta', f'{delta}']
+    ALGORITHMS.update({key1: value1})
+    ALGORITHMS.update({key2: value2})
 
-        ALGORITHMS.update({key1: value1})
-        ALGORITHMS.update({key2: value2})
+    key1 = f'{type}_{delta}_1'
+    key2 = f'{type}_{delta}_2'
+
+    key3 = key3.replace('.', 'dot')
+    key4 = key4.replace('.', 'dot')
+
+    value3 = ['--p1',  f'uct-tuned', '--p2', f'uct-tuned', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'30', '--p2explorationterm', f'14', '--p1explorationtermdelta', f'{delta}']
+    value4 = ['--p1',  f'uct-tuned', '--p2', f'uct-tuned', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'14', '--p2explorationterm', f'30', '--p2explorationtermdelta', f'{delta}']
+
+    ALGORITHMS.update({key3: value3})
+    ALGORITHMS.update({key4: value4})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(10):
+    for seed in range(5):
         # loop over both positionings of players?
         run = exp.add_run()
 
