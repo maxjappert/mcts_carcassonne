@@ -515,12 +515,11 @@ public class MCTSPlayer extends Player {
     }
 
     public void updateExplorationTerm(float delta) {
-        if (explorationTerm - delta < 0) {
-            Engine.printError(" Negative exploration term!");
-            System.exit(-1);
+        if (explorationTerm + delta < 0) {
+            explorationTerm = 0;
+        } else {
+            explorationTerm = explorationTerm + delta;
         }
-
-        explorationTerm = explorationTerm + delta;
     }
 
     private void updateBackpropWeight(float delta) {
