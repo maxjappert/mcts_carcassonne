@@ -88,9 +88,6 @@ deltas = [0]
 
 for type in tree_policies.keys():
     for delta in deltas:
-        if delta > 0.1 and (type == 'boltzmann' or type == 'uct-tuned'):
-            continue
-
         key1 = f'{type}_{delta}_1'
         key2 = f'{type}_{delta}_2'
 
