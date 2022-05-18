@@ -87,8 +87,8 @@ for type in tree_policies.keys():
     key1 = f'{type}1'
     key2 = f'{type}2'
 
-    value1 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '50', '--p2trainingiterations', '3000', '--p1playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
-    value2 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '3000', '--p2trainingiterations', '50', '--p2playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
+    value1 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '100', '--p2trainingiterations', '3000', '--p1playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
+    value2 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '3000', '--p2trainingiterations', '100', '--p2playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
 
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})

@@ -84,7 +84,7 @@ tree_policies.update({'uct': 7})
 tree_policies.update({'uct-tuned': 13})
 tree_policies.update({'epsilon-greedy': 0.3})
 
-deltas = [0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2]
+deltas = [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2]
 
 for type in tree_policies.keys():
     for delta in deltas:
@@ -104,7 +104,7 @@ for type in tree_policies.keys():
         ALGORITHMS.update({key2: value2})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(5):
+    for seed in range(10):
         # loop over both positionings of players?
         run = exp.add_run()
 
