@@ -158,6 +158,8 @@ public class MCTSPlayer extends Player {
             }
         }
 
+        backpropWeight = 1;
+
         //visualizeGraph(root);
 
         // Exploration term set to 0, since when executing we only want to consider the exploitation term.
