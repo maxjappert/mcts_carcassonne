@@ -49,6 +49,8 @@ public class MCTSPlayer extends Player {
 
     private boolean ensemble;
 
+    private int ensembleIterations;
+
     File file;
     FileWriter fw;
     BufferedWriter br;
@@ -66,7 +68,7 @@ public class MCTSPlayer extends Player {
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
                          String treePolicyType, boolean heuristicPlayout, float backpropDelta, boolean generateGraphwizData,
-                         boolean ensemble) {
+                         int ensembleIterations) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -103,7 +105,10 @@ public class MCTSPlayer extends Player {
         this.backpropWeight = 1;
         this.backpropDelta = backpropDelta;
         this.generateGraphwizData = generateGraphwizData;
-        this.ensemble = ensemble;
+
+        this.ensembleIterations = ensembleIterations;
+
+        ensemble = ensembleIterations > 1;
     }
 
     @Override
@@ -146,13 +151,10 @@ public class MCTSPlayer extends Player {
             }
         }
 
+        int[] moveChoices = new int[ensembleIterations];
+        int[] meeplePlacements = new int[ensembleIterations];
 
-        int ensembleIts = ensemble ? 3 : 1;
-        int[] moveChoices = new int[ensembleIts];
-        int[] meeplePlacements = new int[ensembleIts];
-
-        for (int k = 0; k < ensembleIts; k++) {
-
+        for (int k = 0; k < ensembleIterations; k++) {
             for (int i = 0; i < trainingIterations; i++) {
                 List<Tile> deck = Engine.copyDeck(originalDeck);
 
@@ -200,6 +202,7 @@ public class MCTSPlayer extends Player {
             br.close();
             fw.close();
         }
+
         if (ensemble) return new Pair(mostFrequent(moveChoices), mostFrequent(meeplePlacements));
         else return new Pair(moveChoices[0], meeplePlacements[0]);
     }
