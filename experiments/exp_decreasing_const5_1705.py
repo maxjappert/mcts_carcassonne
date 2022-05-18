@@ -136,7 +136,7 @@ for algo_name, algo_cmd in ALGORITHMS.items():
         run.set_property("memory_limit", MEMORY_LIMIT)
         run.set_property("seed", seed)
         # Every run has to have a unique id in the form of a list.
-        run.set_property("id", [domain, algo_name, f"{seed}"])
+        run.set_properxty("id", [domain, algo_name, f"{seed}"])
 
 # Add step that writes experiment files to disk.
 exp.add_step("build", exp.build)

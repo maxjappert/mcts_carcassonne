@@ -47,6 +47,8 @@ public class MCTSPlayer extends Player {
 
     private boolean generateGraphwizData;
 
+    private boolean ensemble;
+
     File file;
     FileWriter fw;
     BufferedWriter br;
@@ -63,7 +65,8 @@ public class MCTSPlayer extends Player {
      */
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
-                         String treePolicyType, boolean heuristicPlayout, float backpropDelta, boolean generateGraphwizData) {
+                         String treePolicyType, boolean heuristicPlayout, float backpropDelta, boolean generateGraphwizData,
+                         boolean ensemble) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -100,6 +103,7 @@ public class MCTSPlayer extends Player {
         this.backpropWeight = 1;
         this.backpropDelta = backpropDelta;
         this.generateGraphwizData = generateGraphwizData;
+        this.ensemble = ensemble;
     }
 
     @Override
@@ -142,39 +146,51 @@ public class MCTSPlayer extends Player {
             }
         }
 
-        for (int i = 0; i < trainingIterations; i++) {
-            List<Tile> deck = Engine.copyDeck(originalDeck);
 
-            Node node = treePolicy(root, deck, i);
+        int ensembleIts = ensemble ? 3 : 1;
+        int[] moveChoices = new int[ensembleIts];
+        int[] meeplePlacements = new int[ensembleIts];
 
-            int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
+        for (int k = 0; k < ensembleIts; k++) {
 
-            backup(node, payoff);
+            for (int i = 0; i < trainingIterations; i++) {
+                List<Tile> deck = Engine.copyDeck(originalDeck);
 
-            updateBackpropWeight(backpropDelta);
+                if (ensemble) {
+                    Collections.shuffle(deck, random);
+                }
 
-            if (treePolicyType.contains("decaying")) {
-                explorationTerm = originalExplorationTerm / i;
+                Node node = treePolicy(root, deck, i);
+
+                int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
+
+                backup(node, payoff);
+
+                updateBackpropWeight(backpropDelta);
+
+                if (treePolicyType.contains("decaying")) {
+                    explorationTerm = originalExplorationTerm / i;
+                }
             }
+
+            // Exploration term set to 0, since when executing we only want to consider the exploitation term.
+            Node meepleNode = bestChildUCT(root, 0, 0);
+
+            int moveChoice;
+            if (legalMoves.contains(meepleNode.getMove())) {
+                moveChoice = legalMoves.indexOf(meepleNode.getMove());
+            } else {
+                Engine.printError("Error in choice system of UCTPlayer!!!");
+                moveChoice = -1;
+            }
+
+            Node chanceNode = bestChildUCT(meepleNode, 0, 0);
+
+            int meeplePlacement = chanceNode.getMeeplePlacement();
+
+            moveChoices[k] = moveChoice;
+            meeplePlacements[k] = meeplePlacement;
         }
-
-        //visualizeGraph(root);
-
-        // Exploration term set to 0, since when executing we only want to consider the exploitation term.
-        Node meepleNode = bestChildUCT(root, 0, 0);
-
-        int moveChoice;
-        if (legalMoves.contains(meepleNode.getMove())) {
-            moveChoice = legalMoves.indexOf(meepleNode.getMove());
-        } else {
-            Engine.printError("Error in choice system of UCTPlayer!!!");
-            moveChoice = -1;
-        }
-
-        Node chanceNode = bestChildUCT(meepleNode, 0, 0);
-        //Node chanceNode = mostVisitedChild(meepleNode);
-
-        int meeplePlacement = chanceNode.getMeeplePlacement();
 
         updateExplorationTerm(explorationTermDelta);
 
@@ -184,8 +200,31 @@ public class MCTSPlayer extends Player {
             br.close();
             fw.close();
         }
+        if (ensemble) return new Pair(mostFrequent(moveChoices), mostFrequent(meeplePlacements));
+        else return new Pair(moveChoices[0], meeplePlacements[0]);
+    }
 
-        return new Pair(moveChoice, meeplePlacement);
+    static int mostFrequent(int arr[])
+    {
+        // Sort the array
+        Arrays.sort(arr);
+
+        // find the max frequency using linear traversal
+        int max_count = 1, res = arr[0];
+        int curr_count = 1;
+
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] == arr[i - 1])
+                curr_count++;
+            else
+                curr_count = 1;
+
+            if (curr_count > max_count) {
+                max_count = curr_count;
+                res = arr[i - 1];
+            }
+        }
+        return res;
     }
 
     private int getTreeSize(Node root) {
@@ -443,24 +482,41 @@ public class MCTSPlayer extends Player {
     }
 
     private List<Node> getPlacementNodes(Node parent, List<Tile> deck) {
+
         List<Node> placementNodes = new ArrayList<>();
         List<Integer> consideredTiles = new ArrayList<>();
 
-        for (Tile tile : deck) {
-            if (!consideredTiles.contains(tile.getType())) {
-                consideredTiles.add(tile.getType());
+        if (ensemble) {
+            Tile tile = new Tile(deck.get(0));
 
-                GameState newState = new GameState(parent.getState());
+            GameState newState = new GameState(parent.getState());
 
-                Tile newTile = new Tile(parent.getDrawnTile());
+            Tile newTile = new Tile(parent.getDrawnTile());
 
-                newTile.rotateBy(parent.getRotation());
-                newState.placeMeeple(parent.getMeeplePlacement(), parent.getState().getPlayer(), newTile);
+            newTile.rotateBy(parent.getRotation());
+            newState.placeMeeple(parent.getMeeplePlacement(), parent.getState().getPlayer(), newTile);
 
-                newState.updateBoard(parent.getCoords(), newTile);
+            newState.updateBoard(parent.getCoords(), newTile);
 
-                Node placementNode = new Node(newState, 0, new Move(new Coordinates(-1, -1), 0), new Tile(tile));
-                placementNodes.add(placementNode);
+            Node placementNode = new Node(newState, 0, new Move(new Coordinates(-1, -1), 0), new Tile(tile));
+            placementNodes.add(placementNode);
+        } else {
+            for (Tile tile : deck) {
+                if (!consideredTiles.contains(tile.getType())) {
+                    consideredTiles.add(tile.getType());
+
+                    GameState newState = new GameState(parent.getState());
+
+                    Tile newTile = new Tile(parent.getDrawnTile());
+
+                    newTile.rotateBy(parent.getRotation());
+                    newState.placeMeeple(parent.getMeeplePlacement(), parent.getState().getPlayer(), newTile);
+
+                    newState.updateBoard(parent.getCoords(), newTile);
+
+                    Node placementNode = new Node(newState, 0, new Move(new Coordinates(-1, -1), 0), new Tile(tile));
+                    placementNodes.add(placementNode);
+                }
             }
         }
 
@@ -477,7 +533,7 @@ public class MCTSPlayer extends Player {
         } else if (node.getType() == 2) {
             children = getPlacementNodes(node, deck);
         } else {
-            Engine.printError(" Error in expand!!!");
+            Engine.printError("Error in expand!!!");
         }
 
         if (children.isEmpty()) {

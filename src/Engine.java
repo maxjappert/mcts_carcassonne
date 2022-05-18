@@ -95,18 +95,22 @@ public class Engine {
 
             Pair choice;
 
+            List<Tile> shuffledDeck = copyDeck(deck);
+            Collections.shuffle(shuffledDeck);
+
             if (player == 1) {
                 if ((player1 instanceof MCTSPlayer || player1 instanceof MinimaxPlayer) && verbose)
                     System.out.println("Player 1 is calculating a move...");
                 long time1 = System.nanoTime();
-                choice = player1.decideOnNextMove(state, drawnTile, deck, moves);
+                choice = player1.decideOnNextMove(state, drawnTile, shuffledDeck, moves);
                 long time2 = System.nanoTime();
+                System.out.println((time2-time1)/Math.pow(10, 6));
                 player1ContemplationTime += (time2 - time1) / Math.pow(10, 9);
             } else {
                 if ((player2 instanceof MCTSPlayer || player2 instanceof MinimaxPlayer) && verbose)
                     System.out.println("Player 2 is calculating a move...");
                 long time1 = System.nanoTime();
-                choice = player2.decideOnNextMove(state, drawnTile, deck, moves);
+                choice = player2.decideOnNextMove(state, drawnTile, shuffledDeck, moves);
                 long time2 = System.nanoTime();
                 player2ContemplationTime += (time2 - time1) / Math.pow(10, 9);
             }
