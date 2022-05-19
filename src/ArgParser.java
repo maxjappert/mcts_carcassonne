@@ -29,6 +29,8 @@ public class ArgParser {
         boolean graphwiz                = false;
         int p1ensembleIterations        = 1;
         int p2ensembleIterations        = 1;
+        int p1numplayouts               = 1;
+        int p2numplayouts               = 1;
 
         for (int i = 0; i < args.length; i++) {
             args[i] = args[i].toLowerCase();
@@ -124,8 +126,15 @@ public class ArgParser {
                         break;
                     case "--p1ensembleiterations":
                         p1ensembleIterations = Integer.parseInt(val);
+                        break;
                     case "--p2ensembleiterations":
                         p2ensembleIterations = Integer.parseInt(val);
+                        break;
+                    case "--p1numplayouts":
+                        p1numplayouts = Integer.parseInt(val);
+                        break;
+                    case "--p2numplayouts":
+                        p2numplayouts = Integer.parseInt(val);
                     case "-g":
                     case "--graphwiz":
                         graphwiz = Boolean.parseBoolean(val);
@@ -154,22 +163,22 @@ public class ArgParser {
 
         switch (p1Type) {
             case "uct":
-                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations);
+                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations, p1numplayouts);
                 break;
             case "epsilon-greedy":
-                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "epsilon-greedy", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations);
+                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "epsilon-greedy", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations, p1numplayouts);
                 break;
             case "decaying-epsilon-greedy":
-                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "decaying-epsilon-greedy", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations);
+                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "decaying-epsilon-greedy", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations, p1numplayouts);
                 break;
             case "heuristic-mcts":
-                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "heuristic-mcts", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations);
+                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "heuristic-mcts", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations, p1numplayouts);
                 break;
             case "uct-tuned":
-                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct-tuned", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations);
+                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "uct-tuned", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations, p1numplayouts);
                 break;
             case "boltzmann":
-                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "boltzmann", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations);
+                players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, "boltzmann", p1heuristicPlayout, p1backpropDelta, graphwiz, p1ensembleIterations, p1numplayouts);
                 break;
             case "human":
                 players[0] = new HumanPlayer(stateSpace, 1);
@@ -191,22 +200,22 @@ public class ArgParser {
 
         switch (p2Type) {
             case "uct":
-                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations);
+                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts);
                 break;
             case "epsilon-greedy":
-                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations);
+                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts);
                 break;
             case "decaying-epsilon-greedy":
-                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "decaying-epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations);
+                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "decaying-epsilon-greedy", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts);
                 break;
             case "heuristic-mcts":
-                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "heuristic-mcts", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations);
+                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "heuristic-mcts", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts);
                 break;
             case "uct-tuned":
-                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct-tuned", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations);
+                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "uct-tuned", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts);
                 break;
             case "boltzmann":
-                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "boltzmann", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations);
+                players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, "boltzmann", p2heuristicPlayout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts);
                 break;
             case "human":
                 players[1] = new HumanPlayer(stateSpace, 2);

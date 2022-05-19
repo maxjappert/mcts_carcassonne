@@ -47,9 +47,11 @@ public class MCTSPlayer extends Player {
 
     private boolean generateGraphwizData;
 
-    private boolean ensemble;
+    private final boolean ensemble;
 
-    private int ensembleIterations;
+    private final int ensembleIterations;
+
+    private final int numPlayouts;
 
     File file;
     FileWriter fw;
@@ -68,7 +70,7 @@ public class MCTSPlayer extends Player {
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
                          String treePolicyType, boolean heuristicPlayout, float backpropDelta, boolean generateGraphwizData,
-                         int ensembleIterations) {
+                         int ensembleIterations, int numPlayouts) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -109,6 +111,8 @@ public class MCTSPlayer extends Player {
         this.ensembleIterations = ensembleIterations;
 
         ensemble = ensembleIterations > 1;
+
+        this.numPlayouts = numPlayouts;
     }
 
     @Override
@@ -129,7 +133,7 @@ public class MCTSPlayer extends Player {
             br.write("graph \"\"\n" +
                        "{\n" +
                         "fontname=\"Helvetica,Arial,sans-serif\"\n" +
-                        "node [fontname=\"Helvetica,Arial,sans-serif\" width=0.01 shape=point]\n" +
+                        "node [fontname=\"Helvetica,Arial,sans-serif\" width=0.1 shape=point]\n" +
                         "edge [fontname=\"Helvetica,Arial,sans-serif\"]\n");
                         
 
@@ -164,9 +168,11 @@ public class MCTSPlayer extends Player {
 
                 Node node = treePolicy(root, deck, i);
 
-                int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
+                for (int j = 0; j < numPlayouts; j++) {
+                    int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
 
-                backup(node, payoff);
+                    backup(node, payoff);
+                }
 
                 updateBackpropWeight(backpropDelta);
 
