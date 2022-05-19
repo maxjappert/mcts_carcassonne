@@ -1,3 +1,4 @@
 /experiments/.venv/
-/experiments/data*
+/experiments/data/*
 /experiments/carcassonne.jar
+/out/*
