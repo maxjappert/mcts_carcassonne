@@ -53,6 +53,8 @@ public class MCTSPlayer extends Player {
 
     private final int numPlayouts;
 
+    private boolean deckCheat;
+
     File file;
     FileWriter fw;
     BufferedWriter br;
@@ -113,6 +115,7 @@ public class MCTSPlayer extends Player {
         ensemble = ensembleIterations > 1;
 
         this.numPlayouts = numPlayouts;
+        //this.deckCheat = deckCheat;
     }
 
     @Override
@@ -266,7 +269,7 @@ public class MCTSPlayer extends Player {
                     node = expand(node, deck);
                 } while (node.getType() != 0 && !node.isTerminal());
 
-                if (!deck.isEmpty()) {
+                if (!deck.isEmpty() && !ensemble) {
                     deck.remove(random.nextInt(deck.size()));
                 }
                 return node;
@@ -497,8 +500,8 @@ public class MCTSPlayer extends Player {
         List<Node> placementNodes = new ArrayList<>();
         List<Integer> consideredTiles = new ArrayList<>();
 
-        if (ensemble) {
-            Tile tile = new Tile(deck.get(0));
+        if (ensemble || deckCheat) {
+            Tile tile = new Tile(deck.remove(0));
 
             GameState newState = new GameState(parent.getState());
 
