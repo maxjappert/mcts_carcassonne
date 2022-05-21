@@ -72,7 +72,7 @@ public class MCTSPlayer extends Player {
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
                          String treePolicyType, boolean heuristicPlayout, float backpropDelta, boolean generateGraphwizData,
-                         int ensembleIterations, int numPlayouts) {
+                         int ensembleIterations, int numPlayouts, boolean deckCheat) {
         super(stateSpace, playerID);
 
         this.explorationTerm = explorationTerm;
@@ -115,7 +115,7 @@ public class MCTSPlayer extends Player {
         ensemble = ensembleIterations > 1;
 
         this.numPlayouts = numPlayouts;
-        //this.deckCheat = deckCheat;
+        this.deckCheat = deckCheat;
     }
 
     @Override
@@ -269,7 +269,7 @@ public class MCTSPlayer extends Player {
                     node = expand(node, deck);
                 } while (node.getType() != 0 && !node.isTerminal());
 
-                if (!deck.isEmpty() && !ensemble) {
+                if (!deck.isEmpty() && !ensemble && !deckCheat) {
                     deck.remove(random.nextInt(deck.size()));
                 }
                 return node;
