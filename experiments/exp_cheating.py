@@ -106,7 +106,7 @@ for algo_name, algo_cmd in ALGORITHMS.items():
 
         run.add_command(
             f"{algo_name}",
-            ["java",  "-jar", "{solver}", algo_cmd, "--deckseed", seed, "-v", "false"],
+            ["java",  "-jar", "{solver}", algo_cmd, "--deckseed", seed, "-v", "false", "--graphviz", "false"],
             time_limit=TIME_LIMIT,
             memory_limit=MEMORY_LIMIT,
         )

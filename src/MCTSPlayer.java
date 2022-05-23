@@ -123,26 +123,26 @@ public class MCTSPlayer extends Player {
         GameState state = new GameState(originalState);
         Node root = new Node(state, 0, new Move(null, 0), tile);
 
-        generateGraphwizData = originalDeck.size() >= 70 && generateGraphwizData;
-
-        if (generateGraphwizData) {
-            file = new File("/home/maxja/mcts_carcassonne/tree.dot");
-            file.delete();
-            file.createNewFile();
-            fw = new FileWriter(file.getAbsoluteFile(), true);
-            br = new BufferedWriter(fw);
-
-            // For removing the points, the width can be set to 0.01.
-            br.write("graph \"\"\n" +
-                       "{\n" +
-                        "fontname=\"Helvetica,Arial,sans-serif\"\n" +
-                        "node [fontname=\"Helvetica,Arial,sans-serif\" width=0.1 shape=point]\n" +
-                        "edge [fontname=\"Helvetica,Arial,sans-serif\"]\n");
-                        
-
-            br.write("n" + root.id + " [label=\"\", fillcolor=" + root.getColour() + "] ; \n\n");
-            br.flush();
-        }
+//        generateGraphwizData = originalDeck.size() >= 70 && generateGraphwizData;
+//
+//        if (generateGraphwizData) {
+//            file = new File("/home/maxja/mcts_carcassonne/tree.dot");
+//            file.delete();
+//            file.createNewFile();
+//            fw = new FileWriter(file.getAbsoluteFile(), true);
+//            br = new BufferedWriter(fw);
+//
+//            // For removing the points, the width can be set to 0.01.
+//            br.write("graph \"\"\n" +
+//                       "{\n" +
+//                        "fontname=\"Helvetica,Arial,sans-serif\"\n" +
+//                        "node [fontname=\"Helvetica,Arial,sans-serif\" width=0.1 shape=point]\n" +
+//                        "edge [fontname=\"Helvetica,Arial,sans-serif\"]\n");
+//
+//
+//            br.write("n" + root.id + " [label=\"\", fillcolor=" + root.getColour() + "] ; \n\n");
+//            br.flush();
+//        }
 
         for (Move move : legalMoves) {
 

@@ -142,7 +142,7 @@ public class ArgParser {
                     case "--p2deckcheat":
                         p2deckcheat = Boolean.parseBoolean(val);
                     case "-g":
-                    case "--graphwiz":
+                    case "--graphviz":
                         graphwiz = Boolean.parseBoolean(val);
                         break;
                     default: {
