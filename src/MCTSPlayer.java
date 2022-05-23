@@ -151,11 +151,11 @@ public class MCTSPlayer extends Player {
             root.addChild(node);
 
             //System.out.println(root.id);
-            if (generateGraphwizData) {
-                br.write("n" + root.id + " -- n" + node.id + " ;\n\n");
-                br.write("n" + node.id + " [label=\"\", fillcolor= " + node.getColour() + "] ;\n\n");
-                br.flush();
-            }
+//            if (generateGraphwizData) {
+//                br.write("n" + root.id + " -- n" + node.id + " ;\n\n");
+//                br.write("n" + node.id + " [label=\"\", fillcolor= " + node.getColour() + "] ;\n\n");
+//                br.flush();
+//            }
         }
 
         int[] moveChoices = new int[ensembleIterations];
@@ -557,14 +557,14 @@ public class MCTSPlayer extends Player {
 
         node.addChildren(children);
 
-        if (generateGraphwizData) {
-            for (Node child : children) {
-                br.write("n" + node.id + " -- n" + child.id + " ; \n\n");
-                br.write("n" + child.id + " [label=\"\", fillcolor=" + child.getColour() + "] ;\n\n");
-                br.flush();
-                //System.out.println(node.id);
-            }
-        }
+//        if (generateGraphwizData) {
+//            for (Node child : children) {
+//                br.write("n" + node.id + " -- n" + child.id + " ; \n\n");
+//                br.write("n" + child.id + " [label=\"\", fillcolor=" + child.getColour() + "] ;\n\n");
+//                br.flush();
+//                //System.out.println(node.id);
+//            }
+//        }
 
         return node.getRandomChild(random);
     }
