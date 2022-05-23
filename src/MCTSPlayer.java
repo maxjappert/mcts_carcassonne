@@ -186,6 +186,7 @@ public class MCTSPlayer extends Player {
 
             backpropWeight = 1;
 
+
             // Exploration term set to 0, since when executing we only want to consider the exploitation term.
             Node meepleNode = bestChildUCT(root, 0, 0);
 

@@ -42,7 +42,7 @@ public class Node {
      */
     private int meeplePlacement;
 
-    public int id;
+    //public int id;
 
     /**
      * 0: Placement Node
@@ -65,7 +65,7 @@ public class Node {
         this.meeplePlacement = -1;
 
         Engine.numNodes++;
-        this.id = Engine.numNodes;
+        //this.id = Engine.numNodes;
     }
 
     /**
@@ -82,7 +82,7 @@ public class Node {
         this.meeplePlacement = node.meeplePlacement;
         this.type = type;
         Engine.numNodes++;
-        this.id = Engine.numNodes;
+        //this.id = Engine.numNodes;
     }
 
     public void addMeeple(int placement) {
