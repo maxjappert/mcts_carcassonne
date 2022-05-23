@@ -94,7 +94,7 @@ for tree_policy in tree_policies.keys():
     key2 = f'{tree_policy}-2'
 
     value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1deckcheat', 'true']
-    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2deckcheat', 'true']
+    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2deckcheat', 'true']
 
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})
