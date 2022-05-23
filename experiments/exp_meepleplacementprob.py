@@ -88,10 +88,10 @@ meeple_placement_probs = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
 for tree_policy in tree_policies.keys():
     for meeple_placement_prob in meeple_placement_probs:
-        key1 = f'{tree_policy}_random_1'
-        key2 = f'{tree_policy}_random_2'
-        key3 = f'{tree_policy}_heuristic_1'
-        key4 = f'{tree_policy}_heuristic_2'
+        key1 = f'{tree_policy}?{meeple_placement_prob}?_random_1'
+        key2 = f'{tree_policy}?{meeple_placement_prob}?_random_2'
+        key3 = f'{tree_policy}?{meeple_placement_prob}?_heuristic_1'
+        key4 = f'{tree_policy}?{meeple_placement_prob}?_heuristic_2'
 
         value1 = ['--p1',  f'{tree_policy}', '--p2',  'random', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1meepleplacementprob', f'{meeple_placement_prob}']
         value2 = ['--p1',  'random', '--p2',  f'{tree_policy}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2meepleplacementprob', f'{meeple_placement_prob}']
