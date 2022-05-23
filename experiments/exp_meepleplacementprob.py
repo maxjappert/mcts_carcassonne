@@ -88,7 +88,7 @@ meeple_placement_probs = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
 for tree_policy in tree_policies.keys():
     for meeple_placement_prob in meeple_placement_probs:
-        key1 = f'{tree_policy}_{meeple_placement_prob}_random_1'
+        key1 = f'{tree_policy}_{meeple_placement_prob}_random_1'.replace('.', 'dot')
         key2 = f'{tree_policy}_{meeple_placement_prob}_random_2'
         key3 = f'{tree_policy}_{meeple_placement_prob}_heuristic_1'
         key4 = f'{tree_policy}_{meeple_placement_prob}_heuristic_2'
