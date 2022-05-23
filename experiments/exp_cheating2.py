@@ -33,7 +33,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 
 
-TIME_LIMIT = 1800
+TIME_LIMIT = 7200
 MEMORY_LIMIT = 8192
 
 if REMOTE:
