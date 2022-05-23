@@ -83,21 +83,25 @@ tree_policies.update({'uct': 7})
 tree_policies.update({'uct-tuned': 13})
 tree_policies.update({'epsilon-greedy': 0.3})
 
-tree_policies_cheating = dict()
-tree_policies_cheating.update({'boltzmann': 7})
-tree_policies_cheating.update({'uct': 1})
-tree_policies_cheating.update({'uct-tuned': 1})
-tree_policies_cheating.update({'epsilon-greedy': 0.1})
+meeple_placement_probs = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+
 
 for tree_policy in tree_policies.keys():
-    key1 = f'{tree_policy}-1'
-    key2 = f'{tree_policy}-2'
+    for meeple_placement_prob in meeple_placement_probs:
+        key1 = f'{tree_policy}_random_1'
+        key2 = f'{tree_policy}_random_2'
+        key3 = f'{tree_policy}_heuristic_1'
+        key4 = f'{tree_policy}_heuristic_2'
 
-    value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1deckcheat', 'true']
-    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2deckcheat', 'true']
+        value1 = ['--p1',  f'{tree_policy}', '--p2',  'random', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1meepleplacementprob', f'{meeple_placement_prob}']
+        value2 = ['--p1',  'random', '--p2',  f'{tree_policy}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2meepleplacementprob', f'{meeple_placement_prob}']
+        value3 = ['--p1',  f'{tree_policy}', '--p2',  'heuristic', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1meepleplacementprob', f'{meeple_placement_prob}']
+        value4 = ['--p1',  'heuristic', '--p2',  f'{tree_policy}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2meepleplacementprob', f'{meeple_placement_prob}']
 
-    ALGORITHMS.update({key1: value1})
-    ALGORITHMS.update({key2: value2})
+        ALGORITHMS.update({key1: value1})
+        ALGORITHMS.update({key2: value2})
+        ALGORITHMS.update({key3: value3})
+        ALGORITHMS.update({key4: value4})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
     for seed in range(5, 10):
