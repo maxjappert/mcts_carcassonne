@@ -32,18 +32,13 @@ REMOTE = NODE.endswith(".scicore.unibas.ch") or NODE.endswith(".cluster.bc2.ch")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 
-
 TIME_LIMIT = 14400
-MEMORY_LIMIT = 8192
+MEMORY_LIMIT = 16384
 
 if REMOTE:
     ENV = BaselSlurmEnvironment(email="max.jappert@unibas.ch")
-    #SUITE = BHOSLIB_GRAPHS + RANDOM_GRAPHS
 else:
-    ENV = LocalEnvironment(processes=1)
-    # Use smaller suite for local tests.
-    #SUITE = BHOSLIB_GRAPHS[:1] + RANDOM_GRAPHS[:1]
-
+    ENV = LocalEnvironment(processes=8)
 
 ### muss angepasst werden
 ATTRIBUTES = [
@@ -65,42 +60,45 @@ exp.add_parser("parser.py")
 
 ALGORITHMS = dict()
 
-# What we want to test with this experiment is have the following tree policies play against each other and
-# then evaluate their performance:
-# -boltzmann
-# -uct
-# -ucttuned
-# -random
-# -epsilon-greedy
-# -decaying-epsilon-greedy
-# -mcts with heuristic tree policy
-# -heuristic player (who simply picks the move which maximises the heuristic function
+# Tests the performance against a random opponent using different exploration terms
 
+for iterations in [1500, 2500, 3000, 3500, 4500, 5000]:
 
-tree_policies = dict()
-tree_policies.update({'boltzmann': 7})
-tree_policies.update({'uct': 7})
-tree_policies.update({'uct-tuned': 13})
-tree_policies.update({'epsilon-greedy': 0.3})
+    key1 = f'uct-{iterations}its1'
+    key2 = f'ucttuned-{iterations}its1'
+    key3 = f'boltzmann-{iterations}its1'
+    key4 = f'decayingepsilongreedy-{iterations}its1'
+    key5 = f'uct-{iterations}its2'
+    key6 = f'ucttuned-{iterations}its2'
+    key7 = f'boltzmann-{iterations}its2'
+    key8 = f'decayingepsilongreedy-{iterations}its2'
+    key9 = f'epsilongreedy-{iterations}its2'
+    key10 = f'epsilongreedy-{iterations}its2'
 
-tree_policies_cheating = dict()
-tree_policies_cheating.update({'boltzmann': 7})
-tree_policies_cheating.update({'uct': 1})
-tree_policies_cheating.update({'uct-tuned': 1})
-tree_policies_cheating.update({'epsilon-greedy': 0.1})
-
-for tree_policy in tree_policies.keys():
-    key1 = f'{tree_policy.replace("-", "")}-1'
-    key2 = f'{tree_policy.replace("-", "")}-2'
-
-    value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1deckcheat', 'true']
-    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2deckcheat', 'true']
+    value1 = ['--p1',  'uct', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '7']
+    value2 = ['--p1',  'uct-tuned', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '13']
+    value3 = ['--p1',  'boltzmann', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '7']
+    value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '1']
+    value5 = ['--p2',  'uct', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '7']
+    value6 = ['--p2',  'uct-tuned', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '13']
+    value7 = ['--p2',  'boltzmann', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '7']
+    value8 = ['--p2',  'decaying-epsilon-greedy', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '1']
+    value9 = ['--p1',  'epsilon-greedy', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '0.3']
+    value10 = ['--p2',  'epsilon-greedy', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '0.3']
 
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})
+    ALGORITHMS.update({key3: value3})
+    ALGORITHMS.update({key4: value4})
+    ALGORITHMS.update({key5: value5})
+    ALGORITHMS.update({key6: value6})
+    ALGORITHMS.update({key7: value7})
+    ALGORITHMS.update({key8: value8})
+    ALGORITHMS.update({key9: value9})
+    ALGORITHMS.update({key10: value10})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(5, 10):
+    for seed in range(5):
         # loop over both positionings of players?
         run = exp.add_run()
 
@@ -111,7 +109,7 @@ for algo_name, algo_cmd in ALGORITHMS.items():
 
         run.add_command(
             f"{algo_name}",
-            ["java",  "-jar", "{solver}", algo_cmd, "--deckseed", seed, "-v", "false", "--graphviz", "false"],
+            ["java",  "-jar", "{solver}", algo_cmd, "--deckseed", seed, "-v", "false"],
             time_limit=TIME_LIMIT,
             memory_limit=MEMORY_LIMIT,
         )
