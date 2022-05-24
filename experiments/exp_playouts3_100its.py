@@ -88,8 +88,8 @@ for tree_policy in tree_policies.keys():
     key1 = f'{tree_policy}-1'
     key2 = f'{tree_policy}-2'
 
-    value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1playout', 'direct-heuristic']
-    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2playout', 'direct-heuristic']
+    value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '100', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1playout', 'direct-heuristic']
+    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '100', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2playout', 'direct-heuristic']
 
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})
