@@ -41,7 +41,7 @@ public class MCTSPlayer extends Player {
 
     private final String treePolicyType;
 
-    private final boolean heuristicPlayout;
+    private final String playoutType;
 
     private float backpropWeight;
 
@@ -71,7 +71,7 @@ public class MCTSPlayer extends Player {
      */
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
-                         String treePolicyType, boolean heuristicPlayout, float backpropDelta, boolean generateGraphwizData,
+                         String treePolicyType, String playoutType, float backpropDelta, boolean generateGraphwizData,
                          int ensembleIterations, int numPlayouts, boolean deckCheat) {
         super(stateSpace, playerID);
 
@@ -105,7 +105,7 @@ public class MCTSPlayer extends Player {
             originalExplorationTerm = explorationTerm;
         }
 
-        this.heuristicPlayout = heuristicPlayout;
+        this.playoutType = playoutType;
         this.backpropWeight = 1;
         this.backpropDelta = backpropDelta;
         this.generateGraphwizData = generateGraphwizData;
@@ -172,7 +172,7 @@ public class MCTSPlayer extends Player {
                 Node node = treePolicy(root, deck, i);
 
                 for (int j = 0; j < numPlayouts; j++) {
-                    int[] payoff = defaultPolicy(node.getState(), deck, heuristicPlayout);
+                    int[] payoff = defaultPolicy(node, deck, playoutType);
 
                     backup(node, payoff);
                 }
@@ -308,8 +308,53 @@ public class MCTSPlayer extends Player {
      * @param deck The deck at the starting point.
      * @return The payoff at the end of the playout.
      */
-    private int[] defaultPolicy(GameState originalState, List<Tile> deck, boolean heuristic) {
-        GameState state = new GameState(originalState);
+    private int[] defaultPolicy(Node node, List<Tile> deck, String type) {
+        GameState state = new GameState(node.getState());
+
+        if (type.equals("direct-heuristic") && deck.size() > 0) {
+            node.getState().assignPointsAtEndOfGame();
+            return node.getState().getScore();
+//            Tile tile = Engine.drawTile(deck);
+//            List<Move> actions = stateSpace.placementSucc(state, tile);
+//
+//            if (actions.isEmpty()) {
+//                deck.add(tile);
+//                Collections.shuffle(deck, random);
+//                defaultPolicy(node, deck, type);
+//            }
+
+//            Move action;
+//
+//            action = new Move(new Coordinates(-1, -1), -1);
+//            int bestH = Integer.MIN_VALUE;
+//
+//            for (Move cand : actions) {
+//                int h = stateSpace.moveHeuristic(state, cand, tile, state.getPlayer());
+//                if (h > bestH) {
+//                    bestH = h;
+//                    action = cand;
+//                }
+//            }
+//
+//            int meeplePlacement = -1;
+//            List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
+//
+//            bestH = -1;
+//            for (int meeple : legalMeeples) {
+//                int h = stateSpace.meepleHeuristic(state, tile, meeple, state.getPlayer());
+//                if (h > bestH) {
+//                    bestH = h;
+//                    meeplePlacement = meeple;
+//                }
+//            }
+//
+//            tile.placeMeeple(meeplePlacement, state.getPlayer());
+//            tile.rotateBy(action.getRotation());
+//            state.updateBoard(action.getCoords(), tile);
+//            state.checkForScoreAfterRound(false);
+//            state.assignPointsAtEndOfGame();
+//            return state.getScore();
+        }
 
         while (deck.size() > 0) {
             Tile tile = Engine.drawTile(deck);
@@ -323,7 +368,7 @@ public class MCTSPlayer extends Player {
 
             Move action;
 
-            if (heuristic) {
+            if (type.contains("heuristic")) {
                 action = new Move(new Coordinates(-1, -1), -1);
                 int bestH = Integer.MIN_VALUE;
 
@@ -334,8 +379,12 @@ public class MCTSPlayer extends Player {
                         action = cand;
                     }
                 }
-            } else {
+            } else if (type.equals("random")) {
                 action = actions.get(random.nextInt(actions.size()));
+            } else {
+                action = null;
+                System.out.println("Invalid default policy.");
+                System.exit(1);
             }
 
             for (int i = 0; i < action.getRotation(); i++) {
@@ -345,7 +394,7 @@ public class MCTSPlayer extends Player {
             int meeplePlacement = -1;
             List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
 
-            if (heuristic) {
+            if (type.equals("heuristic")) {
                 int bestH = Integer.MIN_VALUE;
 
                 for (int meeple : legalMeeples) {
