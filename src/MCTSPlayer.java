@@ -163,6 +163,8 @@ public class MCTSPlayer extends Player {
 
         for (int k = 0; k < ensembleIterations; k++) {
             for (int i = 0; i < trainingIterations; i++) {
+                //System.out.println("Starting iteration " + i);
+
                 List<Tile> deck = Engine.copyDeck(originalDeck);
 
                 if (ensemble) {
@@ -182,6 +184,8 @@ public class MCTSPlayer extends Player {
                 if (treePolicyType.contains("decaying")) {
                     explorationTerm = originalExplorationTerm / i;
                 }
+
+                //System.out.println("Finished iteration " + i);
             }
 
             backpropWeight = 1;
@@ -302,12 +306,6 @@ public class MCTSPlayer extends Player {
         return node;
     }
 
-    /**
-     * Random playout.
-     * @param originalState Starting point.
-     * @param deck The deck at the starting point.
-     * @return The payoff at the end of the playout.
-     */
     private int[] defaultPolicy(Node node, List<Tile> deck, String type) {
         GameState state = new GameState(node.getState());
 
@@ -532,8 +530,14 @@ public class MCTSPlayer extends Player {
         List<Integer> legalMeeplePlacements = stateSpace.meepleSucc(parent.getState(), parent.getDrawnTile(), parent.getCoords(), playerID);
         List<Node> chanceNodes = new ArrayList<>();
 
+        Node trivialChanceNode = new Node(parent, 2);
+        trivialChanceNode.addMeeple(-1);
+        chanceNodes.add(trivialChanceNode);
+
         if (parent.getState().getNumMeeples(parent.getState().getPlayer()) > 0) {
             for (int legalMeeple : legalMeeplePlacements) {
+                if (legalMeeple == -1) continue;
+
                 Node chanceNode = new Node(parent, 2);
 
                 chanceNode.addMeeple(legalMeeple);

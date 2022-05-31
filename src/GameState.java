@@ -192,7 +192,13 @@ public class GameState {
                         int newArea = Collections.min(inheritedAreas);
                         replaceArea(replacedArea, newArea);
 
-                        inheritedAreas.remove(replacedArea);
+                        for (int i = 0; i <= 12; i++) {
+                            if (tile.getArea(i) == replacedArea) {
+                                tile.setArea(i, newArea);
+                            }
+                        }
+
+                        //inheritedAreas.remove(replacedArea);
                     }
 
                     area = tile.getArea(point);
@@ -645,8 +651,8 @@ public class GameState {
         tilesWithOneSidedCity.add(2);
         tilesWithOneSidedCity.add(3);
         tilesWithOneSidedCity.add(4);
-        tilesWithOneSidedCity.add(5);
-        tilesWithOneSidedCity.add(6);
+        //tilesWithOneSidedCity.add(5);
+        //tilesWithOneSidedCity.add(6);
 
         return tilesWithOneSidedCity;
     }
@@ -754,6 +760,7 @@ public class GameState {
             }
 
             if (areaTypes.get(i) == 1 || areaTypes.get(i) == 2) {
+                //if (getAreaOwners(i).length != 0) System.out.println(Arrays.toString(getAreaOwners(i)));
                 for (int playerNr : getAreaOwners(i)) {
 
                     List<Tile> tilesOfArea = getTilesOfArea(i);
@@ -785,9 +792,9 @@ public class GameState {
         List<Tile> tilesInArea = getTilesOfArea(area);
 
         for (Tile tile : tilesInArea) {
-            if (tile.getMeeple()[1] == 1) {
+            if (tile.getMeeple()[1] == 1 && area == tile.getArea(tile.getMeeple()[0])) {
                 numMeeplesP1++;
-            } else if (tile.getMeeple()[1] == 2) {
+            } else if (tile.getMeeple()[1] == 2 && area == tile.getArea(tile.getMeeple()[0])) {
                 numMeeplesP2++;
             }
         }

@@ -123,7 +123,12 @@ public class Engine {
             List<Integer> meepleSuccessors = stateSpace.meepleSucc(state, drawnTile, move.getCoords(), player);
 
             if (meepleSuccessors.contains(meeplePlacement)) {
-                drawnTile.placeMeeple(choice.getSecond(), player);
+                //drawnTile.placeMeeple(choice.getSecond(), player);
+                state.placeMeeple(choice.getSecond(), player, drawnTile);
+                if (choice.getSecond() != 1) {
+                    System.out.println("Player " + player + " places meeple.");
+                    System.out.println("Player " + player + " has " + state.getNumMeeples(player) + " meeples remaining.");
+                }
             } else {
                 if (verbose) System.out.printf("Meeple placement at point %d not allowed.\n\n", meeplePlacement);
             }
@@ -168,9 +173,9 @@ public class Engine {
         addTilesToDeck(deck,1, 3, false);
         addTilesToDeck(deck,2, 3, false);
         addTilesToDeck(deck,3, 3, false);
-        addTilesToDeck(deck,4, 5, false);
-        addTilesToDeck(deck,5, 3, false);
-        addTilesToDeck(deck,6, 2, false);
+        addTilesToDeck(deck,4, 10, false);
+        //addTilesToDeck(deck,5, 3, false);
+        //addTilesToDeck(deck,6, 2, false);
         addTilesToDeck(deck,7, 8, false);
         addTilesToDeck(deck,8, 9, false);
         addTilesToDeck(deck,9, 4, false);
