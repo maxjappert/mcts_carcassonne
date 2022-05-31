@@ -124,16 +124,18 @@ public class Engine {
 
             if (meepleSuccessors.contains(meeplePlacement)) {
                 //drawnTile.placeMeeple(choice.getSecond(), player);
-                state.placeMeeple(choice.getSecond(), player, drawnTile);
-                if (choice.getSecond() != 1) {
-                    System.out.println("Player " + player + " places meeple.");
+                if (choice.getSecond() != -1) {
                     System.out.println("Player " + player + " has " + state.getNumMeeples(player) + " meeples remaining.");
+                    System.out.println("Player " + player + " places meeple.");
+                    state.placeMeeple(choice.getSecond(), player, drawnTile);
                 }
             } else {
                 if (verbose) System.out.printf("Meeple placement at point %d not allowed.\n\n", meeplePlacement);
             }
 
             state.updateBoard(move.getCoords(), drawnTile);
+
+            System.out.println("Player " + player + " has " + state.getNumMeeples(player) + " meeples remaining.");
 
             state.checkForScoreAfterRound(true);
         }

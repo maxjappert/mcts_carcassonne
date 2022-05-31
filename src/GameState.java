@@ -675,9 +675,9 @@ public class GameState {
             if (tilesWithOneSidedCity.contains(tileCode)) {
                 numberOfFinishersNeeded -= 1;
             } else if (tileCode == 18) {
-                numberOfFinishersNeeded += 3;
-            } else if (tileCode == 16 || tileCode == 17) {
                 numberOfFinishersNeeded += 2;
+            } else if (tileCode == 16 || tileCode == 17) {
+                numberOfFinishersNeeded += 1;
             }
 
             if (tile.hasPennant()) {
