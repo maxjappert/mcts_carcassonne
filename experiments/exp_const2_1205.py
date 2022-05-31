@@ -73,25 +73,21 @@ exp.add_parser("parser.py")
 ALGORITHMS = dict()
 
 for i in [i*0.5 for i in range(0, 30)]:
-    #key1 = f'uct{i}_1'.replace('.', 'dot')
-    #key2 = f'uct{i}_2'.replace('.', 'dot')
+    key1 = f'uct{i}_1'.replace('.', 'dot')
+    key2 = f'uct{i}_2'.replace('.', 'dot')
     key3 = f'ucttuned{i}_1'.replace('.', 'dot')
     key4 = f'ucttuned{i}_2'.replace('.', 'dot')
-    #key5 = f'boltzmann{i}_1'.replace('.', 'dot')
-    #key6 = f'boltzmann{i}_2'.replace('.', 'dot')
-    #value1 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
-    #value2 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
-    value3 = ['--p1',  'uct-tuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
-    value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct-tuned', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
-    #value5 = ['--p1',  'boltzmann', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(i), '--p2explorationterm', '1']
-    #value6 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'boltzmann', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
 
-    #ALGORITHMS.update({key1: value1})
-    #ALGORITHMS.update({key2: value2})
+    value1 = ['--p1',  'uct', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '900', '--p2trainingiterations', '900', '--p1explorationterm', str(i), '--p2explorationterm', '1']
+    value2 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct', '--p1trainingiterations', '900', '--p2trainingiterations', '900', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
+    value3 = ['--p1',  'uct-tuned', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '900', '--p2trainingiterations', '900', '--p1explorationterm', str(i), '--p2explorationterm', '1']
+    value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'uct-tuned', '--p1trainingiterations', '900', '--p2trainingiterations', '900', '--p1explorationterm', '1', '--p2explorationterm', str(i)]
+
+
+    ALGORITHMS.update({key1: value1})
+    ALGORITHMS.update({key2: value2})
     ALGORITHMS.update({key3: value3})
     ALGORITHMS.update({key4: value4})
-    #ALGORITHMS.update({key5: value5})
-    #ALGORITHMS.update({key6: value6})
 
     epsilon = 1
 
@@ -105,8 +101,8 @@ for i in [i*0.5 for i in range(0, 30)]:
     key7 = f'epsilongreedy{epsilon}_1'.replace('.', 'dot')
     key8 = f'epsilongreedy{epsilon}_2'.replace('.', 'dot')
 
-    value7 = ['--p1',  'epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', str(epsilon), '--p2explorationterm', '1']
-    value8 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'epsilon-greedy', '--p1trainingiterations', '300', '--p2trainingiterations', '300', '--p1explorationterm', '1', '--p2explorationterm', str(epsilon)]
+    value7 = ['--p1',  'epsilon-greedy', '--p2', 'decaying-epsilon-greedy', '--p1trainingiterations', '900', '--p2trainingiterations', '900', '--p1explorationterm', str(epsilon), '--p2explorationterm', '1']
+    value8 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'epsilon-greedy', '--p1trainingiterations', '900', '--p2trainingiterations', '900', '--p1explorationterm', '1', '--p2explorationterm', str(epsilon)]
 
     ALGORITHMS.update({key7: value7})
     ALGORITHMS.update({key8: value8})
@@ -114,7 +110,7 @@ for i in [i*0.5 for i in range(0, 30)]:
 
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(10):
+    for seed in range(5):
         # loop over both positionings of players?
         run = exp.add_run()
 
