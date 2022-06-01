@@ -76,12 +76,12 @@ ALGORITHMS = dict()
 # more efficient.
 
 tree_policies = dict()
-tree_policies.update({'boltzmann': 7})
-tree_policies.update({'uct': 7})
-tree_policies.update({'uct-tuned': 13})
+tree_policies.update({'boltzmann': 15})
+tree_policies.update({'uct': 4})
+tree_policies.update({'uct-tuned': 2})
 tree_policies.update({'epsilon-greedy': 0.3})
-tree_policies.update({'decaying-epsilon-greedy': 1})
-tree_policies.update({'heuristic-mcts': 0})
+#tree_policies.update({'decaying-epsilon-greedy': 1})
+#tree_policies.update({'heuristic-mcts': 0})
 
 for type in tree_policies.keys():
     key1 = f'{type}1'

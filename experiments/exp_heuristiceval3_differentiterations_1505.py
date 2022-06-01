@@ -76,19 +76,19 @@ ALGORITHMS = dict()
 # more efficient.
 
 tree_policies = dict()
-tree_policies.update({'boltzmann': 7})
-tree_policies.update({'uct': 7})
-tree_policies.update({'uct-tuned': 13})
+tree_policies.update({'boltzmann': 15})
+tree_policies.update({'uct': 4})
+tree_policies.update({'uct-tuned': 2})
 tree_policies.update({'epsilon-greedy': 0.3})
-tree_policies.update({'decaying-epsilon-greedy': 1})
-tree_policies.update({'heuristic-mcts': 0})
+#tree_policies.update({'decaying-epsilon-greedy': 1})
+#tree_policies.update({'heuristic-mcts': 0})
 
 for type in tree_policies.keys():
     key1 = f'{type}1'
     key2 = f'{type}2'
 
-    value1 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '200', '--p2trainingiterations', '2000', '--p1playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
-    value2 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '2000', '--p2trainingiterations', '200', '--p2playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
+    value1 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '100', '--p2trainingiterations', '1000', '--p1playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
+    value2 = ['--p1',  f'{type}', '--p2', f'{type}', '--p1trainingiterations', '1000', '--p2trainingiterations', '100', '--p2playout', 'heuristic', '--p1explorationterm', f'{tree_policies[type]}', '--p2explorationterm', f'{tree_policies[type]}']
 
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})
