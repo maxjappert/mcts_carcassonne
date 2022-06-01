@@ -171,11 +171,11 @@ public class Engine {
     private List<Tile> assembleDeck(Random random) {
         List<Tile> deck = new ArrayList<>();
 
-        addTilesToDeck(deck,0, 3, false);
-        addTilesToDeck(deck,1, 3, false);
-        addTilesToDeck(deck,2, 3, false);
-        addTilesToDeck(deck,3, 3, false);
-        addTilesToDeck(deck,4, 10, false);
+        addTilesToDeck(deck,0, 4, false);
+        addTilesToDeck(deck,1, 4, false);
+        addTilesToDeck(deck,2, 5, false);
+        addTilesToDeck(deck,3, 5, false);
+        addTilesToDeck(deck,4, 5, false);
         //addTilesToDeck(deck,5, 3, false);
         //addTilesToDeck(deck,6, 2, false);
         addTilesToDeck(deck,7, 8, false);
@@ -186,10 +186,10 @@ public class Engine {
         addTilesToDeck(deck,12, 4, false);
         addTilesToDeck(deck,13, 1, false);
         addTilesToDeck(deck,13, 2, true);
-        addTilesToDeck(deck,14, 3, false);
-        addTilesToDeck(deck,14, 2, true);
-        addTilesToDeck(deck,15, 3, false);
-        addTilesToDeck(deck,15, 2, true);
+        addTilesToDeck(deck,14, 6, false);
+        addTilesToDeck(deck,14, 3, true);
+        //addTilesToDeck(deck,15, 3, false);
+        //addTilesToDeck(deck,15, 2, true);
         addTilesToDeck(deck,16, 1, false);
         addTilesToDeck(deck,16, 2, true);
         addTilesToDeck(deck,17, 3, false);

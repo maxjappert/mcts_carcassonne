@@ -33,8 +33,8 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 
 
-TIME_LIMIT = 1800
-MEMORY_LIMIT = 8192
+TIME_LIMIT = 7200
+MEMORY_LIMIT = 16384
 
 if REMOTE:
     ENV = BaselSlurmEnvironment(email="max.jappert@unibas.ch")
@@ -79,9 +79,9 @@ ALGORITHMS = dict()
 
 tree_policies = dict()
 
-tree_policies.update({'boltzmann': 7})
-tree_policies.update({'uct': 7})
-tree_policies.update({'uct-tuned': 13})
+tree_policies.update({'boltzmann': 15})
+tree_policies.update({'uct': 4})
+tree_policies.update({'uct-tuned': 2})
 tree_policies.update({'random': -1})
 tree_policies.update({'epsilon-greedy': 0.3})
 tree_policies.update({'decaying-epsilon-greedy': 1})
@@ -90,14 +90,14 @@ tree_policies.update({'heuristic': -1})
 
 for tree_policy1 in tree_policies.keys():
     for tree_policy2 in tree_policies.keys():
-        if tree_policy1 == tree_policy2 or (tree_policy1 != 'heuristic-mcts' and tree_policy2 != 'heuristic-mcts'):
+        if tree_policy1 == tree_policy2:
             continue
 
-        key1 = f'{tree_policy1}-vs-{tree_policy2}'
-        key2 = f'{tree_policy2}-vs-{tree_policy1}'
+        key1 = f'{tree_policy1.replace("-", "")}-vs-{tree_policy2.replace("-", "")}'
+        key2 = f'{tree_policy2.replace("-", "")}-vs-{tree_policy1.replace("-", "")}'
 
-        value1 = ['--p1',  f'{tree_policy1}', '--p2',  f'{tree_policy2}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy1]}', '--p2explorationterm', f'{tree_policies[tree_policy2]}']
-        value2 = ['--p1',  f'{tree_policy2}', '--p2',  f'{tree_policy1}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy2]}', '--p2explorationterm', f'{tree_policies[tree_policy1]}']
+        value1 = ['--p1',  f'{tree_policy1}', '--p2',  f'{tree_policy2}', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', f'{tree_policies[tree_policy1]}', '--p2explorationterm', f'{tree_policies[tree_policy2]}']
+        value2 = ['--p1',  f'{tree_policy2}', '--p2',  f'{tree_policy1}', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', f'{tree_policies[tree_policy2]}', '--p2explorationterm', f'{tree_policies[tree_policy1]}']
 
         ALGORITHMS.update({key1: value1})
         ALGORITHMS.update({key2: value2})

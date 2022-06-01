@@ -81,9 +81,11 @@ public class ArgParser {
                         this.deckRandomSeed = Long.parseLong(val);
                         break;
                     case "--p1explorationterm":
+                    case "--p1explorationconstant":
                         p1ExplorationTerm = Float.parseFloat(val);
                         break;
                     case "--p2explorationterm":
+                    case "--p2explorationconstant":
                         p2ExplorationTerm = Float.parseFloat(val);
                         break;
                     case "--p1meepleplacementprob":

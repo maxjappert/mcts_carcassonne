@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="carcassonne1">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/experiments/data/exp/carcassonne.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
