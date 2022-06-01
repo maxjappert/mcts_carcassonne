@@ -66,39 +66,33 @@ for iterations in [2**i for i in range(0, 9)] + list(range(300, 3500, 100)):
 
     key1 = f'uct-{iterations}its1'
     key2 = f'ucttuned-{iterations}its1'
-    key3 = f'boltzmann-{iterations}its1'
     key4 = f'decayingepsilongreedy-{iterations}its1'
     key5 = f'uct-{iterations}its2'
     key6 = f'ucttuned-{iterations}its2'
-    key7 = f'boltzmann-{iterations}its2'
     key8 = f'decayingepsilongreedy-{iterations}its2'
     key9 = f'epsilongreedy-{iterations}its1'
     key10 = f'epsilongreedy-{iterations}its2'
 
-    value1 = ['--p1',  'uct', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '7']
-    value2 = ['--p1',  'uct-tuned', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '13']
-    value3 = ['--p1',  'boltzmann', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '7']
+    value1 = ['--p1',  'uct', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '4']
+    value2 = ['--p1',  'uct-tuned', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '2']
     value4 = ['--p1',  'decaying-epsilon-greedy', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '1']
-    value5 = ['--p2',  'uct', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '7']
-    value6 = ['--p2',  'uct-tuned', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '13']
-    value7 = ['--p2',  'boltzmann', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '7']
+    value5 = ['--p2',  'uct', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '4']
+    value6 = ['--p2',  'uct-tuned', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '2']
     value8 = ['--p2',  'decaying-epsilon-greedy', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '1']
     value9 = ['--p1',  'epsilon-greedy', '--p2', 'random', '--p1trainingiterations', f'{iterations}', '--p1explorationterm', '0.3']
     value10 = ['--p2',  'epsilon-greedy', '--p1', 'random', '--p2trainingiterations', f'{iterations}', '--p2explorationterm', '0.3']
 
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})
-    ALGORITHMS.update({key3: value3})
     ALGORITHMS.update({key4: value4})
     ALGORITHMS.update({key5: value5})
     ALGORITHMS.update({key6: value6})
-    ALGORITHMS.update({key7: value7})
     ALGORITHMS.update({key8: value8})
     ALGORITHMS.update({key9: value9})
     ALGORITHMS.update({key10: value10})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(10):
+    for seed in range(5):
         # loop over both positionings of players?
         run = exp.add_run()
 
