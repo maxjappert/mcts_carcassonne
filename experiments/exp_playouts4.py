@@ -79,9 +79,9 @@ ALGORITHMS = dict()
 
 tree_policies = dict()
 
-tree_policies.update({'boltzmann': 7})
-tree_policies.update({'uct': 7})
-tree_policies.update({'uct-tuned': 13})
+tree_policies.update({'boltzmann': 15})
+tree_policies.update({'uct': 4})
+tree_policies.update({'uct-tuned': 2})
 tree_policies.update({'epsilon-greedy': 0.3})
 
 for tree_policy in tree_policies.keys():
@@ -95,7 +95,7 @@ for tree_policy in tree_policies.keys():
     ALGORITHMS.update({key2: value2})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(5, 15):
+    for seed in range(5):
         # loop over both positionings of players?
         run = exp.add_run()
 
