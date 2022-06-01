@@ -33,7 +33,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BENCHMARKS_DIR = os.path.join(SCRIPT_DIR, "benchmarks")
 
 
-TIME_LIMIT = 1800
+TIME_LIMIT = 3600
 MEMORY_LIMIT = 8192
 
 if REMOTE:
@@ -88,23 +88,23 @@ meeple_placement_probs = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
 for tree_policy in tree_policies.keys():
     for meeple_placement_prob in meeple_placement_probs:
-        key1 = f'{tree_policy}_{meeple_placement_prob}_random_1'.replace('.', 'dot')
-        key2 = f'{tree_policy}_{meeple_placement_prob}_random_2'.replace('.', 'dot')
-        key3 = f'{tree_policy}_{meeple_placement_prob}_heuristic_1'.replace('.', 'dot')
-        key4 = f'{tree_policy}_{meeple_placement_prob}_heuristic_2'.replace('.', 'dot')
+        key1 = f'{tree_policy.replace("-", "")}_{meeple_placement_prob}_random_1'.replace('.', 'dot')
+        key2 = f'{tree_policy.replace("-", "")}_{meeple_placement_prob}_random_2'.replace('.', 'dot')
+        #key3 = f'{tree_policy.replace("-", "")}_{meeple_placement_prob}_heuristic_1'.replace('.', 'dot')
+        #key4 = f'{tree_policy.replace("-", "")}_{meeple_placement_prob}_heuristic_2'.replace('.', 'dot')
 
-        value1 = ['--p1',  f'{tree_policy}', '--p2',  'random', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1meepleplacementprob', f'{meeple_placement_prob}']
-        value2 = ['--p1',  'random', '--p2',  f'{tree_policy}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2meepleplacementprob', f'{meeple_placement_prob}']
-        value3 = ['--p1',  f'{tree_policy}', '--p2',  'heuristic', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1meepleplacementprob', f'{meeple_placement_prob}']
-        value4 = ['--p1',  'heuristic', '--p2',  f'{tree_policy}', '--p1trainingiterations', '500', '--p2trainingiterations', '500', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2meepleplacementprob', f'{meeple_placement_prob}']
+        value1 = ['--p1',  f'{tree_policy}', '--p2',  'random', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1meepleplacementprob', f'{meeple_placement_prob}']
+        value2 = ['--p1',  'random', '--p2',  f'{tree_policy}', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2meepleplacementprob', f'{meeple_placement_prob}']
+        #value3 = ['--p1',  f'{tree_policy}', '--p2',  'heuristic', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1meepleplacementprob', f'{meeple_placement_prob}']
+        #value4 = ['--p1',  'heuristic', '--p2',  f'{tree_policy}', '--p1trainingiterations', '1000', '--p2trainingiterations', '1000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2meepleplacementprob', f'{meeple_placement_prob}']
 
         ALGORITHMS.update({key1: value1})
         ALGORITHMS.update({key2: value2})
-        ALGORITHMS.update({key3: value3})
-        ALGORITHMS.update({key4: value4})
+        #ALGORITHMS.update({key3: value3})
+        #ALGORITHMS.update({key4: value4})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(5, 10):
+    for seed in range(5):
         # loop over both positionings of players?
         run = exp.add_run()
 
