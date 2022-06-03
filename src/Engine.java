@@ -32,7 +32,7 @@ public class Engine {
                 "Player 1:             %s\n", randomSeed, player1.getTypeAsString()));
 
         if (player1 instanceof MCTSPlayer) {
-            info.append("P1: c = ").append(((MCTSPlayer) player1).getExplorationTerm()).append(", ").append(((MCTSPlayer) player1)
+            info.append("P1: c = ").append(((MCTSPlayer) player1).getExplorationConst()).append(", ").append(((MCTSPlayer) player1)
                     .getTrainingIterations()).append(" training iterations, with ").append(((MCTSPlayer) player1).getPlayoutSeed()).append(" as a playout seed and a meeple placement probability of ").append(((MCTSPlayer) player1)
                     .getPlayoutMeeplePlacementProbability() * 100).append("%.\n");
         }
@@ -46,7 +46,7 @@ public class Engine {
         info.append("Player 2:             ").append(player2.getTypeAsString()).append("\n");
 
         if (player2 instanceof MCTSPlayer) {
-            info.append("P2: c = ").append(((MCTSPlayer) player2).getExplorationTerm()).append(", ").append(((MCTSPlayer) player2)
+            info.append("P2: c = ").append(((MCTSPlayer) player2).getExplorationConst()).append(", ").append(((MCTSPlayer) player2)
                     .getTrainingIterations()).append(" training iterations, with ").append(((MCTSPlayer) player2).getPlayoutSeed()).append(" as a playout seed and a meeple placement probability of ").append(((MCTSPlayer) player2)
                     .getPlayoutMeeplePlacementProbability() * 100).append("%.\n");
         }

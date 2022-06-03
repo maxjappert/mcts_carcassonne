@@ -9,8 +9,8 @@ public class MCTSPlayer extends Player {
     /**
      *  Denotes the importance of exploration during the tree policy. Corresponds to the c variable in the UCT formula.
      */
-    private float explorationTerm;
-    final private float originalExplorationTerm;
+    private float explorationConst;
+    final private float originalExplorationConst;
 
     /**
      *  The number of training iterations for building the tree for choosing the next move.
@@ -62,20 +62,20 @@ public class MCTSPlayer extends Player {
     /**
      * @param stateSpace A state space object.
      * @param playerID The player ID (1 or 2) of this player.
-     * @param explorationTerm Exploration term for UCT (commonly denoted as variable c) the epsilon term in [0, 1] for epsilon-greedy.
+     * @param explorationConst Exploration term for UCT (commonly denoted as variable c) the epsilon term in [0, 1] for epsilon-greedy.
      * @param trainingIterations Number of training iterations.
      * @param randomPlayoutSeed Random seed for making the playout reproducible.
      * @param meeplePlacementProbability Probability of placing a meeple during random playout.
      * @param explorationTermDelta Change of the exploration term per iteration.
      * @param treePolicyType Either 'uct' or 'epsilon-greedy'.
      */
-    protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationTerm, int trainingIterations,
+    protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationConst, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
                          String treePolicyType, String playoutType, float backpropDelta, boolean generateGraphwizData,
                          int ensembleIterations, int numPlayouts, boolean deckCheat) {
         super(stateSpace, playerID);
 
-        this.explorationTerm = explorationTerm;
+        this.explorationConst = explorationConst;
         this.trainingIterations = trainingIterations;
         if (randomPlayoutSeed == -1) {
             long seed = new Random().nextInt(Integer.MAX_VALUE);
@@ -95,14 +95,14 @@ public class MCTSPlayer extends Player {
         this.explorationTermDelta = explorationTermDelta;
         this.treePolicyType = treePolicyType.toLowerCase();
 
-        if (treePolicyType.equalsIgnoreCase("epsilon-greedy-uct") && explorationTerm >= 1) {
+        if (treePolicyType.equalsIgnoreCase("epsilon-greedy-uct") && explorationConst >= 1) {
             Engine.printError(" Invalid epsilon.");
         }
 
         if (treePolicyType.equalsIgnoreCase("decaying-epsilon-greedy")) {
-            originalExplorationTerm = 1;
+            originalExplorationConst = 1;
         } else {
-            originalExplorationTerm = explorationTerm;
+            originalExplorationConst = explorationConst;
         }
 
         this.playoutType = playoutType;
@@ -163,7 +163,9 @@ public class MCTSPlayer extends Player {
 
         for (int k = 0; k < ensembleIterations; k++) {
             for (int i = 0; i < trainingIterations; i++) {
-                //System.out.println("Starting iteration " + i);
+                if (treePolicyType.contains("decaying")) {
+                    explorationConst = originalExplorationConst / (i+1);
+                }
 
                 List<Tile> deck = Engine.copyDeck(originalDeck);
 
@@ -180,12 +182,6 @@ public class MCTSPlayer extends Player {
                 }
 
                 updateBackpropWeight(backpropDelta);
-
-                if (treePolicyType.contains("decaying")) {
-                    explorationTerm = originalExplorationTerm / i;
-                }
-
-                //System.out.println("Finished iteration " + i);
             }
 
             backpropWeight = 1;
@@ -257,8 +253,8 @@ public class MCTSPlayer extends Player {
         return treeSize;
     }
 
-    public float getExplorationTerm() {
-        return explorationTerm;
+    public float getExplorationConst() {
+        return explorationConst;
     }
 
     public int getTrainingIterations() {
@@ -284,11 +280,11 @@ public class MCTSPlayer extends Player {
                     deck.remove(random.nextInt(deck.size()));
                 } else {
                     if (treePolicyType.contains("uct")) {
-                        node = bestChildUCT(node, explorationTerm, iterations);
+                        node = bestChildUCT(node, explorationConst, iterations);
                     } else if (treePolicyType.equals("heuristic-mcts")) {
                         node = bestChildHeuristic(node);
                     } else if (treePolicyType.contains("epsilon-greedy")) {
-                        if (random.nextFloat() < explorationTerm) {
+                        if (random.nextFloat() < explorationConst) {
                             node = node.getRandomChild(random);
                         } else {
                             node = treePolicyType.equalsIgnoreCase("heuristic-epsilon-greedy") ? bestChildHeuristic(node) : bestChildUCT(node, 0, 0);
@@ -639,10 +635,10 @@ public class MCTSPlayer extends Player {
     }
 
     public void updateExplorationTerm(float delta) {
-        if (explorationTerm + delta < 0) {
-            explorationTerm = 0;
+        if (explorationConst + delta < 0) {
+            explorationConst = 0;
         } else {
-            explorationTerm = explorationTerm + delta;
+            explorationConst = explorationConst + delta;
         }
     }
 
@@ -659,7 +655,7 @@ public class MCTSPlayer extends Player {
                 return node;
             }
 
-            double exponent = ((double)node.getQValue()[playerID-1] / node.getVisits()) / explorationTerm;
+            double exponent = ((double)node.getQValue()[playerID-1] / node.getVisits()) / explorationConst;
             normalisationTerm += Math.exp(exponent);
         }
 
@@ -667,7 +663,7 @@ public class MCTSPlayer extends Player {
         double sum = 0;
         for (int i = 0; i < nodes.size(); i++) {
             Node node = nodes.get(i);
-            double value = Math.exp(((double)node.getQValue()[playerID-1]/node.getVisits())/explorationTerm) / normalisationTerm;
+            double value = Math.exp(((double)node.getQValue()[playerID-1]/node.getVisits())/ explorationConst) / normalisationTerm;
             boltzmannValues.add(i, value);
             sum += value;
         }
