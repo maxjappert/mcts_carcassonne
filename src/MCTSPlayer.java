@@ -172,7 +172,15 @@ public class MCTSPlayer extends Player {
 
                 Node node = treePolicy(root, deck, i);
 
-                for (int j = 0; j < numPlayouts; j++) {
+                int numPlayouts_;
+
+                if (numPlayouts == -1) {
+                    numPlayouts_ = i+1;
+                } else {
+                    numPlayouts_ = numPlayouts;
+                }
+
+                for (int j = 0; j < numPlayouts_; j++) {
                     int[] payoff = defaultPolicy(node, deck, playoutType);
 
                     backup(node, payoff, i, backpropWeightConstant);
