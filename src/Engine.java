@@ -104,7 +104,6 @@ public class Engine {
                 long time1 = System.nanoTime();
                 choice = player1.decideOnNextMove(state, drawnTile, shuffledDeck, moves);
                 long time2 = System.nanoTime();
-                System.out.println((time2-time1)/Math.pow(10, 6));
                 player1ContemplationTime += (time2 - time1) / Math.pow(10, 9);
             } else {
                 if ((player2 instanceof MCTSPlayer || player2 instanceof MinimaxPlayer) && verbose)
@@ -125,8 +124,8 @@ public class Engine {
             if (meepleSuccessors.contains(meeplePlacement)) {
                 //drawnTile.placeMeeple(choice.getSecond(), player);
                 if (choice.getSecond() != -1) {
-                    System.out.println("Player " + player + " has " + state.getNumMeeples(player) + " meeples remaining.");
-                    System.out.println("Player " + player + " places meeple.");
+                    if (verbose) System.out.println("Player " + player + " has " + state.getNumMeeples(player) + " meeples remaining.");
+                    if (verbose) System.out.println("Player " + player + " places meeple.");
                     state.placeMeeple(choice.getSecond(), player, drawnTile);
                 }
             } else {

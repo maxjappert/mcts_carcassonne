@@ -92,7 +92,7 @@ for iterations in [2**i for i in range(0, 9)] + list(range(300, 3500, 100)):
     ALGORITHMS.update({key10: value10})
 
 for algo_name, algo_cmd in ALGORITHMS.items():
-    for seed in range(5):
+    for seed in range(5, 15):
         # loop over both positionings of players?
         run = exp.add_run()
 

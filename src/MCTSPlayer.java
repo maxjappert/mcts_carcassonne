@@ -481,7 +481,7 @@ public class MCTSPlayer extends Player {
             }
         }
 
-        if (!flag) Engine.printError(" Random next move selected because child had 0 visits.");
+        //if (!flag) Engine.printError(" Random next move selected because child had 0 visits.");
 
         if (bestChild != null) {
             return bestChild;
