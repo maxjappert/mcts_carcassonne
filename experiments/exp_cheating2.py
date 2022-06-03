@@ -84,17 +84,17 @@ tree_policies.update({'uct-tuned': 13})
 tree_policies.update({'epsilon-greedy': 0.3})
 
 tree_policies_cheating = dict()
-tree_policies_cheating.update({'boltzmann': 7})
-tree_policies_cheating.update({'uct': 1})
-tree_policies_cheating.update({'uct-tuned': 1})
-tree_policies_cheating.update({'epsilon-greedy': 0.1})
+tree_policies_cheating.update({'boltzmann': 50})
+tree_policies_cheating.update({'uct': 4})
+tree_policies_cheating.update({'uct-tuned': 2})
+tree_policies_cheating.update({'epsilon-greedy': 0.3})
 
 for tree_policy in tree_policies.keys():
     key1 = f'{tree_policy.replace("-", "")}-1'
     key2 = f'{tree_policy.replace("-", "")}-2'
 
-    value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1deckcheat', 'true']
-    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2deckcheat', 'true']
+    value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '3000', '--p2trainingiterations', '1000', '--p1explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1deckcheat', 'true']
+    value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', '1000', '--p2trainingiterations', '3000', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies_cheating[tree_policy]}', '--p2deckcheat', 'true']
 
     ALGORITHMS.update({key1: value1})
     ALGORITHMS.update({key2: value2})
