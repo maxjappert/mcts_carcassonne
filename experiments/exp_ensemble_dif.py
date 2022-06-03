@@ -91,8 +91,8 @@ for tree_policy in tree_policies.keys():
         key1 = f'{tree_policy}-{num_ensemble_iterations}-1'
         key2 = f'{tree_policy}-{num_ensemble_iterations}-2'
 
-        value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', f'{int(1000/num_ensemble_iterations)}', '--p2trainingiterations', f'{1000}', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1ensembleiterations', f'{num_ensemble_iterations}']
-        value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', f'{1000}', '--p2trainingiterations', f'{int(1000/num_ensemble_iterations)}', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2ensembleiterations', f'{num_ensemble_iterations}']
+        value1 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', f'{int(3000/num_ensemble_iterations)}', '--p2trainingiterations', f'{1000}', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p1ensembleiterations', f'{num_ensemble_iterations}']
+        value2 = ['--p1',  f'{tree_policy}', '--p2',  f'{tree_policy}', '--p1trainingiterations', f'{1000}', '--p2trainingiterations', f'{int(3000/num_ensemble_iterations)}', '--p1explorationterm', f'{tree_policies[tree_policy]}', '--p2explorationterm', f'{tree_policies[tree_policy]}', '--p2ensembleiterations', f'{num_ensemble_iterations}']
 
         ALGORITHMS.update({key1: value1})
         ALGORITHMS.update({key2: value2})
