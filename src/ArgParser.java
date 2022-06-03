@@ -203,6 +203,12 @@ public class ArgParser {
                 players[0] = new MinimaxPlayer(stateSpace, 1, p1RandomSeed, p1MinimaxDepth, p1MeeplePlacementProb);
                 break;
             default: {
+
+                if (p1Type.contains("decaying")) {
+                    players[0] = new MCTSPlayer(stateSpace, 1, p1ExplorationTerm, p1TrainingIterations, p1RandomSeed, p1MeeplePlacementProb, p1ExplorationTermDelta, p1Type, p1Playout, p1backpropDelta, graphwiz, p1ensembleIterations, p1numplayouts, p1deckcheat);
+                    break;
+                }
+
                 System.out.println("Invalid player type for player 1. The options are 'uct'/'[heuristic-]epsilon-greedy'/'human'/'random'/'heuristic'/'heuristic-mcts'.");
                 System.exit(1);
             }
@@ -240,6 +246,12 @@ public class ArgParser {
                 players[1] = new MinimaxPlayer(stateSpace, 2, p2RandomSeed, p2MinimaxDepth, p2MeeplePlacementProb);
                 break;
             default: {
+
+                if (p1Type.contains("decaying")) {
+                    players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, p2Type, p2Playout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts, p2deckcheat);
+                    break;
+                }
+
                 System.out.println("Invalid player type for player 2. The options are 'uct'/'[heuristic-]epsilon-greedy'/'human'/'random'/'heuristic'/'heuristic-mcts'.");
                 System.exit(1);
             }
