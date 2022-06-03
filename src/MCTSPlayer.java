@@ -37,13 +37,11 @@ public class MCTSPlayer extends Player {
      *  per move.
      */
     private final float explorationTermDelta;
-    private final float backpropDelta;
+    private final int backpropWeightConstant;
 
     private final String treePolicyType;
 
     private final String playoutType;
-
-    private float backpropWeight;
 
     private boolean generateGraphwizData;
 
@@ -71,7 +69,7 @@ public class MCTSPlayer extends Player {
      */
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationConst, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
-                         String treePolicyType, String playoutType, float backpropDelta, boolean generateGraphwizData,
+                         String treePolicyType, String playoutType, int backpropWeightConstant, boolean generateGraphwizData,
                          int ensembleIterations, int numPlayouts, boolean deckCheat) {
         super(stateSpace, playerID);
 
@@ -106,8 +104,7 @@ public class MCTSPlayer extends Player {
         }
 
         this.playoutType = playoutType;
-        this.backpropWeight = 1;
-        this.backpropDelta = backpropDelta;
+        this.backpropWeightConstant = backpropWeightConstant;
         this.generateGraphwizData = generateGraphwizData;
 
         this.ensembleIterations = ensembleIterations;
@@ -178,14 +175,9 @@ public class MCTSPlayer extends Player {
                 for (int j = 0; j < numPlayouts; j++) {
                     int[] payoff = defaultPolicy(node, deck, playoutType);
 
-                    backup(node, payoff);
+                    backup(node, payoff, i, backpropWeightConstant);
                 }
-
-                updateBackpropWeight(backpropDelta);
             }
-
-            backpropWeight = 1;
-
 
             // Exploration term set to 0, since when executing we only want to consider the exploitation term.
             Node meepleNode = bestChildUCT(root, 0, 0);
@@ -417,11 +409,19 @@ public class MCTSPlayer extends Player {
         return state.getScore();
     }
 
-    private void backup(Node node, int[] payoff) {
+    private void backup(Node node, int[] payoff, int iteration, int constant) {
+        float weight;
+
+        if (backpropWeightConstant <= 0) {
+            weight = 1;
+        } else {
+            weight = (float)Math.pow(2, (float)iteration / constant);
+        }
+
         while (node != null) {
             node.updateVisits();
-            payoff[0] *= backpropWeight;
-            payoff[1] *= backpropWeight;
+            payoff[0] *= weight;
+            payoff[1] *= weight;
             node.updateQValue(payoff);
             node = node.getParent();
         }
@@ -640,10 +640,6 @@ public class MCTSPlayer extends Player {
         } else {
             explorationConst = explorationConst + delta;
         }
-    }
-
-    private void updateBackpropWeight(float delta) {
-        backpropWeight += delta;
     }
 
     public Node getBoltzmannNode(List<Node> nodes) {

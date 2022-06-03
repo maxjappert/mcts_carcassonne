@@ -10,9 +10,9 @@ public class Main {
 
         if (args.length == 0) {
 
-            //player2 = new MCTSPlayer(stateSpace, 2, 7f, 50, -1, 0.5f, 0, "uct", false, 0, false, 5, 1, false);
-            player1 = new MCTSPlayer(stateSpace, 1, 50f, 50, 1455086940, 0.5f, 0, "decaying-uct", "random", 0, false, 1, 1, false);
-            player2 = new RandomPlayer(stateSpace, 2, 963432227);
+            player1 = new MCTSPlayer(stateSpace, 1, 50f, 50, 1455086940, 0.5f, 0, "decaying-uct", "random", 50, false, 1, 1, false);
+            player2 = new MCTSPlayer(stateSpace, 2, 2f, 50, -1, 0.5f, 0, "uct", "random", 0, false, 1, 1, false);
+            //player2 = new RandomPlayer(stateSpace, 2, 963432227);
             deckRandomSeed = 0;
             Engine.verbose = true;
         } else {

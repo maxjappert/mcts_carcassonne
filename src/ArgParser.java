@@ -21,8 +21,8 @@ public class ArgParser {
         float p2ExplorationTermDelta    = 0;
         String p1Playout                = "random";
         String p2Playout                = "random";
-        float p1backpropDelta           = 0;
-        float p2backpropDelta           = 0;
+        int p1backpropDelta             = 0;
+        int p2backpropDelta             = 0;
         Engine.verbose                  = true;
         int p1MinimaxDepth              = 2;
         int p2MinimaxDepth              = 2;
@@ -113,10 +113,12 @@ public class ArgParser {
                         p2Playout = val.toLowerCase();
                         break;
                     case "--p1backpropdelta":
-                        p1backpropDelta = Float.parseFloat(val);
+                    case "--p1backpropconst":
+                        p1backpropDelta = Integer.parseInt(val);
                         break;
                     case "--p2backpropdelta":
-                        p2backpropDelta = Float.parseFloat(val);
+                    case "--p2backpropconst":
+                        p2backpropDelta = Integer.parseInt(val);
                         break;
                     case "-v":
                     case "--verbose":
