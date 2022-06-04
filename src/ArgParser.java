@@ -247,7 +247,7 @@ public class ArgParser {
                 break;
             default: {
 
-                if (p1Type.contains("decaying")) {
+                if (p2Type.contains("decaying")) {
                     players[1] = new MCTSPlayer(stateSpace, 2, p2ExplorationTerm, p2TrainingIterations, p2RandomSeed, p2MeeplePlacementProb, p2ExplorationTermDelta, p2Type, p2Playout, p2backpropDelta, graphwiz, p2ensembleIterations, p2numplayouts, p2deckcheat);
                     break;
                 }

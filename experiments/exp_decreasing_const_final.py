@@ -82,7 +82,6 @@ tree_policies = dict()
 #tree_policies.update({'boltzmann': 7})
 tree_policies.update({'uct': 4})
 tree_policies.update({'uct-tuned': 2})
-tree_policies.update({'epsilon-greedy': 0.3})
 
 consts = [2**i for i in range(0, 11)]
 
