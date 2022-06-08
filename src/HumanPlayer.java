@@ -50,7 +50,12 @@ public class HumanPlayer extends Player {
                 System.out.print("On which corner would you like to place the meeple? [0-12] ");
                 input = sc.next().toLowerCase();
 
-                meeplePlacement = Integer.parseInt(input);
+                try {
+                    meeplePlacement = Integer.parseInt(input);
+                } catch (NumberFormatException nfe) {
+                    System.out.println("'" + input + "' is not an integer between 0 and 12.");
+                    break;
+                }
             }
             break;
         }
