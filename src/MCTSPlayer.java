@@ -43,7 +43,7 @@ public class MCTSPlayer extends Player {
 
     private final String playoutType;
 
-    private boolean generateGraphwizData;
+    private boolean generateGraphvizData;
 
     private final boolean ensemble;
 
@@ -51,7 +51,7 @@ public class MCTSPlayer extends Player {
 
     private final int numPlayouts;
 
-    private boolean deckCheat;
+    private final boolean deckCheat;
 
     File file;
     FileWriter fw;
@@ -69,7 +69,7 @@ public class MCTSPlayer extends Player {
      */
     protected MCTSPlayer(GameStateSpace stateSpace, int playerID, float explorationConst, int trainingIterations,
                          long randomPlayoutSeed, float meeplePlacementProbability, float explorationTermDelta,
-                         String treePolicyType, String playoutType, int backpropWeightConstant, boolean generateGraphwizData,
+                         String treePolicyType, String playoutType, int backpropWeightConstant, boolean generateGraphvizData,
                          int ensembleIterations, int numPlayouts, boolean deckCheat) {
         super(stateSpace, playerID);
 
@@ -105,7 +105,7 @@ public class MCTSPlayer extends Player {
 
         this.playoutType = playoutType;
         this.backpropWeightConstant = backpropWeightConstant;
-        this.generateGraphwizData = generateGraphwizData;
+        this.generateGraphvizData = generateGraphvizData;
 
         this.ensembleIterations = ensembleIterations;
 
@@ -120,26 +120,27 @@ public class MCTSPlayer extends Player {
         GameState state = new GameState(originalState);
         Node root = new Node(state, 0, new Move(null, 0), tile);
 
-//        generateGraphwizData = originalDeck.size() >= 70 && generateGraphwizData;
-//
-//        if (generateGraphwizData) {
-//            file = new File("/home/maxja/mcts_carcassonne/tree.dot");
-//            file.delete();
-//            file.createNewFile();
-//            fw = new FileWriter(file.getAbsoluteFile(), true);
-//            br = new BufferedWriter(fw);
-//
-//            // For removing the points, the width can be set to 0.01.
-//            br.write("graph \"\"\n" +
-//                       "{\n" +
-//                        "fontname=\"Helvetica,Arial,sans-serif\"\n" +
-//                        "node [fontname=\"Helvetica,Arial,sans-serif\" width=0.1 shape=point]\n" +
-//                        "edge [fontname=\"Helvetica,Arial,sans-serif\"]\n");
-//
-//
-//            br.write("n" + root.id + " [label=\"\", fillcolor=" + root.getColour() + "] ; \n\n");
-//            br.flush();
-//        }
+        generateGraphvizData = originalDeck.size() >= 70 && generateGraphvizData;
+
+        if (generateGraphvizData) {
+            file = new File("../tree.dot");
+            file.delete();
+            file.createNewFile();
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            br = new BufferedWriter(fw);
+
+            // For removing the points, the width can be set to 0.01.
+            br.write("graph \"\"\n" +
+                       "{\n" +
+                        "fontname=\"Helvetica,Arial,sans-serif\"\n" +
+                        "node [fontname=\"Helvetica,Arial,sans-serif\" width=0.1 shape=point]\n" +
+                        "edge [fontname=\"Helvetica,Arial,sans-serif\"]\n");
+
+
+            br.write("n" + root.id + " [label=\"\", fillcolor=" + root.getColour() + "] ; \n\n");
+            br.flush();
+            System.out.println("here");
+        }
 
         for (Move move : legalMoves) {
 
@@ -147,12 +148,11 @@ public class MCTSPlayer extends Player {
 
             root.addChild(node);
 
-            //System.out.println(root.id);
-//            if (generateGraphwizData) {
-//                br.write("n" + root.id + " -- n" + node.id + " ;\n\n");
-//                br.write("n" + node.id + " [label=\"\", fillcolor= " + node.getColour() + "] ;\n\n");
-//                br.flush();
-//            }
+            if (generateGraphvizData) {
+                br.write("n" + root.id + " -- n" + node.id + " ;\n\n");
+                br.write("n" + node.id + " [label=\"\", fillcolor= " + node.getColour() + "] ;\n\n");
+                br.flush();
+            }
         }
 
         int[] moveChoices = new int[ensembleIterations];
@@ -208,7 +208,7 @@ public class MCTSPlayer extends Player {
 
         updateExplorationTerm(explorationTermDelta);
 
-        if (generateGraphwizData) {
+        if (generateGraphvizData) {
             br.write("}");
             br.flush();
             br.close();
@@ -219,7 +219,7 @@ public class MCTSPlayer extends Player {
         else return new Pair(moveChoices[0], meeplePlacements[0]);
     }
 
-    static int mostFrequent(int arr[])
+    static int mostFrequent(int[] arr)
     {
         // Sort the array
         Arrays.sort(arr);
@@ -241,18 +241,6 @@ public class MCTSPlayer extends Player {
         }
         return res;
     }
-
-    private int getTreeSize(Node root) {
-        int treeSize = 0;
-
-        for (Node node : root.getChildren()) {
-            treeSize++;
-            treeSize += getTreeSize(node);
-        }
-
-        return treeSize;
-    }
-
     public float getExplorationConst() {
         return explorationConst;
     }
@@ -308,46 +296,6 @@ public class MCTSPlayer extends Player {
         if (type.equals("direct-heuristic") && deck.size() > 0) {
             node.getState().assignPointsAtEndOfGame();
             return node.getState().getScore();
-//            Tile tile = Engine.drawTile(deck);
-//            List<Move> actions = stateSpace.placementSucc(state, tile);
-//
-//            if (actions.isEmpty()) {
-//                deck.add(tile);
-//                Collections.shuffle(deck, random);
-//                defaultPolicy(node, deck, type);
-//            }
-
-//            Move action;
-//
-//            action = new Move(new Coordinates(-1, -1), -1);
-//            int bestH = Integer.MIN_VALUE;
-//
-//            for (Move cand : actions) {
-//                int h = stateSpace.moveHeuristic(state, cand, tile, state.getPlayer());
-//                if (h > bestH) {
-//                    bestH = h;
-//                    action = cand;
-//                }
-//            }
-//
-//            int meeplePlacement = -1;
-//            List<Integer> legalMeeples = stateSpace.meepleSucc(state, tile, action.getCoords(), playerID);
-//
-//            bestH = -1;
-//            for (int meeple : legalMeeples) {
-//                int h = stateSpace.meepleHeuristic(state, tile, meeple, state.getPlayer());
-//                if (h > bestH) {
-//                    bestH = h;
-//                    meeplePlacement = meeple;
-//                }
-//            }
-//
-//            tile.placeMeeple(meeplePlacement, state.getPlayer());
-//            tile.rotateBy(action.getRotation());
-//            state.updateBoard(action.getCoords(), tile);
-//            state.checkForScoreAfterRound(false);
-//            state.assignPointsAtEndOfGame();
-//            return state.getScore();
         }
 
         while (deck.size() > 0) {
@@ -436,22 +384,6 @@ public class MCTSPlayer extends Player {
     }
 
     /**
-     * Using the most visited child node to choose the next action minimises the payoff for some reason.
-     * Choosing random actions is better.
-     * @param parent The parent whose most visited child should be returned.
-     * @return The most visited child of the parent.
-     */
-    private Node mostVisitedChild(Node parent) {
-        if (!parent.hasChildren()) {
-            return parent;
-        }
-
-        List<Node> childrenCopy  = new ArrayList<>(List.copyOf(parent.getChildren()));
-        childrenCopy.sort((n1, n2) -> n2.getVisits() - n1.getVisits());
-        return childrenCopy.get(0);
-    }
-
-    /**
      * Returns the child with the highest UCT value.
      * @param parent The node whose children should be evaluated.
      * @param c The exploration term.
@@ -466,7 +398,6 @@ public class MCTSPlayer extends Player {
             return parent;
         }
 
-        boolean flag = false;
         for (Node child : parent.getChildren()) {
 
             if (child.getVisits() == 0 && c != 0) {
@@ -481,11 +412,8 @@ public class MCTSPlayer extends Player {
             if (ucb1 > highestValue) {
                 highestValue = ucb1;
                 bestChild = child;
-                flag = true;
             }
         }
-
-        //if (!flag) Engine.printError(" Random next move selected because child had 0 visits.");
 
         if (bestChild != null) {
             return bestChild;
@@ -558,6 +486,7 @@ public class MCTSPlayer extends Player {
         List<Node> placementNodes = new ArrayList<>();
         List<Integer> consideredTiles = new ArrayList<>();
 
+        // I know, it's a duplicate code fragment, but it works...
         if (ensemble || deckCheat) {
             Tile tile = new Tile(deck.remove(0));
 
@@ -614,20 +543,15 @@ public class MCTSPlayer extends Player {
 
         node.addChildren(children);
 
-//        if (generateGraphwizData) {
-//            for (Node child : children) {
-//                br.write("n" + node.id + " -- n" + child.id + " ; \n\n");
-//                br.write("n" + child.id + " [label=\"\", fillcolor=" + child.getColour() + "] ;\n\n");
-//                br.flush();
-//                //System.out.println(node.id);
-//            }
-//        }
+        if (generateGraphvizData) {
+            for (Node child : children) {
+                br.write("n" + node.id + " -- n" + child.id + " ; \n\n");
+                br.write("n" + child.id + " [label=\"\", fillcolor=" + child.getColour() + "] ;\n\n");
+                br.flush();
+            }
+        }
 
         return node.getRandomChild(random);
-    }
-
-    private int otherPlayer(int player) {
-        return  (player == 1 ? 2 : 1);
     }
 
     public String getTypeAsString() {

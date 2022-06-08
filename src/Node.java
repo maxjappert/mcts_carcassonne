@@ -42,7 +42,7 @@ public class Node {
      */
     private int meeplePlacement;
 
-    //public int id;
+    public int id;
 
     /**
      * 0: Placement Node
@@ -131,10 +131,6 @@ public class Node {
 
     public float[] getQValue() {
         return qValue;
-    }
-
-    public boolean isChanceNode() {
-        return type == 2;
     }
 
     public boolean isTerminal() {

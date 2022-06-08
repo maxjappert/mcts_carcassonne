@@ -175,8 +175,6 @@ public class Engine {
         addTilesToDeck(deck,2, 5, false);
         addTilesToDeck(deck,3, 5, false);
         addTilesToDeck(deck,4, 5, false);
-        //addTilesToDeck(deck,5, 3, false);
-        //addTilesToDeck(deck,6, 2, false);
         addTilesToDeck(deck,7, 8, false);
         addTilesToDeck(deck,8, 9, false);
         addTilesToDeck(deck,9, 4, false);
@@ -187,8 +185,6 @@ public class Engine {
         addTilesToDeck(deck,13, 2, true);
         addTilesToDeck(deck,14, 6, false);
         addTilesToDeck(deck,14, 3, true);
-        //addTilesToDeck(deck,15, 3, false);
-        //addTilesToDeck(deck,15, 2, true);
         addTilesToDeck(deck,16, 1, false);
         addTilesToDeck(deck,16, 2, true);
         addTilesToDeck(deck,17, 3, false);

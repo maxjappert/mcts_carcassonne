@@ -1,5 +1,4 @@
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -23,7 +22,7 @@ public class HeuristicPlayer extends Player{
     }
 
     @Override
-    Pair decideOnNextMove(GameState originalState, Tile originalTile, List<Tile> deck, List<Move> legalMoves) throws Exception {
+    Pair decideOnNextMove(GameState originalState, Tile originalTile, List<Tile> deck, List<Move> legalMoves) {
 
         GameState state = new GameState(originalState);
         Tile tile = new Tile(originalTile);
