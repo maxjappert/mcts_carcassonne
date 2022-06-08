@@ -32,7 +32,6 @@ public class HeuristicPlayer extends Player{
         int i = 0;
         for (Move move : legalMoves) {
             int h = stateSpace.moveHeuristic(state, move, tile, playerID);
-            //System.out.println("Placement heuristic: " + h);
             if (h > highestPlacementValue) {
                 highestPlacementValue = h;
                 indexOfHighestPlacementValue = i;
@@ -51,7 +50,6 @@ public class HeuristicPlayer extends Player{
         for (int point : legalMeeples) {
             int h = stateSpace.meepleHeuristic(state, tile, point, playerID);
             if (h > highestMeepleValue) {
-                //System.out.println("Meeple heuristic: " + h);
                 highestMeepleValue = h;
                 bestMeeplePlacement = point;
             }

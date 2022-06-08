@@ -7,16 +7,16 @@ public class ArgParser {
 
     public Player[] assignPlayers(String[] args) {
         String p1Type                   = "human";
-        String p2Type                   = "uct";
+        String p2Type                   = "decaying-uct-tuned";
         long p1RandomSeed               = -1;
         long p2RandomSeed               = -1;
         this.deckRandomSeed             = -1;
-        float p1ExplorationTerm         = 2f;
-        float p2ExplorationTerm         = 2f;
-        float p1MeeplePlacementProb     = 0.5f;
-        float p2MeeplePlacementProb     = 0.5f;
+        float p1ExplorationTerm         = 4f;
+        float p2ExplorationTerm         = 512f;
+        float p1MeeplePlacementProb     = 0.3f;
+        float p2MeeplePlacementProb     = 0.3f;
         int p1TrainingIterations        = 150;
-        int p2TrainingIterations        = 150;
+        int p2TrainingIterations        = 1000;
         float p1ExplorationTermDelta    = 0;
         float p2ExplorationTermDelta    = 0;
         String p1Playout                = "random";
@@ -141,10 +141,13 @@ public class ArgParser {
                         break;
                     case "--p2numplayouts":
                         p2numplayouts = Integer.parseInt(val);
+                        break;
                     case "--p1deckcheat":
                         p1deckcheat = Boolean.parseBoolean(val);
+                        break;
                     case "--p2deckcheat":
                         p2deckcheat = Boolean.parseBoolean(val);
+                        break;
                     case "-g":
                     case "--graphviz":
                         graphviz = Boolean.parseBoolean(val);

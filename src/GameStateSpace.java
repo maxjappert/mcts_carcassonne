@@ -1,10 +1,6 @@
-//import org.slf4j.//logger;
-//import org.slf4j.//loggerFactory;
-
 import java.util.*;
 
 public class GameStateSpace {
-//    final static //logger //logger = //loggerFactory.get//logger("GameStateSpace//logger");
 
     public GameState init() {
         return new GameState();
@@ -30,8 +26,6 @@ public class GameStateSpace {
                     if (isLegalMove(move, drawnTile, state)) {
                         Move arst = new Move(move, rotation);
                         successors.add(arst);
-
-                        ////logger.info("[{}, {}] with rotation {} is a legal move.", coords.x, coords.y, rotation);
                     }
                     drawnTile.rotate();
                 }

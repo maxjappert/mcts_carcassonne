@@ -1,6 +1,3 @@
-//import org.slf4j.//logger;
-//import org.slf4j.//loggerFactory;
-
 import java.util.*;
 
 public class GameState {
@@ -197,8 +194,6 @@ public class GameState {
                                 tile.setArea(i, newArea);
                             }
                         }
-
-                        //inheritedAreas.remove(replacedArea);
                     }
 
                     area = tile.getArea(point);
@@ -593,9 +588,7 @@ public class GameState {
                     if (tile.getMiddle() == 4 && tile.getMeeple()[0] == 12) {
                         Map<Integer, Tile> neighbours = getNeighboursByType(getCoordinates(tile), true);
                         if (neighbours.size() >= 8) {
-                            //getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += 9;
                             scores[tile.getMeeple()[1] - 1] += 9;
-                            //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
                             if (verbose && Engine.verbose) System.out.println("Monastery completed! Player " + tile.getMeeple()[1] + " has gained 9 points.");
                             tile.removeMeeple();
@@ -606,9 +599,7 @@ public class GameState {
                     if (tile.getPoint(tile.getMeeple()[0]) == 1) {
                         int points = checkForCityCompletion(tile.getArea(tile.getMeeple()[0]));
                         if (points != 0) {
-                            //getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
                             scores[tile.getMeeple()[1] - 1] += points;
-                            //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
                             if (verbose && Engine.verbose) System.out.println("City completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             completedCities.add(tile.getArea(tile.getMeeple()[0]));
@@ -620,9 +611,7 @@ public class GameState {
                     if (tile.getPoint(tile.getMeeple()[0]) == 2) {
                         int points = checkForRoadCompletion(tile.getArea(tile.getMeeple()[0]));
                         if (points != 0) {
-                            //getPlayer(tile.getMeeple()[1], player1, player2).currentPoints += points;
                             scores[tile.getMeeple()[1] - 1] += points;
-                            //getPlayer(tile.getMeeple()[1], player1, player2).numberOfMeeples += 1;
                             numMeeples[tile.getMeeple()[1] - 1] += 1;
                             if (verbose && Engine.verbose) System.out.println("Road completed! Player " + tile.getMeeple()[1] + " has gained " + points + " points.");
                             tile.removeMeeple();
@@ -730,7 +719,6 @@ public class GameState {
         } else if (endPoints < 2) {
             return 0;
         } else {
-            ////logger.error("Weird return value in checkForRoadCompletion(...)");
             return -1;
         }
     }
@@ -758,7 +746,6 @@ public class GameState {
             }
 
             if (areaTypes.get(i) == 1 || areaTypes.get(i) == 2) {
-                //if (getAreaOwners(i).length != 0) System.out.println(Arrays.toString(getAreaOwners(i)));
                 for (int playerNr : getAreaOwners(i)) {
 
                     List<Tile> tilesOfArea = getTilesOfArea(i);

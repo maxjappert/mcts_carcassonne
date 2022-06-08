@@ -168,6 +168,10 @@ public class Tile {
                 middle = 1;
                 break;
             }
+            default: {
+                Engine.printError("Invalid tile added to deck.");
+                System.exit(1);
+            }
         }
     }
 
@@ -508,7 +512,7 @@ public class Tile {
     }
 
     public void setMiddleArea(int area) {
-        middleArea = (int) area;
+        middleArea = area;
     }
 
     public boolean hasPennant() {

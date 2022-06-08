@@ -10,7 +10,7 @@ public class MCTSPlayer extends Player {
      *  Denotes the importance of exploration during the tree policy. Corresponds to the c variable in the UCT formula.
      */
     private float explorationConst;
-    final private float originalExplorationConst;
+    private final float originalExplorationConst;
 
     /**
      *  The number of training iterations for building the tree for choosing the next move.
@@ -172,15 +172,15 @@ public class MCTSPlayer extends Player {
 
                 Node node = treePolicy(root, deck, i);
 
-                int numPlayouts_;
+                int actualNumPlayouts;
 
                 if (numPlayouts == -1) {
-                    numPlayouts_ = i+1;
+                    actualNumPlayouts = i+1;
                 } else {
-                    numPlayouts_ = numPlayouts;
+                    actualNumPlayouts = numPlayouts;
                 }
 
-                for (int j = 0; j < numPlayouts_; j++) {
+                for (int j = 0; j < actualNumPlayouts; j++) {
                     int[] payoff = defaultPolicy(node, deck, playoutType);
 
                     backup(node, payoff, i, backpropWeightConstant);
@@ -225,17 +225,18 @@ public class MCTSPlayer extends Player {
         Arrays.sort(arr);
 
         // find the max frequency using linear traversal
-        int max_count = 1, res = arr[0];
-        int curr_count = 1;
+        int maxCount = 1;
+        int res = arr[0];
+        int currCount = 1;
 
         for (int i = 1; i < arr.length; i++) {
             if (arr[i] == arr[i - 1])
-                curr_count++;
+                currCount++;
             else
-                curr_count = 1;
+                currCount = 1;
 
-            if (curr_count > max_count) {
-                max_count = curr_count;
+            if (currCount > maxCount) {
+                maxCount = currCount;
                 res = arr[i - 1];
             }
         }
@@ -392,7 +393,7 @@ public class MCTSPlayer extends Player {
     private Node bestChildUCT(Node parent, double c, int iterations) {
 
         double highestValue = Double.MIN_VALUE;
-        Node bestChild = null;//parent.getRandomChild(random);
+        Node bestChild = null;
 
         if (!parent.hasChildren()) {
             return parent;
