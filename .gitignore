@@ -2,3 +2,4 @@
 /experiments/data/*
 /experiments/carcassonne.jar
 /out/*
+*.jar
