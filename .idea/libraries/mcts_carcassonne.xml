@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="mcts_carcassonne">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/out/artifacts/mcts_carcassonne_jar/mcts_carcassonne.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
