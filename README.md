@@ -24,7 +24,7 @@ The following arguments can be stated:
                   --p[1/2]explorationtermdelta <Float>   This term is added to the exploration term after every
                                                          move a MCTS  player plays.
                   --p[1/2]playout <Type>                 Decides the type of playout the MCTS player will perform.
-                                                         Possible types are: ['random'/'heuristic']
+                                                         Possible types are: ['random'/'heuristic'/'direct-heuristic']
                   --p[1/2]backpropdelta <Float>          This term is added to the backpropagation-weight
                                                          after every move an MCTS-player makes.
                   --p[1/2]minimaxdepth <Integer>         How deep does the Minimax-Player actually perform a
