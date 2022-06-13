@@ -55,3 +55,7 @@ The generated game tree can be visualised as follows:
 Beware: Due to Carcassonne's high branching factor, the trees tend to grow quite large. For higher numbers of training
 iterations, ```graphviz``` may respond with an error due to the large number of nodes. Also note that the tree image
 tends to be very wide, again due to the branching factor.
+
+## Bugs
+
+The only bug which I'm aware of is that sometimes legal moves will wrongly be classified as illegal by the engine. Simply rotating the tile 360 degrees solves this.
