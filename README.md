@@ -1,4 +1,4 @@
-# Monte-Carlo Tree Search for Carcassonne
+# Monte Carlo Tree Search for Carcassonne
 This repository contains the code for my Bachelor's thesis, which involves implementing variations of the Monte Carlo
 tree search framework for the board game Carcassonne. The program additionally allows for playing the game via console
 inputs.
