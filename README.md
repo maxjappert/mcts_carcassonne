@@ -58,4 +58,4 @@ tends to be very wide, again due to the branching factor.
 
 ## Bugs
 
-The only bug which I'm aware of is that sometimes legal moves will wrongly be classified as illegal by the engine. Simply rotating the tile 360 degrees solves this.
+The only bug which I'm aware of is that sometimes legal moves will wrongly be classified as illegal by the engine. Simply rotating the tile by 360 degrees solves this.
